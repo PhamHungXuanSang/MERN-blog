@@ -49,7 +49,7 @@ export default function DashSidebar() {
                     )}
                 </Sidebar.ItemGroup>
 
-                {/* <Sidebar.ItemGroup>
+                <Sidebar.ItemGroup>
                     <span className="text-2xl pb-2 pl-2 pt-4">Blog</span>
                     <>
                         <Link to="/dash-board?tab=create-blog">
@@ -73,7 +73,7 @@ export default function DashSidebar() {
                             </Sidebar.Item>
                         </Link>
                     </>
-                </Sidebar.ItemGroup> */}
+                </Sidebar.ItemGroup>
             </Sidebar.Items>
         </Sidebar>
     );

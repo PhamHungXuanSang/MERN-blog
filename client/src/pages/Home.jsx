@@ -1,133 +1,160 @@
-// import { useEffect, useState } from 'react';
-// import { useSelector } from 'react-redux';
-
 import { useEffect, useState } from 'react';
 import Blog from '../components/Blog';
-import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
-import { signOutSuccess } from '../redux/user/userSlice';
+import { Button, Spinner } from 'flowbite-react';
+import BlogMini from '../components/BlogMini';
+import { TbTrendingUp } from 'react-icons/tb';
+import { BiSolidCategoryAlt } from 'react-icons/bi';
+import NotFoundBlog from '../components/NotFoundBlog';
+import OneByOneAppearEffect from '../components/OneByOneAppearEffect';
 
 export default function Home() {
-    const [blogInfo, setBlogInfo] = useState(null);
     const [activeTab, setActiveTab] = useState('home');
+    const [activeCate, setActiveCate] = useState('');
+    const [blogs, setBlogs] = useState(null);
+    const [trendingBlogs, setTrendingBlogs] = useState(null);
 
-    const dispatch = useDispatch();
-    const navigate = useNavigate();
+    const category = ['programing', 'travel', 'food', 'technology', 'health', 'sport', 'entertainment'];
 
-    // useEffect(() => {
-    //     const getAllBlog = async () => {
-    //         try {
-    //             const res = await fetch('/api/blog/allblog', {
-    //                 method: 'GET',
-    //                 headers: { 'Content-Type': 'application/json' },
-    //             });
+    const handleGetLatestBlogs = async () => {
+        const res = await fetch('/api/blog/latest-blogs', {
+            method: 'GET',
+        });
+        const blogs = await res.json();
+        setBlogs(blogs);
+    };
 
-    //             if (res.status === 403) {
-    //                 dispatch(signOutSuccess());
-    //                 navigate('/sign-in');
-    //             } else if (res.status === 200) {
-    //                 setBlogInfo(await res.json());
-    //             } else if (res.status === 201) {
-    //                 const returnToken = await res.json();
-    //                 document.cookie = `access_token=${returnToken.newToken}`;
-    //                 document.cookie = `refresh_token=${returnToken.refToken}`;
-    //                 getAllBlog();
-    //             }
+    const handleGetTrendingBlogs = async () => {
+        const res = await fetch('/api/blog/trending-blogs', {
+            method: 'GET',
+        });
+        const blogs = await res.json();
+        setTrendingBlogs(blogs);
+    };
 
-    //             // if (res.status === 403) {
-    //             //     // Khoong cos quyeenf truy caapj neen batws login lai
-    //             //     navigate('/sign-in');
+    const handleGetBlogsByCate = async (cate) => {
+        const res = await fetch(`/api/blog/category/${cate}`, {
+            method: 'GET',
+        });
+        const blogs = await res.json();
+        setBlogs(blogs);
+    };
 
-    //             //     // Token hết hạn
-    //             //     // const refreshRes = await fetch('/api/user/refreshToken', {
-    //             //     //     method: 'GET',
-    //             //     //     headers: { 'Content-Type': 'application/json' },
-    //             //     // });
-    //             //     const returnToken = await res.json();
-    //             //     document.cookie = `access_token=${returnToken.token}`;
-    //             //     document.cookie = `refresh_token=${returnToken.refToken}`;
-    //             //     if (res.ok) {
-    //             //         getAllBlog();
-    //             //     }
-    //             // } else if (res.status === 401) {
-    //             //     setBlogInfo(null);
-    //             // } else {
-    //             //     const data = await res.json();
-    //             //     setBlogInfo(data);
-    //             // }
-    //         } catch (error) {
-    //             console.log(error);
-    //         }
-    //     };
+    useEffect(() => {
+        if (activeTab == 'home') {
+            handleGetLatestBlogs();
+        } else {
+            handleGetBlogsByCate(activeTab);
+        }
+    }, [activeTab]);
 
-    //     getAllBlog();
-    //     ////////// Xem lại cái thời gian hết hạn mới của refresh token phải bằng cái cũ chứ không phải tăng lên
-    // }, []);
+    useEffect(() => {
+        handleGetTrendingBlogs();
+    }, []);
+
+    const loadBlogByCategory = async (e) => {
+        let cate = e.target.innerText.toLowerCase();
+
+        setBlogs(null);
+
+        if (activeTab == cate) {
+            setActiveCate('');
+            setActiveTab('home');
+            //return;
+        } else {
+            setActiveCate(cate);
+            setActiveTab(cate);
+        }
+    };
 
     return (
-        <section className="container mx-auto h-screen flex justify-center gap-10">
+        <section className="container mx-auto min-h-screen h-fit flex justify-center gap-10">
             {/* latest blog */}
             <div className="w-full flex py-12 px-4">
                 <div className="h-full w-[70%] px-4">
                     <div className="w-full h-fit border-b-2 border-neutral-300">
                         <p
-                            onClick={() => setActiveTab('home')}
-                            className={`${activeTab == 'home' ? 'border-b-2 border-black dark:bg-[#4b5563] bg-[#f3f4f6]' : 'text-gray-500'} text-lg w-fit py-2 px-4 inline-block cursor-pointer`}
+                            className={`border-b-2 border-black dark:bg-[#4b5563] bg-[#f3f4f6] text-lg w-fit py-2 px-4 inline-block cursor-pointer`}
                         >
-                            Home
+                            {activeTab.charAt(0).toUpperCase() + activeTab.slice(1)}
                         </p>
-                        <p
+                        {/* <p
                             onClick={() => setActiveTab('trending')}
                             className={`${activeTab == 'trending' ? 'border-b-2 border-black dark:bg-[#4b5563] bg-[#f3f4f6]' : 'text-gray-500'} text-lg w-fit py-2 px-4 inline-block cursor-pointer`}
                         >
                             Trending Blog
-                        </p>
+                        </p> */}
                     </div>
 
-                    {activeTab == 'home' ? <h1>Hello Home</h1> : <h1>Hello Trending</h1>}
+                    {blogs != null ? (
+                        blogs.length == 0 ? (
+                            <NotFoundBlog object={activeCate} />
+                        ) : (
+                            blogs.map((blog, i) => (
+                                <OneByOneAppearEffect transition={{ duration: 1, delay: i * 0.15 }} key={i}>
+                                    <Blog key={i} content={blog} author={blog.authorId} />
+                                </OneByOneAppearEffect>
+                            ))
+                        )
+                    ) : (
+                        <Spinner className="block mx-auto mt-4" size="xl" />
+                    )}
 
-                    {/* {dashProfile?.allBlogsOfUser.length > 0 && (
-                            <div className="border-b-2 w-full h-fit bg-slate-50 hover:bg-slate-100 dark:bg-slate-700 dark:hover:bg-slate-800 mt-4 p-3">
-                                <div className="flex items-center">
-                                    <img
-                                        src={
-                                            dashProfile?.userInfo.userAvatar ||
-                                            'https://www.shutterstock.com/image-vector/user-profile-icon-vector-avatar-600nw-2220431045.jpg'
-                                        }
-                                        alt="Ảnh thumb blog"
-                                        className={'rounded-full w-8 h-8 object-cover'}
-                                    />
-                                    <b className="text-md ml-3">@{dashProfile?.userInfo.username}</b>
-                                    <i className="text-sm text-gray-500 ml-3">21 February 2024</i>
-                                </div>
-                                <div className="flex items-center justify-between mt-2">
-                                    <div className="max-w-[80%]">
-                                        <h1 className="text-2xl mb-2 font-bold">
-                                            {dashProfile?.allBlogsOfUser[0].title}
-                                        </h1>
-                                        <h2 className="truncate">
-                                            {dashProfile?.allBlogsOfUser[0].content[0].blocks[0].data.text}
-                                        </h2>
-                                    </div>
-                                    <img
-                                        src={dashProfile?.allBlogsOfUser[0].thumb}
-                                        alt="Ảnh thumb blog"
-                                        className={'rounded w-24 h-24 object-cover'}
-                                    />
-                                </div>
-                                <div className="flex items-center justify-start mt-2">
-                                    <div className="rounded-full w-fit h-fit py-1 px-2 bg-slate-200 dark:bg-slate-500 font-semibold">
-                                        Category
-                                    </div>
-                                    <SlLike className="ml-6 mr-2" />
-                                    <p>{dashProfile?.allBlogsOfUser[0].liked}</p>
-                                    <GrView className="ml-6 mr-2" />
-                                    <p>{dashProfile?.allBlogsOfUser[0].viewed}</p>
-                                </div>
-                            </div>
-                        )} */}
+                    {/* {activeTab == 'trending' &&
+                        (trendingBlogs.length == 0 ? (
+                            <Spinner />
+                        ) : (
+                            trendingBlogs.map((blog, i) => (
+                                <BlogMini key={i} index={i} content={blog} author={blog.authorId} />
+                            ))
+                        ))} */}
                 </div>
-                <div className="border-l-2 h-full py-12 px-8"></div>
+                <div className="border-l-2 h-full pl-4 w-[30%] max-md:hidden">
+                    <div className="flex flex-col gap-2 mb-8">
+                        <div className="flex items-center">
+                            <h1 className="font-medium text-xl mr-1">View by Category</h1>
+                            <BiSolidCategoryAlt />
+                        </div>
+                        <div className="flex gap-3 flex-wrap">
+                            {category.map((cate, i) => {
+                                return (
+                                    <Button
+                                        gradientDuoTone="greenToBlue"
+                                        key={i}
+                                        outline={activeCate == cate.toLowerCase() ? false : true}
+                                        onClick={loadBlogByCategory}
+                                    >
+                                        {cate.toUpperCase()}
+                                    </Button>
+                                );
+                            })}
+                        </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                        <h1 className="font-medium text-xl mr-1">Trending blogs</h1>
+                        <TbTrendingUp />
+                    </div>
+                    {trendingBlogs != null ? (
+                        trendingBlogs.length == 0 ? (
+                            <NotFoundBlog object={'trending'} />
+                        ) : (
+                            trendingBlogs.map((blog, i) => (
+                                <OneByOneAppearEffect transition={{ duration: 1, delay: i * 0.15 }} key={i}>
+                                    <BlogMini key={i} index={i} content={blog} author={blog.authorId} />
+                                </OneByOneAppearEffect>
+                            ))
+                        )
+                    ) : (
+                        <Spinner className="block mx-auto mt-4" size="lg" />
+                    )}
+
+                    {/* {trendingBlogs.length == 0 ? (
+                        <h1>Khong co du lieu</h1>
+                    ) : (
+                        trendingBlogs.map((blog, i) => (
+                            <BlogMini key={i} index={i} content={blog} author={blog.authorId} />
+                        ))
+                    )} */}
+                </div>
             </div>
             {/* filter and trending blog */}
         </section>

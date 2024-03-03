@@ -5,9 +5,6 @@ import { errorHandler } from '../utils/error.js';
 
 export const getUserProfileById = async (req, res, next) => {
     const userId = req.params.userId;
-    if (req.user._id !== userId) {
-        return next(errorHandler(403, 'Unauthorized'));
-    }
 
     // Tổng số lượng blog đã viết của user - số lượt người xem bài viết của user
     // Link facebook, github, youtube, instagram
@@ -18,17 +15,26 @@ export const getUserProfileById = async (req, res, next) => {
     if (!user) {
         return next(errorHandler(400, 'User not found'));
     }
-    const { password, ...userInfo } = user._doc;
-    // số lượng blog cua user
-    const allBlogsOfUser = await Blog.find({ authorId: userId });
-    const totalBlogs = allBlogsOfUser.length;
-    // so luot xem bai viet
-    let totalViews = 0;
-    allBlogsOfUser.forEach((blog) => {
-        totalViews += blog.viewed;
-    });
+    // const { password, ...userInfo } = user._doc;
+    // // số lượng blog cua user
+    // const allBlogsOfUser = await Blog.find({ authorId: userId });
+    // const totalBlogs = allBlogsOfUser.length;
+    // // so luot xem bai viet
+    // let totalViews = 0;
+    // allBlogsOfUser.forEach((blog) => {
+    //     totalViews += blog.viewed;
+    // });
 
-    res.status(200).json({ userInfo, allBlogsOfUser, totalBlogs, totalViews });
+    // res.status(200).json({ userInfo, allBlogsOfUser, totalBlogs, totalViews });
+    try {
+        const blogs = await Blog.find({ authorId: userId })
+            .populate('authorId', '_id username email userAvatar createdAt')
+            .sort({ createdAt: -1 });
+
+        res.status(200).json({ user, blogs });
+    } catch (error) {
+        next(error);
+    }
 };
 
 export const updateUserProfile = async (req, res, next) => {
@@ -84,12 +90,6 @@ export const updateUserProfile = async (req, res, next) => {
 export const allblog = async (req, res) => {
     const filter = {};
     const blogs = await Blog.find(filter);
-
-    res.json(blogs);
-};
-
-export const allblogByUserId = async (req, res, next) => {
-    const blogs = await Blog.find({ authorId: req.params.userId });
 
     res.json(blogs);
 };

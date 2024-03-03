@@ -1,10 +1,11 @@
-import mongoose from 'mongoose';
+import mongoose, { Schema } from 'mongoose';
 
 const blogSchema = new mongoose.Schema(
     {
         authorId: {
-            type: String,
+            type: Schema.Types.ObjectId,
             require: true,
+            ref: 'User',
         },
         title: {
             type: String,

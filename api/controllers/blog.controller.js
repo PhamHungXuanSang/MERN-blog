@@ -1,6 +1,48 @@
 import Blog from '../models/blog.model.js';
 import { errorHandler } from '../utils/error.js';
 
+export const allblogByUserId = async (req, res, next) => {
+    const blogs = await Blog.find({ authorId: req.params.userId });
+
+    res.json(blogs);
+};
+
+export const latestBlogs = async (req, res, next) => {
+    try {
+        const latestBlogs = await Blog.find({})
+            .populate('authorId', '_id username email userAvatar')
+            .sort({ createdAt: -1 })
+            .limit(5);
+        res.status(200).json(latestBlogs);
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const trendingBlogs = async (req, res, next) => {
+    try {
+        const trendingBlogs = await Blog.find({})
+            .populate('authorId', '_id username email userAvatar')
+            .sort({ viewed: -1, liked: -1, createdAt: -1 })
+            .limit(10);
+        res.status(200).json(trendingBlogs);
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const categoryBlogs = async (req, res, next) => {
+    try {
+        const categoryBlogs = await Blog.find({ category: req.params.cate })
+            .populate('authorId', '_id username email userAvatar')
+            .sort({ createdAt: -1 })
+            .limit(5);
+        res.status(200).json(categoryBlogs);
+    } catch (error) {
+        next(error);
+    }
+};
+
 export const createBlog = async (req, res, next) => {
     const userId = req.params.userId;
 

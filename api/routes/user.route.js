@@ -9,7 +9,7 @@ import { authenToken } from '../utils/authenToken.js';
 
 const router = express.Router();
 
-router.get('/profile/:userId', authenToken, getUserProfileById);
+router.get('/profile/:userId', getUserProfileById);
 router.put('/update-profile/:userId', authenToken, updateUserProfile);
 router.delete('/delete-account/:userId', authenToken, deleteAccount);
 router.post('/signout', signout);

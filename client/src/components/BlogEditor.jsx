@@ -34,7 +34,6 @@ export default function BlogEditor() {
     }, []);
 
     const handleImageChange = (e) => {
-        console.log(e.target.files[0]);
         const file = e.target.files[0];
         if (file) {
             setImageFile(file);

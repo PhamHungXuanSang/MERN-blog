@@ -19,7 +19,6 @@ const uploadImageURL = (e) => {
     });
 
     return link.then((url) => {
-        console.log(url);
         return { success: 1, file: { url } };
     });
 };
@@ -51,7 +50,6 @@ const uploadImageFile = (imageFile) => {
     });
     return getUrl.then((url) => {
         if (url) {
-            console.log(url);
             return { success: 1, file: { url } };
         }
     });
