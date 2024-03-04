@@ -4,7 +4,7 @@ import { Button, Spinner, Pagination } from 'flowbite-react';
 import BlogMini from '../components/BlogMini';
 import { TbTrendingUp } from 'react-icons/tb';
 import { BiSolidCategoryAlt } from 'react-icons/bi';
-import NotFoundBlog from '../components/NotFoundBlog';
+import NotFound from '../components/NotFound';
 import OneByOneAppearEffect from '../components/OneByOneAppearEffect';
 import OneByOneAppearFromRightEffect from '../components/OneByOneAppearFromRightEffect';
 
@@ -21,29 +21,41 @@ export default function Home() {
     const limit = 2;
 
     const handleGetLatestBlogs = async () => {
-        const res = await fetch(`/api/blog/latest-blogs?page=${currentPage}&&limit=${limit}`, {
-            method: 'GET',
-        });
-        const data = await res.json();
-        setBlogs(data.blogs);
-        setTotalPage(data.total);
+        try {
+            const res = await fetch(`/api/blog/latest-blogs?page=${currentPage}&&limit=${limit}`, {
+                method: 'GET',
+            });
+            const data = await res.json();
+            setBlogs(data.blogs);
+            setTotalPage(data.total);
+        } catch (error) {
+            console.log(error);
+        }
     };
 
     const handleGetTrendingBlogs = async () => {
-        const res = await fetch('/api/blog/trending-blogs', {
-            method: 'GET',
-        });
-        const blogs = await res.json();
-        setTrendingBlogs(blogs);
+        try {
+            const res = await fetch('/api/blog/trending-blogs', {
+                method: 'GET',
+            });
+            const blogs = await res.json();
+            setTrendingBlogs(blogs);
+        } catch (error) {
+            console.log(error);
+        }
     };
 
     const handleGetBlogsByCate = async (cate) => {
-        const res = await fetch(`/api/blog/category/${cate}?page=${currentPage}&&limit=${limit}`, {
-            method: 'GET',
-        });
-        const data = await res.json();
-        setBlogs(data.blogs);
-        setTotalPage(data.total);
+        try {
+            const res = await fetch(`/api/blog/category/${cate}?page=${currentPage}&&limit=${limit}`, {
+                method: 'GET',
+            });
+            const data = await res.json();
+            setBlogs(data.blogs);
+            setTotalPage(data.total);
+        } catch (error) {
+            console.log(error);
+        }
     };
 
     useEffect(() => {
@@ -95,11 +107,11 @@ export default function Home() {
 
                     {blogs != null ? (
                         blogs.length == 0 ? (
-                            <NotFoundBlog object={activeCate} />
+                            <NotFound object={`Not found blog by ${activeCate} category`} />
                         ) : (
                             <>
                                 {blogs.map((blog, i) => (
-                                    <OneByOneAppearEffect transition={{ duration: 1, delay: i * 0.15 }} key={i}>
+                                    <OneByOneAppearEffect transition={{ duration: 1, delay: i * 0.12 }} key={i}>
                                         <Blog key={i} content={blog} author={blog.authorId} />
                                     </OneByOneAppearEffect>
                                 ))}
@@ -145,10 +157,10 @@ export default function Home() {
                     </div>
                     {trendingBlogs != null ? (
                         trendingBlogs.length == 0 ? (
-                            <NotFoundBlog object={'trending'} />
+                            <NotFound object={'Not found trending blog'} />
                         ) : (
                             trendingBlogs.map((blog, i) => (
-                                <OneByOneAppearFromRightEffect transition={{ duration: 1, delay: i * 0.15 }} key={i}>
+                                <OneByOneAppearFromRightEffect transition={{ duration: 1, delay: i * 0.2 }} key={i}>
                                     <BlogMini key={i} index={i} content={blog} author={blog.authorId} />
                                 </OneByOneAppearFromRightEffect>
                             ))

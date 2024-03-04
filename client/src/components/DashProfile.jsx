@@ -82,7 +82,7 @@ export default function DashProfile() {
                 {dashProfile?.blogs?.length > 0 &&
                     dashProfile.blogs.map((blog, i) => {
                         return (
-                            <OneByOneAppearEffect transition={{ duration: 1, delay: i * 0.15 }} key={i}>
+                            <OneByOneAppearEffect transition={{ duration: 1, delay: i * 0.12 }} key={i}>
                                 <Blog key={i} content={blog} author={blog.authorId} />
                             </OneByOneAppearEffect>
                         );

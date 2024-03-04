@@ -55,6 +55,11 @@ export const updateUserProfile = async (req, res, next) => {
         if (!req.body.username.match(/^[a-zA-Z0-9]+$/)) {
             return next(errorHandler(400, 'Username can only contain letters and numbers'));
         }
+
+        const userExists = await User.findOne({ username: req.body.username });
+        if (userExists) {
+            return next(errorHandler(400, 'Username already used'));
+        }
     }
 
     if (req.body.userDesc) {

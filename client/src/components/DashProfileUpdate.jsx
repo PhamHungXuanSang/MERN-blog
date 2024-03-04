@@ -39,6 +39,10 @@ export default function DashProfileUpdate() {
     };
 
     useEffect(() => {
+        dispatch(updateUserProfileFailure(''));
+    }, []);
+
+    useEffect(() => {
         if (imageFile) {
             uploadImage();
         }
@@ -79,6 +83,10 @@ export default function DashProfileUpdate() {
         setFormData({ ...formData, [e.target.id]: e.target.value });
     };
 
+    function hasFourDigitsAtEnd(input) {
+        return /\d{4}$/.test(input);
+    }
+
     const handleSubmitUpdateUserProfile = async (e) => {
         dispatch(updateUserProfileStart());
         if (e) {
@@ -88,29 +96,35 @@ export default function DashProfileUpdate() {
             dispatch(updateUserProfileFailure(null));
             return;
         }
-        try {
-            const res = await fetch(`/api/user/update-profile/${currentUser._id}`, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(formData),
-            });
-            const dataUpdated = await res.json();
-            if (res.status === 403) {
-                dispatch(signOutSuccess());
-                navigate('/sign-in');
-            } else if (res.status === 200) {
-                dispatch(updateUserProfileSuccess(dataUpdated));
-            } else if (res.status === 201) {
-                const returnToken = dataUpdated;
-                document.cookie = `access_token=${returnToken.newToken}`;
-                document.cookie = `refresh_token=${returnToken.refToken}`;
-                handleSubmitUpdateUserProfile();
-            } else if (dataUpdated.success === false) {
-                dispatch(updateUserProfileFailure(dataUpdated.message));
+
+        if (hasFourDigitsAtEnd(formData.username)) {
+            try {
+                const res = await fetch(`/api/user/update-profile/${currentUser._id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(formData),
+                });
+                const dataUpdated = await res.json();
+                if (res.status === 403) {
+                    dispatch(signOutSuccess());
+                    navigate('/sign-in');
+                } else if (res.status === 200) {
+                    dispatch(updateUserProfileSuccess(dataUpdated));
+                } else if (res.status === 201) {
+                    const returnToken = dataUpdated;
+                    document.cookie = `access_token=${returnToken.newToken}`;
+                    document.cookie = `refresh_token=${returnToken.refToken}`;
+                    handleSubmitUpdateUserProfile();
+                } else if (dataUpdated.success === false) {
+                    dispatch(updateUserProfileFailure(dataUpdated.message));
+                    return;
+                }
+            } catch (error) {
+                dispatch(updateUserProfileFailure(error.message));
                 return;
             }
-        } catch (error) {
-            dispatch(updateUserProfileFailure(error.message));
+        } else {
+            dispatch(updateUserProfileFailure('Please enter 4 digit at the end of username'));
             return;
         }
     };
