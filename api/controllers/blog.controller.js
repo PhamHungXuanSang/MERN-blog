@@ -9,11 +9,15 @@ export const allblogByUserId = async (req, res, next) => {
 
 export const latestBlogs = async (req, res, next) => {
     try {
+        const page = req.query.page;
+        const limit = req.query.limit;
+        const totalBlogs = await Blog.countDocuments({});
         const latestBlogs = await Blog.find({})
             .populate('authorId', '_id username email userAvatar')
             .sort({ createdAt: -1 })
-            .limit(5);
-        res.status(200).json(latestBlogs);
+            .skip(page != 1 ? (page - 1) * limit : 0)
+            .limit(limit);
+        res.status(200).json({ blogs: latestBlogs, total: totalBlogs });
     } catch (error) {
         next(error);
     }
@@ -33,11 +37,15 @@ export const trendingBlogs = async (req, res, next) => {
 
 export const categoryBlogs = async (req, res, next) => {
     try {
+        const page = req.query.page;
+        const limit = req.query.limit;
+        const totalBlogs = await Blog.find({ category: req.params.cate });
         const categoryBlogs = await Blog.find({ category: req.params.cate })
             .populate('authorId', '_id username email userAvatar')
             .sort({ createdAt: -1 })
-            .limit(5);
-        res.status(200).json(categoryBlogs);
+            .skip(page != 1 ? (page - 1) * limit : 0)
+            .limit(limit);
+        res.status(200).json({ blogs: categoryBlogs, total: totalBlogs.length });
     } catch (error) {
         next(error);
     }

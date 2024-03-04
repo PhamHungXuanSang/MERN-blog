@@ -2,6 +2,7 @@ import { Sidebar } from 'flowbite-react';
 import { FcStatistics } from 'react-icons/fc';
 import { IoCreateSharp, IoSettings } from 'react-icons/io5';
 import { HiDocumentText, HiUser } from 'react-icons/hi';
+import { RiAdminFill } from 'react-icons/ri';
 import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
@@ -20,9 +21,9 @@ export default function DashSidebar() {
     }, [location.search]);
     return (
         <Sidebar aria-label="Sidebar with content separator example" className="w-full md:w-56">
-            <Sidebar.Items>
+            <Sidebar.Items className="pt-10">
                 <Sidebar.ItemGroup>
-                    <span className="text-2xl pb-2 pl-2 pt-4">Dashboard</span>
+                    <span className="text-3xl font-semibold pb-2 pl-2">Dashboard</span>
                     <Sidebar.Collapse icon={HiUser} label="Profile">
                         <Link to="/dash-board?tab=profile">
                             <Sidebar.Item
@@ -41,16 +42,23 @@ export default function DashSidebar() {
                         </Link>
                     </Sidebar.Collapse>
                     {currentUser.isAdmin && (
-                        <Link to="/dash-board?tab=admin-dashboard">
-                            <Sidebar.Item active={tab === 'admin-dashboard'} icon={FcStatistics}>
-                                View Statistics
-                            </Sidebar.Item>
-                        </Link>
+                        <Sidebar.Collapse icon={RiAdminFill} label="Admin">
+                            <Link to="/dash-board?tab=admin-dashboard">
+                                <Sidebar.Item
+                                    active={tab === 'profile'}
+                                    label={currentUser.isAdmin ? 'Admin' : 'User'}
+                                    labelColor="dark"
+                                    as="div"
+                                >
+                                    Profile
+                                </Sidebar.Item>
+                            </Link>
+                        </Sidebar.Collapse>
                     )}
                 </Sidebar.ItemGroup>
 
                 <Sidebar.ItemGroup>
-                    <span className="text-2xl pb-2 pl-2 pt-4">Blog</span>
+                    <span className="text-3xl font-semibold pb-2 pl-2">Blog</span>
                     <>
                         <Link to="/dash-board?tab=create-blog">
                             <Sidebar.Item className="mt-2" active={tab === 'create-blog'} icon={IoCreateSharp}>
@@ -65,7 +73,7 @@ export default function DashSidebar() {
                     </>
                 </Sidebar.ItemGroup>
                 <Sidebar.ItemGroup>
-                    <span className="text-2xl pb-2 pl-2 pt-4">Setting</span>
+                    <span className="text-3xl font-semibold pb-2 pl-2">Setting</span>
                     <>
                         <Link to="/dash-board?tab=account-setting">
                             <Sidebar.Item className="mt-2" active={tab === 'account-setting'} icon={IoSettings}>

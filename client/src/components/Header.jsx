@@ -32,8 +32,10 @@ export default function Header() {
         }
     };
 
-    const handleDarkMode = () => {
-        return dispatch(darkModeToogle());
+    const handleSearch = (e) => {
+        if (e.keyCode == 13 && e.target.value.length) {
+            navigate(`/search/${e.target.value}`);
+        }
     };
 
     return (
@@ -43,14 +45,25 @@ export default function Header() {
                     MERN Blog
                 </span>
             </Link>
-            <form>
-                <TextInput type="text" placeholder="Type to search" rightIcon={LuSearch} className="hidden lg:inline" />
-            </form>
+            {/* <form> */}
+            <TextInput
+                type="text"
+                placeholder="Type to search"
+                rightIcon={LuSearch}
+                className="hidden lg:inline"
+                onKeyDown={handleSearch}
+            />
+            {/* </form> */}
             <Button className="lg:hidden w-12 h-10" pill color="gray">
                 <LuSearch />
             </Button>
             <div className="flex gap-2 md:order-2">
-                <Button className="hidden w-12 h-10 sm:inline" pill color="gray" onClick={handleDarkMode}>
+                <Button
+                    className="hidden w-12 h-10 sm:inline"
+                    pill
+                    color="gray"
+                    onClick={() => dispatch(darkModeToogle())}
+                >
                     {darkModeObj.darkMode === 'light' ? <FaMoon /> : <FaSun />}
                 </Button>
                 {currentUser ? (

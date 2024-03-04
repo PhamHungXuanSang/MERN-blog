@@ -1,84 +1,9 @@
-import { useEffect, useState } from 'react';
-import Blog from '../components/Blog';
-import { Button, Spinner, Pagination } from 'flowbite-react';
-import BlogMini from '../components/BlogMini';
-import { TbTrendingUp } from 'react-icons/tb';
-import { BiSolidCategoryAlt } from 'react-icons/bi';
-import NotFoundBlog from '../components/NotFoundBlog';
-import OneByOneAppearEffect from '../components/OneByOneAppearEffect';
-import OneByOneAppearFromRightEffect from '../components/OneByOneAppearFromRightEffect';
+import { FaUser } from 'react-icons/fa';
+import { useParams } from 'react-router-dom';
 
-export default function Home() {
-    const [activeTab, setActiveTab] = useState('home');
-    const [activeCate, setActiveCate] = useState('');
-    const [blogs, setBlogs] = useState(null);
-    const [trendingBlogs, setTrendingBlogs] = useState(null);
-    const [currentPage, setCurrentPage] = useState(1);
-    const [totalPage, setTotalPage] = useState(1);
-
-    ///////////// Phải đổi lại lấy từ csdl ra chứ kp cố định là 1 array
-    const category = ['programing', 'travel', 'food', 'technology', 'health', 'sport', 'entertainment'];
-    const limit = 2;
-
-    const handleGetLatestBlogs = async () => {
-        const res = await fetch(`/api/blog/latest-blogs?page=${currentPage}&&limit=${limit}`, {
-            method: 'GET',
-        });
-        const data = await res.json();
-        setBlogs(data.blogs);
-        setTotalPage(data.total);
-    };
-
-    const handleGetTrendingBlogs = async () => {
-        const res = await fetch('/api/blog/trending-blogs', {
-            method: 'GET',
-        });
-        const blogs = await res.json();
-        setTrendingBlogs(blogs);
-    };
-
-    const handleGetBlogsByCate = async (cate) => {
-        const res = await fetch(`/api/blog/category/${cate}?page=${currentPage}&&limit=${limit}`, {
-            method: 'GET',
-        });
-        const data = await res.json();
-        setBlogs(data.blogs);
-        setTotalPage(data.total);
-    };
-
-    useEffect(() => {
-        if (activeTab == 'home') {
-            handleGetLatestBlogs();
-        } else {
-            handleGetBlogsByCate(activeTab);
-        }
-    }, [activeTab, currentPage]);
-
-    useEffect(() => {
-        handleGetTrendingBlogs();
-    }, []);
-
-    const loadBlogByCategory = async (e) => {
-        let cate = e.target.innerText.toLowerCase();
-
-        setBlogs(null);
-        setTotalPage(1);
-
-        if (activeTab == cate) {
-            setActiveCate('');
-            setCurrentPage(1);
-            setActiveTab('home');
-        } else {
-            setActiveCate(cate);
-            setCurrentPage(1);
-            setActiveTab(cate);
-        }
-    };
-
-    const onPageChange = (page) => {
-        setBlogs(null);
-        setCurrentPage(page);
-    };
+export default function Search() {
+    let { query } = useParams();
+    console.log(query);
 
     return (
         <section className="container mx-auto min-h-screen h-fit flex justify-center gap-10">
@@ -89,11 +14,11 @@ export default function Home() {
                         <p
                             className={`font-bold border-b-2 border-black dark:bg-[#4b5563] bg-[#f3f4f6] text-lg w-fit py-2 px-4 inline-block`}
                         >
-                            {activeTab.charAt(0).toUpperCase() + activeTab.slice(1)}
+                            Search result for {query}
                         </p>
                     </div>
 
-                    {blogs != null ? (
+                    {/* {blogs != null ? (
                         blogs.length == 0 ? (
                             <NotFoundBlog object={activeCate} />
                         ) : (
@@ -114,18 +39,18 @@ export default function Home() {
                         )
                     ) : (
                         <Spinner className="block mx-auto mt-4" size="xl" />
-                    )}
+                    )} */}
                 </div>
 
                 {/* Trending and filter by category */}
                 <div className="border-l-2 h-full pl-4 w-[30%] max-md:hidden">
                     <div className="flex flex-col gap-2 mb-8">
                         <div className="flex items-center">
-                            <h1 className="font-medium text-xl mr-1">View by Category</h1>
-                            <BiSolidCategoryAlt />
+                            <h1 className="font-medium text-xl mr-1">Search result for User</h1>
+                            <FaUser />
                         </div>
                         <div className="flex gap-2 flex-wrap">
-                            {category.map((cate, i) => {
+                            {/* {category.map((cate, i) => {
                                 return (
                                     <Button
                                         gradientDuoTone="greenToBlue"
@@ -136,10 +61,10 @@ export default function Home() {
                                         {cate.toUpperCase()}
                                     </Button>
                                 );
-                            })}
+                            })} */}
                         </div>
                     </div>
-                    <div className="flex items-center gap-2">
+                    {/* <div className="flex items-center gap-2">
                         <h1 className="font-medium text-xl mr-1">Trending blogs</h1>
                         <TbTrendingUp />
                     </div>
@@ -155,7 +80,7 @@ export default function Home() {
                         )
                     ) : (
                         <Spinner className="block mx-auto mt-4" size="lg" />
-                    )}
+                    )} */}
                 </div>
             </div>
         </section>

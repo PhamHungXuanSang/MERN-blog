@@ -8,6 +8,7 @@ import Header from './components/Header';
 import Footer from './components/FooterComponent';
 import PrivateRoute from './components/PrivateRoute';
 import { Toaster } from 'react-hot-toast';
+import Search from './pages/Search';
 
 export default function App() {
     return (
@@ -21,9 +22,10 @@ export default function App() {
                     <Route path="/dash-board" element={<Dashboard />} />
                 </Route>
                 <Route path="/about" element={<About />} />
+                <Route path="/search/:query" element={<Search />} />
             </Routes>
             <Footer />
-            <Toaster position='top-center' />
+            <Toaster position="top-center" />
         </BrowserRouter>
     );
 }

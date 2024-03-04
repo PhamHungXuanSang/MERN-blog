@@ -14,13 +14,13 @@ export const authenToken = (req, res, next) => {
 
             const refreshToken = await RefreshToken.findOne({ refreshToken: prevRefreshToken });
             if (refreshToken === null) {
-                return next(errorHandler(403, 'Khoong cos quyenf truy caapj'));
+                return next(errorHandler(403, 'Not found refresh token in database'));
             }
             await RefreshToken.deleteOne({ refreshToken: prevRefreshToken });
 
             jwt.verify(prevRefreshToken, process.env.JWT_REFRESH_SECRET, (err, decodedToken) => {
                 if (err) {
-                    return next(errorHandler(403, 'Khoong cos quyenf truy caapj do sai refresh token'));
+                    return next(errorHandler(403, 'Refresh token not accepted'));
                 }
                 const { iat, exp, ...rest } = decodedToken;
                 const newToken = jwt.sign(rest, process.env.JWT_SECRET, { expiresIn: 1 * 60 });
@@ -33,7 +33,7 @@ export const authenToken = (req, res, next) => {
                 try {
                     newRefreshToken.save();
                 } catch (error) {
-                    return next(errorHandler(500, 'Loi cuar server khoong luwu dduowjc refresh token'));
+                    return next(errorHandler(500, 'Can not save refresh token'));
                 }
                 //res.cookie('refresh_token', refToken, { httpOnly: true });
                 return res.status(201).json({ newToken, refToken });
