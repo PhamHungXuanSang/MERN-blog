@@ -15,12 +15,14 @@ export const authenToken = (req, res, next) => {
             const refreshToken = await RefreshToken.findOne({ refreshToken: prevRefreshToken });
             if (refreshToken === null) {
                 return next(errorHandler(403, 'Not found refresh token in database'));
+                //return res.redirect('/');
             }
             await RefreshToken.deleteOne({ refreshToken: prevRefreshToken });
 
             jwt.verify(prevRefreshToken, process.env.JWT_REFRESH_SECRET, (err, decodedToken) => {
                 if (err) {
                     return next(errorHandler(403, 'Refresh token not accepted'));
+                    //return res.redirect('/');
                 }
                 const { iat, exp, ...rest } = decodedToken;
                 const newToken = jwt.sign(rest, process.env.JWT_SECRET, { expiresIn: 1 * 60 });

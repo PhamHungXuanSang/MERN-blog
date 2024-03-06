@@ -112,7 +112,7 @@ export default function PublishForm() {
                 <div className="max-w-[550px] block mx-auto">
                     <p className="text-lg py-2 px-4">Preview</p>
                     <div className="w-full aspect-auto rounded-lg overflow-hidden bg-grey mt-4">
-                        <img src={thumb} />
+                        <img src={thumb} className="aspect-auto object-cover" />
                     </div>
                     <h1 className="text-3xl font-medium mt-2 leading-tight line-clamp-2">{title}</h1>
                     <p className="line-clamp-2 text-xl leading-7 mt-4">{description}</p>

@@ -27,6 +27,7 @@ export default function BlogEditor() {
             new EditorJS({
                 holder: 'textEditor',
                 data: content,
+                inlineToolbar: ['link', 'marker', 'bold', 'italic'],
                 tools: tools,
                 placeholder: 'Write your new blog ...',
             }),

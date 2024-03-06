@@ -1,19 +1,7 @@
 import { createContext, useState } from 'react';
 import BlogEditor from '../components/BlogEditor';
 import PublishForm from '../components/PublishForm';
-
-const blogStructure = {
-    authorId: '',
-    title: '',
-    description: '',
-    content: [],
-    tags: [],
-    thumb: '',
-    category: '',
-    liked: 0,
-    viewed: 0,
-    slug: '',
-};
+import blogStructure from '../context/blog/blogStructure.js';
 
 export const EditorContext = createContext({});
 

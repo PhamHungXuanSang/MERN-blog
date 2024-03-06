@@ -11,6 +11,7 @@ import { Toaster } from 'react-hot-toast';
 import Search from './pages/Search';
 import PageNotFound from './pages/PageNotFound';
 import UserProfile from './pages/UserProfile';
+import ReadBlog from './pages/ReadBlog';
 
 export default function App() {
     return (
@@ -25,7 +26,8 @@ export default function App() {
                 </Route>
                 <Route path="/about" element={<About />} />
                 <Route path="/search/:query" element={<Search />} />
-                <Route path="/user/:userId" element={<UserProfile />} />
+                <Route path="/user/:username" element={<UserProfile />} />
+                <Route path="/blog/:slug" element={<ReadBlog />} />
                 <Route path="*" element={<PageNotFound />} />
             </Routes>
             <Footer />

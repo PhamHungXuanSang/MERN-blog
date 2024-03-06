@@ -1,11 +1,11 @@
 import Blog from '../models/blog.model.js';
 import { errorHandler } from '../utils/error.js';
 
-export const allblogByUserId = async (req, res, next) => {
-    const blogs = await Blog.find({ authorId: req.params.userId });
+// export const allblogByUserId = async (req, res, next) => {
+//     const blogs = await Blog.find({ authorId: req.params.username });
 
-    res.json(blogs);
-};
+//     res.json(blogs);
+// };
 
 export const latestBlogs = async (req, res, next) => {
     try {
@@ -28,7 +28,7 @@ export const trendingBlogs = async (req, res, next) => {
         const trendingBlogs = await Blog.find({})
             .populate('authorId', '_id username email userAvatar')
             .sort({ viewed: -1, liked: -1, createdAt: -1 })
-            .limit(10);
+            .limit(5);
         res.status(200).json(trendingBlogs);
     } catch (error) {
         next(error);
@@ -90,6 +90,23 @@ export const createBlog = async (req, res, next) => {
     try {
         const savedBlog = await newBlog.save();
         res.status(200).json(savedBlog);
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const readBlog = async (req, res, next) => {
+    const slug = req.params.slug;
+
+    try {
+        const blog = await Blog.findOneAndUpdate({ slug }, { $inc: { viewed: 1 } }, { new: true }).populate(
+            'authorId',
+            '_id username email userAvatar',
+        );
+        if (!blog) {
+            return next(errorHandler(400, 'Blog not found'));
+        }
+        res.status(200).json({ blog });
     } catch (error) {
         next(error);
     }

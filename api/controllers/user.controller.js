@@ -3,35 +3,27 @@ import RefreshToken from '../models/refreshToken.model.js';
 import User from '../models/user.model.js';
 import { errorHandler } from '../utils/error.js';
 
-export const getUserProfileById = async (req, res, next) => {
-    const userId = req.params.userId;
-
-    // Tổng số lượng blog đã viết của user - số lượt người xem bài viết của user
-    // Link facebook, github, youtube, instagram
-    // Thông tin cơ bản - Ngày tạo tài khoản (ngày tham gia)
-
-    // Thông tin cơ bản - Ngày tạo tài khoản (ngày tham gia)
-    const user = await User.findById(userId);
+export const getUserProfile = async (req, res, next) => {
+    const username = req.params.username;
+    const user = await User.findOne({ username }).select('-password');
     if (!user) {
         return next(errorHandler(400, 'User not found'));
     }
-    // const { password, ...userInfo } = user._doc;
-    // // số lượng blog cua user
-    // const allBlogsOfUser = await Blog.find({ authorId: userId });
-    // const totalBlogs = allBlogsOfUser.length;
-    // // so luot xem bai viet
-    // let totalViews = 0;
-    // allBlogsOfUser.forEach((blog) => {
-    //     totalViews += blog.viewed;
-    // });
-
-    // res.status(200).json({ userInfo, allBlogsOfUser, totalBlogs, totalViews });
     try {
-        const blogs = await Blog.find({ authorId: userId })
+        const page = req.query.page;
+        const limit = req.query.limit;
+        const totalBlogs = await Blog.find({ authorId: user._id });
+        let totalViews = 0;
+        totalBlogs.forEach((blog) => {
+            totalViews+=blog.viewed;
+        })
+        const blogs = await Blog.find({ authorId: user._id })
             .populate('authorId', '_id username email userAvatar createdAt')
-            .sort({ createdAt: -1 });
+            .sort({ createdAt: -1 })
+            .skip(page != 1 ? (page - 1) * limit : 0)
+            .limit(limit);
 
-        res.status(200).json({ user, blogs });
+        res.status(200).json({ user, blogs, total: totalBlogs.length, totalViews });
     } catch (error) {
         next(error);
     }

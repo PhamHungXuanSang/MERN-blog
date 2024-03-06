@@ -16,7 +16,7 @@ export default function DashProfile() {
     useEffect(() => {
         const getUserDashProfile = async () => {
             try {
-                const res = await fetch(`/api/user/profile/${currentUser._id}`, {
+                const res = await fetch(`/api/user/profile/${currentUser.username}`, {
                     method: 'GET',
                     headers: { 'Content-Type': 'application/json' },
                 });
