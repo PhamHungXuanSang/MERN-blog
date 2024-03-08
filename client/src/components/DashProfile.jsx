@@ -5,6 +5,7 @@ import { Button } from 'flowbite-react';
 import { signOutSuccess } from '../redux/user/userSlice';
 import Blog from './Blog';
 import OneByOneAppearEffect from './OneByOneAppearEffect';
+import formatDate from '../utils/formatDate.js';
 
 export default function DashProfile() {
     const currentUser = useSelector((state) => state.user.currentUser);
@@ -25,11 +26,6 @@ export default function DashProfile() {
                     navigate('/sign-in');
                 } else if (res.status === 200) {
                     setDashProfile(await res.json());
-                } else if (res.status === 201) {
-                    const returnToken = await res.json();
-                    document.cookie = `access_token=${returnToken.newToken}`;
-                    document.cookie = `refresh_token=${returnToken.refToken}`;
-                    getUserDashProfile();
                 }
             } catch (error) {
                 console.log(error);
@@ -38,32 +34,6 @@ export default function DashProfile() {
 
         getUserDashProfile();
     }, []);
-
-    const formatDate = (dateString) => {
-        const options = { timeZone: 'Asia/Ho_Chi_Minh' };
-        const formattedDate = new Date(dateString).toLocaleDateString('en-US', options);
-        const date = new Date(formattedDate);
-        const day = date.getDate();
-        const monthIndex = date.getMonth();
-        const year = date.getFullYear();
-
-        const months = [
-            'January',
-            'February',
-            'March',
-            'April',
-            'May',
-            'June',
-            'July',
-            'August',
-            'September',
-            'October',
-            'November',
-            'December',
-        ];
-
-        return `${day < 10 ? '0' + day : day} ${months[monthIndex]} ${year}`;
-    };
 
     let totalViewed = 0;
     dashProfile?.blogs?.forEach((blog) => {

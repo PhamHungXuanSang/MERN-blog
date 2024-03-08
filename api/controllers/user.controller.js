@@ -15,8 +15,8 @@ export const getUserProfile = async (req, res, next) => {
         const totalBlogs = await Blog.find({ authorId: user._id });
         let totalViews = 0;
         totalBlogs.forEach((blog) => {
-            totalViews+=blog.viewed;
-        })
+            totalViews += blog.viewed;
+        });
         const blogs = await Blog.find({ authorId: user._id })
             .populate('authorId', '_id username email userAvatar createdAt')
             .sort({ createdAt: -1 })
@@ -30,6 +30,7 @@ export const getUserProfile = async (req, res, next) => {
 };
 
 export const updateUserProfile = async (req, res, next) => {
+    console.log(req.user._id);
     if (req.user._id !== req.params.userId) {
         return next(errorHandler(403, 'Unauthorized'));
     }

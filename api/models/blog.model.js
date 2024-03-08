@@ -32,9 +32,16 @@ const blogSchema = new mongoose.Schema(
             type: String,
             default: 'uncategorized',
         },
-        liked: {
-            type: Number,
-            default: 0,
+        likes: {
+            type: [
+                {
+                    userId: {
+                        type: Schema.Types.ObjectId,
+                        ref: 'User',
+                    },
+                },
+            ],
+            default: [],
         },
         viewed: {
             type: Number,
@@ -48,6 +55,10 @@ const blogSchema = new mongoose.Schema(
     },
     { timestamps: true },
 );
+
+blogSchema.virtual('likeCount').get(function () {
+    return this.likes.length;
+});
 
 const Blog = mongoose.model('Blog', blogSchema);
 

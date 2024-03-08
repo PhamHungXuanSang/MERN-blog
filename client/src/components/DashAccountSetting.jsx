@@ -27,11 +27,6 @@ export default function DashAccountSetting() {
             } else if (res.status === 200) {
                 dispatch(deleteUserSuccess());
                 navigate('/sign-in');
-            } else if (res.status === 201) {
-                const returnToken = data;
-                document.cookie = `access_token=${returnToken.newToken}`;
-                document.cookie = `refresh_token=${returnToken.refToken}`;
-                handleDeleteAccount();
             } else if (data.success === false) {
                 dispatch(deleteUserFailure(data.message));
                 return;

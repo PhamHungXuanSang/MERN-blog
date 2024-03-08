@@ -26,11 +26,11 @@ export default function BlogAction() {
                         <button className="w-10 h-10 rounded-full flex items-center justify-center dark:bg-gray-700 bg-gray-300">
                             <FaCommentDots />
                         </button>
-                        {/* <p className="text-xl">{blog.liked}</p> */}
+                        {/* <p className="text-xl">{blog.comment}</p> */}
                     </div>
 
-                    {blog.authorId._id == currentUser._id && (
-                        <Link to={`/editor/${blog._id}`}>
+                    {blog.authorId._id == currentUser?._id && (
+                        <Link to={`/editor/${blog.slug}`}>
                             <Button gradientDuoTone="greenToBlue" outline>
                                 Edit blog
                             </Button>

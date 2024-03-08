@@ -1,11 +1,12 @@
 import { Spinner } from 'flowbite-react';
 import { createContext, useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import BlogAction from '../components/BlogAction';
 import blogStructure from '../context/blog/blogStructure.js';
 import BlogSuggested from '../components/BlogSuggested.jsx';
 import OneByOneAppearEffect from '../components/OneByOneAppearEffect.jsx';
 import ContentItem from '../components/ContentItem.jsx';
+import formatDate from '../utils/formatDate.js';
 
 export const BlogContext = createContext({});
 
@@ -13,12 +14,16 @@ export default function ReadBlog() {
     let { slug } = useParams();
     const [blog, setBlog] = useState(blogStructure);
     const [suggest, setSuggest] = useState(null);
+    const navigate = useNavigate();
 
     const handleReadBlog = async () => {
         try {
             const res = await fetch(`/api/blog/read-blog/${slug}`, {
                 method: 'GET',
             });
+            if (res.status == 400) {
+                navigate('*');
+            }
             const data = await res.json();
             const res2 = await fetch(
                 `/api/search/${data.blog.tags[0]}?page=1&&limit=2&&currentSlug=${data.blog.slug}`,
@@ -33,7 +38,6 @@ export default function ReadBlog() {
             console.log(error);
         }
     };
-    console.log(blog);
 
     useEffect(() => {
         setBlog(blogStructure);
@@ -41,45 +45,19 @@ export default function ReadBlog() {
         handleReadBlog();
     }, [slug]);
 
-    const formatDate = (dateString) => {
-        const options = { timeZone: 'Asia/Ho_Chi_Minh' };
-        const formattedDate = new Date(dateString).toLocaleDateString('en-US', options);
-        const date = new Date(formattedDate);
-        const day = date.getDate();
-        const monthIndex = date.getMonth();
-        const year = date.getFullYear();
-
-        const months = [
-            'January',
-            'February',
-            'March',
-            'April',
-            'May',
-            'June',
-            'July',
-            'August',
-            'September',
-            'October',
-            'November',
-            'December',
-        ];
-
-        return `${day < 10 ? '0' + day : day} ${months[monthIndex]} ${year}`;
-    };
-
     return (
         <section>
             {blog.title.length && blog != null ? (
                 <BlogContext.Provider value={{ blog, setBlog }}>
                     <div className="max-w-[900px] block mx-auto py-10 max-lg:px-[5vw]">
-                        <img src={blog.thumb} className="aspect-video object-cover rounded" />
+                        <img src={blog.thumb} className="aspect-video object-cover rounded mx-auto" />
                         <div className="mt-12">
                             <h1 className="text-3xl text-center font-medium">{blog.title}</h1>
                             <div className="flex max-sm:flex-col justify-between my-8">
                                 <div className="flex gap-5 items-start">
                                     <img src={blog.authorId.userAvatar} className="w-12 h-12 rounded-full" />
                                     <div>
-                                        <Link to={`/user/${blog.username}`}>@{blog.authorId.username}</Link>
+                                        <Link to={`/user/${blog.authorId.username}`}>@{blog.authorId.username}</Link>
                                         <br />
                                         <i>{blog.authorId.email}</i>
                                     </div>
@@ -108,7 +86,7 @@ export default function ReadBlog() {
 
                         {suggest != null && suggest.length ? (
                             <>
-                                <h1 className="text-2xl mt-14 mb-10 font-medium">Suggested articles</h1>
+                                <h1 className="text-2xl mt-32 mb-10 font-medium text-center">Suggested articles</h1>
                                 <div className="flex flex-wrap gap-5 mt-4 justify-center">
                                     {suggest.map((blog, i) => (
                                         <OneByOneAppearEffect transition={{ duration: 1, delay: i * 0.1 }} key={i}>

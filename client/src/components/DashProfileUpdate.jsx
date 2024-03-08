@@ -116,12 +116,8 @@ export default function DashProfileUpdate() {
                 navigate('/sign-in');
             } else if (res.status === 200) {
                 dispatch(updateUserProfileSuccess(dataUpdated));
-            } else if (res.status === 201) {
-                const returnToken = dataUpdated;
-                document.cookie = `access_token=${returnToken.newToken}`;
-                document.cookie = `refresh_token=${returnToken.refToken}`;
-                handleSubmitUpdateUserProfile();
-            } else if (dataUpdated.success === false) {
+            }
+            else if (dataUpdated.success === false) {
                 dispatch(updateUserProfileFailure(dataUpdated.message));
                 return;
             }

@@ -87,12 +87,6 @@ export default function PublishForm() {
                 setTimeout(() => {
                     navigate(`/blog/${rs.slug}`);
                 }, 500);
-            } else if (res.status === 201) {
-                toast.dismiss(loadingToast);
-                const returnToken = rs;
-                document.cookie = `access_token=${returnToken.newToken}`;
-                document.cookie = `refresh_token=${returnToken.refToken}`;
-                handlePublishBlog();
             } else if (rs.success === false) {
                 toast.dismiss(loadingToast);
                 setLoading(false);

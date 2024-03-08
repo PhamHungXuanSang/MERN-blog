@@ -15,24 +15,93 @@ export default function BlogEditor() {
 
     let {
         blog,
-        blog: { authorId, title, description, content, tags, thumb, category, liked, viewed, slug },
+        blog: { title, content, thumb },
         setBlog,
         setEditorState,
-        textEditor,
+        textEditor, // Cái này là cái promise được sinh ra khi dùng new EditorJS (nếu có nó chứng tỏ đã có viết blog trước đó rồi)
         setTextEditor,
     } = useContext(EditorContext);
 
     useEffect(() => {
-        setTextEditor(
-            new EditorJS({
-                holder: 'textEditor',
-                data: content,
-                inlineToolbar: ['link', 'marker', 'bold', 'italic'],
-                tools: tools,
-                placeholder: 'Write your new blog ...',
-            }),
-        );
+        if (blog.slug || textEditor.isReady) {
+            console.log('Edit blog');
+            setTextEditor(
+                new EditorJS({
+                    holder: 'textEditor',
+                    data: Array.isArray(content) ? content[0] : content,
+                    inlineToolbar: ['link', 'marker', 'bold', 'italic'],
+                    tools: tools,
+                    placeholder: 'Write your new blog ...',
+                }),
+            );
+        } else {
+            console.log('Tạo mới blog');
+            setTextEditor(
+                new EditorJS({
+                    holder: 'textEditor',
+                    inlineToolbar: ['link', 'marker', 'bold', 'italic'],
+                    tools: tools,
+                    placeholder: 'Write your new blog ...',
+                }),
+            );
+        }
     }, []);
+
+    // useEffect(() => {
+    //     console.log(textEditor.isReady);
+
+    //     // Nếu blog.slug == "" và textEditor.isReady == false => tạo bài viết mới
+    //     // Nếu blog.slug khác rỗng và textEditor.isReady là 1 promise => đang ở mode edit lại blog đã có
+
+    //     //if (!textEditor.isReady) {
+    //     // setTextEditor(
+    //     //     new EditorJS({
+    //     //         holder: 'textEditor',
+    //     //         //data: Array.isArray(content) ? content[0] : content,
+    //     //         // data: {
+    //     //         //     time: 1552744582955,
+    //     //         //     blocks: [
+    //     //         //         {
+    //     //         //             type: 'paragraph',
+    //     //         //             data: {
+    //     //         //                 text: 'https://cdn.pixabay.com/photo/2017/09/01/21/53/blue-2705642_1280.jpg',
+    //     //         //             },
+    //     //         //         },
+    //     //         //     ],
+    //     //         //     version: '2.11.10',
+    //     //         // },
+    //     //         data: null,
+    //     //         inlineToolbar: ['link', 'marker', 'bold', 'italic'],
+    //     //         tools: tools,
+    //     //         placeholder: 'Write your new blog ...',
+    //     //     }),
+    //     // );
+    //     //} else {
+    //     setTextEditor(
+    //         new EditorJS({
+    //             holder: 'textEditor',
+    //             data: Array.isArray(content) && content.length > 0 ? content[0] : content,
+    //             inlineToolbar: ['link', 'marker', 'bold', 'italic'],
+    //             tools: tools,
+    //             placeholder: 'Write your new blog ...',
+    //         }),
+    //     );
+    //     //}
+    // }, [blog]);
+
+    // useEffect(() => {
+    //     console.log('HAHAHHAHAHA');
+    //     console.log(blog.content[0]);
+    //     setTextEditor(
+    //         new EditorJS({
+    //             holder: 'textEditor',
+    //             data: Array.isArray(content) && content.length > 0 ? content[0] : content,
+    //             inlineToolbar: ['link', 'marker', 'bold', 'italic'],
+    //             tools: tools,
+    //             placeholder: 'Write your new blog ...',
+    //         }),
+    //     );
+    // }, [blog]);
 
     const handleImageChange = (e) => {
         const file = e.target.files[0];
@@ -107,6 +176,7 @@ export default function BlogEditor() {
                 })
                 .catch((error) => {
                     console.log(error);
+                    return toast.error('Do not leave blank spaces at the end of the article');
                 });
         }
     };
@@ -117,55 +187,11 @@ export default function BlogEditor() {
                 <Textarea
                     defaultValue={title}
                     placeholder="Blog Title"
-                    className="text-3xl text-center font-medium w-full h-16 outline-none resize-none placeholder:opacity-40 mx-auto w-[60%]"
+                    className="text-3xl text-center font-medium h-16 outline-none resize-none placeholder:opacity-40 mx-auto w-[60%]"
                     onKeyDown={handleTitleKeyDown}
                     onChange={handleTitleChange}
                 ></Textarea>
                 <div className="mx-auto mt-4 w-[60%]">
-                    {/* <div className="relative aspect-video hover:opacity-80 bg-white border-4 border-[lightgray]"> */}
-                    {/* <input
-                        type="file"
-                        accept="image/*"
-                        className="hidden"
-                        ref={hiddenElementRef}
-                        onChange={handleImageChange}
-                    ></input> */}
-                    {/* <div className="relative w-[100%] h-[100%] self-center cursor-pointer shadow-md overflow-hidden">
-                            {imageFileUploadProgress && (
-                                <CircularProgressbar
-                                    value={imageFileUploadProgress || 0}
-                                    text={`${imageFileUploadProgress}%`}
-                                    strokeWidth={5}
-                                    styles={{
-                                        root: {
-                                            width: '32px',
-                                            height: '32px',
-                                            position: 'absolute',
-                                            top: 0,
-                                            left: 0,
-                                        },
-                                        path: { stroke: `rgba(62, 152, 199, ${imageFileUploadProgress / 100})` },
-                                    }}
-                                />
-                            )}
-                            <img
-                                id="blogThumbnail"
-                                ref={targetRef}
-                                onClick={() => hiddenElementRef.current.click()}
-                                src={
-                                    imageFileUrl ||
-                                    'https://noahlegend.com.vn/wp-content/themes/thrive-theme/architect/editor/css/images/featured_image.png'
-                                }
-                                alt="Ảnh blog thumbnail"
-                                className={`w-full h-full object-cover border-[lightgray] ${imageFileUploadProgress && imageFileUploadProgress < 100 && 'opacity-60'}`}
-                            />
-                        </div>
-                        {imageFileUploadError && (
-                            <Alert className="w-full" color="failure">
-                                {imageFileUploadError}
-                            </Alert>
-                        )} */}
-
                     <Label
                         htmlFor="dropzone-file"
                         className="dark:hover:bg-bray-800 flex w-full aspect-auto cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 hover:bg-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:border-gray-500 dark:hover:bg-gray-600"
@@ -219,7 +245,6 @@ export default function BlogEditor() {
                             {imageFileUploadError}
                         </Alert>
                     )}
-                    {/* </div> */}
                 </div>
                 <hr className="w-full opacity-10 my-5" />
                 <div id="textEditor" className="w-full"></div>

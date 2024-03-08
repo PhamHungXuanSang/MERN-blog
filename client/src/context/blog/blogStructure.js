@@ -4,7 +4,7 @@ export default {
     description: '',
     content: [],
     tags: [],
-    thumb: '',
+    //thumb: '',
     category: '',
     liked: 0,
     viewed: 0,

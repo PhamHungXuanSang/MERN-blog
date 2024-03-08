@@ -12,6 +12,7 @@ import Search from './pages/Search';
 import PageNotFound from './pages/PageNotFound';
 import UserProfile from './pages/UserProfile';
 import ReadBlog from './pages/ReadBlog';
+import Editor from './pages/Editor';
 
 export default function App() {
     return (
@@ -28,6 +29,7 @@ export default function App() {
                 <Route path="/search/:query" element={<Search />} />
                 <Route path="/user/:username" element={<UserProfile />} />
                 <Route path="/blog/:slug" element={<ReadBlog />} />
+                <Route path="/editor/:slug" element={<Editor />} />
                 <Route path="*" element={<PageNotFound />} />
             </Routes>
             <Footer />
