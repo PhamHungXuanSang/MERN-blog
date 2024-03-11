@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import formatDate from '../utils/formatDate.js';
 
 export default function Blog({ content, author }) {
-    const { title, createdAt, description, tags, liked, thumb, slug } = content;
+    const { title, createdAt, description, tags, likeCount, thumb, slug } = content;
     const { userAvatar, username } = author;
 
     return (
@@ -27,7 +27,7 @@ export default function Blog({ content, author }) {
                     </span>
                     <div className="flex items-center gap-2">
                         <SlLike />
-                        <span>{liked}</span>
+                        <span>{likeCount}</span>
                     </div>
                 </div>
             </div>

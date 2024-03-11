@@ -21,9 +21,8 @@ export default function UserProfile() {
             const res = await fetch(`/api/user/profile/${username}?page=${currentPage}&&limit=${limit}`, {
                 method: 'GET',
             });
-            if (res.status == 400) {
-                // Khoong thaays username
-                navigate('*');
+            if (res.status == 404) {
+                return navigate('*');
             }
             const userProfile = await res.json();
             setUserProfile(userProfile.user);

@@ -34,12 +34,12 @@ export default function Editor() {
             if (res.status === 403) {
                 setLoading(false);
                 dispatch(signOutSuccess());
-                navigate('/sign-in');
+                return navigate('/sign-in');
             } else if (res.status === 200) {
                 setBlog(blogData.blog);
                 setLoading(false);
             } else if (res.status === 404) {
-                navigate('*');
+                return navigate('*');
             }
         } catch (error) {
             console.log(error.message);

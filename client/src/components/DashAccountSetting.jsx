@@ -23,10 +23,10 @@ export default function DashAccountSetting() {
             const data = await res.json();
             if (res.status === 403) {
                 dispatch(signOutSuccess());
-                navigate('/sign-in');
+                return navigate('/sign-in');
             } else if (res.status === 200) {
                 dispatch(deleteUserSuccess());
-                navigate('/sign-in');
+                return navigate('/sign-in');
             } else if (data.success === false) {
                 dispatch(deleteUserFailure(data.message));
                 return;

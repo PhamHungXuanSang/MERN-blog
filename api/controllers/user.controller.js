@@ -7,7 +7,7 @@ export const getUserProfile = async (req, res, next) => {
     const username = req.params.username;
     const user = await User.findOne({ username }).select('-password');
     if (!user) {
-        return next(errorHandler(400, 'User not found'));
+        return next(errorHandler(404, 'User not found'));
     }
     try {
         const page = req.query.page;

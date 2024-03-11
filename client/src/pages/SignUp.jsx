@@ -46,7 +46,7 @@ export default function SignUp() {
                 return;
             }
             if (res.ok) {
-                navigate('/sign-in');
+                return navigate('/sign-in');
             }
         } catch (err) {
             setLoading(false);

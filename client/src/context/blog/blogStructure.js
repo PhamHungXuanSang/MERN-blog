@@ -5,8 +5,9 @@ export default {
     content: [],
     tags: [],
     //thumb: '',
-    category: '',
-    liked: 0,
+    //category: '',
+    likeCount: 0,
+    rating: [],
     viewed: 0,
     slug: '',
 };

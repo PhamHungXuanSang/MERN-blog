@@ -14,9 +14,19 @@ import UserProfile from './pages/UserProfile';
 import ReadBlog from './pages/ReadBlog';
 import Editor from './pages/Editor';
 
+import { socket } from './utils/socket.js';
+import ScrollToTop from './components/ScrollToTop.jsx';
+socket.on('push-like-noti', (data) => {
+    console.log(data);
+});
+socket.on('push-rating-noti', (data) => {
+    console.log(data);
+});
+
 export default function App() {
     return (
         <BrowserRouter>
+            <ScrollToTop />
             <Header />
             <Routes>
                 <Route path="/" element={<Home />} />

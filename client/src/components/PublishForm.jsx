@@ -16,7 +16,7 @@ export default function PublishForm() {
 
     let {
         blog,
-        blog: { authorId, title, description, content, tags, thumb, category, liked, viewed, slug },
+        blog: { authorId, title, description, content, tags, thumb, category, likes, viewed, slug },
         setBlog,
         setEditorState,
     } = useContext(EditorContext);
@@ -80,7 +80,7 @@ export default function PublishForm() {
             if (res.status === 403) {
                 toast.dismiss(loadingToast);
                 dispatch(signOutSuccess());
-                navigate('/sign-in');
+                return navigate('/sign-in');
             } else if (res.status === 200) {
                 toast.dismiss(loadingToast);
                 toast.success('Published 👍');
@@ -112,7 +112,7 @@ export default function PublishForm() {
                     <p className="line-clamp-2 text-xl leading-7 mt-4">{description}</p>
                 </div>
                 <div className="border-grey lg:border-1 lg:pl-8">
-                    <p className="text-dark-grey mb-2 mt-4">Blog Title</p>
+                    <p className="mb-2 mt-4">Blog Title</p>
                     <TextInput
                         onChange={handleTitleChange}
                         type="text"
@@ -121,7 +121,7 @@ export default function PublishForm() {
                         className="w-[100%] rounded-md p-4 bg-grey pl-12 border border-grey focus:bg-transparent pl-4"
                     />
 
-                    <p className="text-dark-grey mb-2 mt-9">Description about your blog</p>
+                    <p className="mb-2 mt-9">Description about your blog</p>
                     <Textarea
                         onChange={handleDescriptionChange}
                         onKeyDown={handleTitleKeyDown}
@@ -132,7 +132,7 @@ export default function PublishForm() {
                         className="h-40 resize-none leading-7 w-[100%] rounded-md p-4 bg-grey pl-12 border border-grey focus:bg-transparent pl-4"
                     />
                     <i className="block text-gray-500 text-sm text-right">{200 - description.length} characters left</i>
-                    <p className="text-dark-grey mb-2 mt-9">Topics - Usefull for searching your blog</p>
+                    <p className="mb-2 mt-9">Topics - Usefull for searching your blog</p>
 
                     <div className="relative w-[100%] rounded-md p-4 bg-grey pl-12 border border-grey focus:bg-transparent pl-2 py-2 pb-4">
                         <input

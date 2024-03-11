@@ -1,4 +1,4 @@
-import { Spinner } from 'flowbite-react';
+import { Rating, Spinner } from 'flowbite-react';
 import { createContext, useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import BlogAction from '../components/BlogAction';
@@ -7,13 +7,19 @@ import BlogSuggested from '../components/BlogSuggested.jsx';
 import OneByOneAppearEffect from '../components/OneByOneAppearEffect.jsx';
 import ContentItem from '../components/ContentItem.jsx';
 import formatDate from '../utils/formatDate.js';
+import { useSelector } from 'react-redux';
+import StarRating from '../components/StarRating.jsx';
+import CommentsContainer from '../components/CommentsContainer.jsx';
 
 export const BlogContext = createContext({});
 
 export default function ReadBlog() {
     let { slug } = useParams();
     const [blog, setBlog] = useState(blogStructure);
+    const currentUser = useSelector((state) => state.user.currentUser);
     const [suggest, setSuggest] = useState(null);
+    const [commentsWrapper, setCommentsWrapper] = useState(true);
+    const [totalParentCommentsLoaded, setTotalParentCommentsLoaded] = useState(0);
     const navigate = useNavigate();
 
     const handleReadBlog = async () => {
@@ -21,8 +27,8 @@ export default function ReadBlog() {
             const res = await fetch(`/api/blog/read-blog/${slug}`, {
                 method: 'GET',
             });
-            if (res.status == 400) {
-                navigate('*');
+            if (res.status == 404) {
+                return navigate('*');
             }
             const data = await res.json();
             const res2 = await fetch(
@@ -40,15 +46,49 @@ export default function ReadBlog() {
     };
 
     useEffect(() => {
+        if (blog.title.length) {
+            setBlog(blog);
+            return;
+        }
         setBlog(blogStructure);
         setSuggest(null);
         handleReadBlog();
-    }, [slug]);
+    }, [slug, blog]);
+
+    const handleGetAvgRating = () => {
+        let sum = 0;
+        blog.rating.forEach((rate) => (sum += rate.star));
+        return sum / blog.rating.length;
+    };
+
+    const handleGetRatingOfXStar = (star) => {
+        const totalRatingCount = blog.rating.length;
+
+        let totalXStar = 0;
+        blog.rating.forEach((rate) => {
+            if (rate.star == star) {
+                totalXStar += 1;
+            }
+        });
+        const percent = (totalXStar / totalRatingCount) * 100;
+
+        return { star, percent };
+    };
 
     return (
         <section>
             {blog.title.length && blog != null ? (
-                <BlogContext.Provider value={{ blog, setBlog }}>
+                <BlogContext.Provider
+                    value={{
+                        blog,
+                        setBlog,
+                        commentsWrapper,
+                        setCommentsWrapper,
+                        totalParentCommentsLoaded,
+                        setTotalParentCommentsLoaded,
+                    }}
+                >
+                    <CommentsContainer />
                     <div className="max-w-[900px] block mx-auto py-10 max-lg:px-[5vw]">
                         <img src={blog.thumb} className="aspect-video object-cover rounded mx-auto" />
                         <div className="mt-12">
@@ -82,6 +122,41 @@ export default function ReadBlog() {
                             })
                         ) : (
                             <Spinner className="block mx-auto mt-4" size="md" />
+                        )}
+
+                        {/* Rating blog */}
+                        {currentUser && !blog.rating.some((item) => item.userId == currentUser._id) && (
+                            <StarRating currentUser={currentUser} blogInfo={blog} />
+                        )}
+                        {blog.rating.length ? (
+                            <>
+                                <Rating className="mb-2">
+                                    <Rating.Star />
+                                    <Rating.Star />
+                                    <Rating.Star />
+                                    <Rating.Star />
+                                    <Rating.Star filled={false} />
+                                    <p className="ml-2 text-sm font-medium text-gray-500 dark:text-gray-400">
+                                        {handleGetAvgRating()} out of 5
+                                    </p>
+                                </Rating>
+                                <p className="mb-4 text-sm font-medium text-gray-500 dark:text-gray-400">
+                                    {blog.rating.length} global ratings
+                                </p>
+                                {[5, 4, 3, 2, 1].map((star, index) => {
+                                    return (
+                                        <Rating.Advanced
+                                            key={index}
+                                            percentFilled={handleGetRatingOfXStar(star).percent}
+                                            className="mb-2"
+                                        >
+                                            {star} star
+                                        </Rating.Advanced>
+                                    );
+                                })}
+                            </>
+                        ) : (
+                            ''
                         )}
 
                         {suggest != null && suggest.length ? (

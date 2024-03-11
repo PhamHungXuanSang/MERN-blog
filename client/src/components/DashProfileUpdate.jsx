@@ -113,7 +113,7 @@ export default function DashProfileUpdate() {
             const dataUpdated = await res.json();
             if (res.status === 403) {
                 dispatch(signOutSuccess());
-                navigate('/sign-in');
+                return navigate('/sign-in');
             } else if (res.status === 200) {
                 dispatch(updateUserProfileSuccess(dataUpdated));
             }

@@ -1,11 +1,6 @@
 import Blog from '../models/blog.model.js';
 import { errorHandler } from '../utils/error.js';
-
-// export const allblogByUserId = async (req, res, next) => {
-//     const blogs = await Blog.find({ authorId: req.params.username });
-
-//     res.json(blogs);
-// };
+import { io, userSockets } from '../index.js';
 
 export const latestBlogs = async (req, res, next) => {
     try {
@@ -27,7 +22,7 @@ export const trendingBlogs = async (req, res, next) => {
     try {
         const trendingBlogs = await Blog.find({})
             .populate('authorId', '_id username email userAvatar')
-            .sort({ viewed: -1, liked: -1, createdAt: -1 })
+            .sort({ viewed: -1, likeCount: -1, createdAt: -1 })
             .limit(5);
         res.status(200).json(trendingBlogs);
     } catch (error) {
@@ -118,7 +113,58 @@ export const readBlog = async (req, res, next) => {
             '_id username email userAvatar',
         );
         if (!blog) {
-            return next(errorHandler(400, 'Blog not found'));
+            return next(errorHandler(404, 'Blog not found'));
+        }
+        res.status(200).json({ blog });
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const updateLikeBlog = async (req, res, next) => {
+    let userId = req.params.userId;
+    let blogId = req.body._id;
+    try {
+        let blog = await Blog.findById(blogId).populate('authorId', '_id username email userAvatar');
+        let index = blog.likes.indexOf(userId);
+        if (index > -1) {
+            blog.likes.splice(index, 1);
+        } else {
+            blog.likes.push(userId);
+        }
+        blog = await blog.save();
+        const authorId = blog.authorId._id ? blog.authorId._id.toString() : null;
+        const socketId = userSockets.get(authorId.toString());
+        if (socketId) {
+            io.to(socketId).emit('push-like-noti', `User ${userId} đã thích bài viết của bạn`);
+        }
+        res.status(200).json({ blog });
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const ratingBlog = async (req, res, next) => {
+    let blogId = req.params.blogId;
+    let userId = req.params.userId;
+    let ratingStar = req.body.rating;
+
+    try {
+        const blog = await Blog.findByIdAndUpdate(
+            blogId,
+            {
+                $push: { rating: { userId, star: ratingStar } },
+            },
+            { new: true },
+        ).populate('authorId', '_id username email userAvatar');
+
+        if (!blog) {
+            return next(errorHandler(404, 'Blog not found'));
+        }
+        const authorId = blog.authorId._id ? blog.authorId._id.toString() : null;
+        const socketId = userSockets.get(authorId.toString());
+        if (socketId) {
+            io.to(socketId).emit('push-rating-noti', `User ${userId} đã đánh giá ${ratingStar} cho bài viết ${blog._id}`);
         }
         res.status(200).json({ blog });
     } catch (error) {

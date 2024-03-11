@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import formatDate from '../utils/formatDate.js';
 
 export default function BlogMini({ content, author, index }) {
-    const { title, createdAt, description, tags, liked, thumb, slug } = content;
+    const { title, createdAt, description, tags, likeCount, thumb, slug } = content;
     const { userAvatar, username } = author;
 
     return (

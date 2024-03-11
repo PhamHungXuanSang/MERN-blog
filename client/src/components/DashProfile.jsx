@@ -23,7 +23,7 @@ export default function DashProfile() {
                 });
                 if (res.status === 403) {
                     dispatch(signOutSuccess());
-                    navigate('/sign-in');
+                    return navigate('/sign-in');
                 } else if (res.status === 200) {
                     setDashProfile(await res.json());
                 }

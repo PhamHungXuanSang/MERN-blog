@@ -8,6 +8,8 @@ import { signOutSuccess } from '../redux/user/userSlice.js';
 import { darkModeToogle } from '../redux/theme/themeSlice.js';
 import { useDispatch, useSelector } from 'react-redux';
 
+import { socket } from '../utils/socket.js';
+
 export default function Header() {
     const path = useLocation().pathname;
     const currentUser = useSelector((state) => state.user.currentUser);
@@ -24,8 +26,9 @@ export default function Header() {
             if (!res.ok) {
                 console.log(data.message);
             } else {
+                socket.emit('sign-out', currentUser._id.toString());
                 dispatch(signOutSuccess());
-                navigate('/sign-in');
+                return navigate('/sign-in');
             }
         } catch (error) {
             console.log(error);

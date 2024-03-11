@@ -4,13 +4,14 @@ const blogSchema = new mongoose.Schema(
     {
         authorId: {
             type: Schema.Types.ObjectId,
-            require: true,
+            required: true,
             ref: 'User',
         },
         title: {
             type: String,
             required: true,
             unique: true,
+            trim: true,
         },
         description: {
             type: String,
@@ -33,15 +34,15 @@ const blogSchema = new mongoose.Schema(
             default: 'uncategorized',
         },
         likes: {
+            type: [],
+        },
+        rating: {
             type: [
                 {
-                    userId: {
-                        type: Schema.Types.ObjectId,
-                        ref: 'User',
-                    },
+                    userId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+                    star: { type: Number, required: true, min: 1, max: 5 },
                 },
             ],
-            default: [],
         },
         viewed: {
             type: Number,
@@ -51,6 +52,7 @@ const blogSchema = new mongoose.Schema(
             type: String,
             required: true,
             unique: true,
+            trim: true,
         },
     },
     { timestamps: true },
@@ -59,6 +61,8 @@ const blogSchema = new mongoose.Schema(
 blogSchema.virtual('likeCount').get(function () {
     return this.likes.length;
 });
+
+blogSchema.set('toJSON', { virtuals: true });
 
 const Blog = mongoose.model('Blog', blogSchema);
 

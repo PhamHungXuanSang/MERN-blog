@@ -4,17 +4,17 @@ const commentSchema = new mongoose.Schema(
     {
         blogId: {
             type: Schema.Types.ObjectId,
-            require: true,
+            required: true,
             ref: 'Blog',
         },
         authorId: {
             type: Schema.Types.ObjectId,
-            require: true,
+            required: true,
             ref: 'User',
         },
         content: {
             type: String,
-            require: true,
+            required: true,
         },
         likes: {
             type: [
