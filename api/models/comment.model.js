@@ -7,25 +7,27 @@ const commentSchema = new mongoose.Schema(
             required: true,
             ref: 'Blog',
         },
-        authorId: {
+        blogAuthor: {
+            type: Schema.Types.ObjectId,
+            required: true,
+            ref: 'Blog',
+        },
+        commentedBy: {
             type: Schema.Types.ObjectId,
             required: true,
             ref: 'User',
         },
-        content: {
-            type: String,
-            required: true,
-        },
+        isReply: { type: Boolean, default: false },
+        content: { type: String, required: true },
+        parent: { type: Schema.Types.ObjectId, ref: 'comments' },
+        children: { type: [Schema.Types.ObjectId], ref: 'comments' },
         likes: {
-            type: [
-                {
-                    userId: {
-                        type: Schema.Types.ObjectId,
-                        ref: 'User',
-                    },
-                },
-            ],
+            type: Array,
             default: [],
+        },
+        numberOfLikes: {
+            type: Number,
+            default: 0,
         },
     },
     { timestamps: true },

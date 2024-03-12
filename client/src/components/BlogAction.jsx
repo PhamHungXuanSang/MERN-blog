@@ -71,7 +71,7 @@ export default function BlogAction() {
                         >
                             <FaCommentDots />
                         </button>
-                        {/* <p className="text-xl">{blog.comment}</p> */}
+                        <p className="text-xl">{blog.comments?.results?.length}</p>
                     </div>
 
                     {blog.authorId._id == currentUser?._id && (

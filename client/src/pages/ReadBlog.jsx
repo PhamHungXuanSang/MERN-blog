@@ -9,7 +9,7 @@ import ContentItem from '../components/ContentItem.jsx';
 import formatDate from '../utils/formatDate.js';
 import { useSelector } from 'react-redux';
 import StarRating from '../components/StarRating.jsx';
-import CommentsContainer from '../components/CommentsContainer.jsx';
+import CommentsContainer, { fetchComments } from '../components/CommentsContainer.jsx';
 
 export const BlogContext = createContext({});
 
@@ -38,6 +38,11 @@ export default function ReadBlog() {
                 },
             );
             const data2 = await res2.json();
+            console.log(data.blog);
+            data.blog.comments = await fetchComments({
+                blogId: data.blog._id,
+                setParentCommentCountFun: setTotalParentCommentsLoaded,
+            });
             setBlog(data.blog);
             setSuggest(data2.blogs);
         } catch (error) {

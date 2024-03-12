@@ -30,7 +30,6 @@ export const getUserProfile = async (req, res, next) => {
 };
 
 export const updateUserProfile = async (req, res, next) => {
-    console.log(req.user._id);
     if (req.user._id !== req.params.userId) {
         return next(errorHandler(403, 'Unauthorized'));
     }
@@ -98,15 +97,6 @@ export const deleteAccount = async (req, res, next) => {
     }
 
     try {
-        // const user = await User.findById(req.params.userId);
-        // if (!user) {
-        //     return next(errorHandler(404, 'User not found'));
-        // }
-        // await user.delete();
-        // res.clearCookie('access_token');
-        // res.clearCookie('refresh_token');
-        // res.status(200).json('User has been deleted');
-
         const refreshToken = req.cookies.refresh_token;
         await RefreshToken.deleteOne({ refreshToken });
 
@@ -131,43 +121,3 @@ export const signout = async (req, res, next) => {
         next(error);
     }
 };
-
-// export const refreshToken = async (req, res, next) => {
-//     const cookies = req.headers.cookie;
-//     if (!cookies) {
-//         return res.sendStatus(401); // Unauthorized if no cookies provided
-//     }
-
-//     var prevRefreshToken = cookies.split(';').find((cookie) => cookie.trim().startsWith('refresh_token='));
-//     if (!prevRefreshToken) {
-//         return res.sendStatus(401); // Unauthorized if no token cookie found
-//     }
-//     prevRefreshToken = prevRefreshToken.split('=')[1].trim();
-
-//     const refreshToken = await RefreshToken.findOne({ refreshToken: prevRefreshToken });
-//     if (refreshToken === null) {
-//         return res.sendStatus(403);
-//     }
-//     await RefreshToken.deleteOne({ refreshToken: prevRefreshToken });
-
-//     jwt.verify(prevRefreshToken, process.env.JWT_REFRESH_SECRET, (err, decodedToken) => {
-//         if (err) {
-//             return res.sendStatus(403);
-//         }
-//         const { iat, exp, ...rest } = decodedToken;
-//         const token = jwt.sign(rest, process.env.JWT_SECRET, { expiresIn: 1 * 60 });
-
-//         //res.cookie('access_token', token, { httpOnly: true });
-//         const refToken = jwt.sign(rest, process.env.JWT_REFRESH_SECRET, { expiresIn: 1 * 60 * 1440 });
-//         const newRefreshToken = new RefreshToken({
-//             refreshToken: refToken,
-//         });
-//         try {
-//             newRefreshToken.save();
-//         } catch (error) {
-//             next(error);
-//         }
-//         //res.cookie('refresh_token', refToken, { httpOnly: true });
-//         res.status(200).json({ token, refToken });
-//     });
-// };
