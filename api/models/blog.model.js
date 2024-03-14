@@ -66,6 +66,10 @@ blogSchema.virtual('likeCount').get(function () {
     return this.likes.length;
 });
 
+blogSchema.virtual('commentCount').get(function () {
+    return this.comments.length;
+});
+
 blogSchema.set('toJSON', { virtuals: true });
 
 const Blog = mongoose.model('Blog', blogSchema);

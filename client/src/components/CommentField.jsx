@@ -4,10 +4,13 @@ import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import toast, { Toaster } from 'react-hot-toast';
 import { BlogContext } from '../pages/ReadBlog';
+import { fetchComments } from './CommentsContainer.jsx';
 
-export default function CommentField() {
+export default function CommentField({ action, index = undefined, replyingTo = undefined, setIsReplying }) {
     const currentUser = useSelector((state) => state.user.currentUser);
-    let { username, userAvatar, _id: userId } = currentUser;
+    if (currentUser) {
+        var { username, userAvatar, _id: userId } = currentUser;
+    }
     const [comment, setComment] = useState('');
 
     let {
@@ -19,7 +22,7 @@ export default function CommentField() {
             comments: { results: commentsArr },
         },
         setBlog,
-        setTotalParentCommentsLoaded,
+        //setTotalParentCommentsLoaded,
     } = useContext(BlogContext);
 
     const handleSubmit = async (e) => {
@@ -29,7 +32,7 @@ export default function CommentField() {
         }
 
         try {
-            let body = { _id, comment, blogAuthor: authorId._id, userId: currentUser._id };
+            let body = { _id, comment, blogAuthor: authorId._id, userId: currentUser._id, replyingTo: replyingTo };
             const res = await fetch(`/api/comment/add-comment`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -37,19 +40,27 @@ export default function CommentField() {
             });
             let data = await res.json();
             data = data._doc;
-            //console.log(data);
             setComment('');
-            data.commentedBy = { username, userAvatar, userId };
+            data.commentedBy = { username, userAvatar, _id: userId };
 
             let newCommentArr;
-            data.childrenLevel = 0;
-            newCommentArr = [data, ...commentsArr];
-            // console.log(data);
-            // console.log(commentsArr);
-            // console.log(newCommentArr);
-            setBlog({ ...blog, comments: { ...comments, results: newCommentArr } });
+            if (replyingTo) {
+                commentsArr[index].children.push(data._id);
+                data.childrenLevel = commentsArr[index].childrenLevel + 1;
+                data.parentIndex = index;
 
-            setTotalParentCommentsLoaded((preVal) => preVal + 1);
+                commentsArr[index].isReplyLoaded = true;
+                commentsArr.splice(index + 1, 0, data);
+                newCommentArr = commentsArr;
+                setIsReplying(false);
+            } else {
+                data.childrenLevel = 0;
+                newCommentArr = [data, ...commentsArr];
+            }
+            blog.commentCount = blog.commentCount + 1;
+            setBlog({ ...blog, comments: { ...comments, results: newCommentArr } });
+            //setTotalParentCommentsLoaded((preVal) => preVal + 1);
+            console.log()
         } catch (error) {
             console.log(error);
         }

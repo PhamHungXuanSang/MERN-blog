@@ -6,11 +6,19 @@ import { signOutSuccess } from '../redux/user/userSlice.js';
 import { useDispatch, useSelector } from 'react-redux';
 import { Button, Spinner } from 'flowbite-react';
 import { Link, useNavigate } from 'react-router-dom';
+import { fetchComments } from './CommentsContainer.jsx';
 
 export default function BlogAction() {
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    let { blog, setBlog, setCommentsWrapper } = useContext(BlogContext);
+    let {
+        blog,
+        setBlog,
+        setCommentsWrapper,
+        // blog: {
+        //     comments: { results: commentsArr },
+        // },
+    } = useContext(BlogContext);
     const [loading, setLoading] = useState(true);
     const [liked, setLiked] = useState(false);
     const currentUser = useSelector((state) => state.user.currentUser);
@@ -42,6 +50,11 @@ export default function BlogAction() {
                 dispatch(signOutSuccess());
                 return navigate('/sign-in');
             } else if (res.status === 200) {
+                let comments = await fetchComments({
+                    blogId: result.blog._id,
+                    //setParentCommentCountFun: setTotalParentCommentsLoaded,
+                });
+                result.blog.comments = comments;
                 setBlog(result.blog);
             }
         } catch (error) {
@@ -71,7 +84,7 @@ export default function BlogAction() {
                         >
                             <FaCommentDots />
                         </button>
-                        <p className="text-xl">{blog.comments?.results?.length}</p>
+                        <p className="text-xl">{blog.commentCount}</p>
                     </div>
 
                     {blog.authorId._id == currentUser?._id && (

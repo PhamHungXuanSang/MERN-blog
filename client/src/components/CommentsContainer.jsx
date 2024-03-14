@@ -3,7 +3,6 @@ import { BlogContext } from '../pages/ReadBlog';
 import { IoClose } from 'react-icons/io5';
 import CommentField from './CommentField';
 import NotFound from './NotFound';
-import MoveFromTopEffect from './MoveFromTopEffect';
 import CommentCard from './CommentCard';
 
 export const fetchComments = async ({ skip = 0, blogId, setParentCommentCountFun, commentArr = null }) => {
@@ -17,7 +16,7 @@ export const fetchComments = async ({ skip = 0, blogId, setParentCommentCountFun
     data.map((comment) => {
         comment.childrenLevel = 0;
     });
-    setParentCommentCountFun((preValue) => preValue + data.length);
+    //setParentCommentCountFun((preValue) => preValue + data.length);
     if (commentArr == null) {
         res = { results: data };
     } else {
@@ -35,6 +34,7 @@ export default function CommentsContainer() {
         commentsWrapper,
         setCommentsWrapper,
     } = useContext(BlogContext);
+
     return (
         <div
             className={
@@ -58,11 +58,7 @@ export default function CommentsContainer() {
 
             {commentsArr && commentsArr.length ? (
                 commentsArr.map((comment, i) => {
-                    return (
-                        <MoveFromTopEffect key={i}>
-                            <CommentCard index={i} leftVal={comment.childrenLevel * 4} commentData={comment} />
-                        </MoveFromTopEffect>
-                    );
+                    return <CommentCard key={i} index={i} leftVal={comment.childrenLevel * 4} commentData={comment} />;
                 })
             ) : (
                 <NotFound object={'No comments found'} />

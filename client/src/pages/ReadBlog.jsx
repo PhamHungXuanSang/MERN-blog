@@ -19,7 +19,7 @@ export default function ReadBlog() {
     const currentUser = useSelector((state) => state.user.currentUser);
     const [suggest, setSuggest] = useState(null);
     const [commentsWrapper, setCommentsWrapper] = useState(true);
-    const [totalParentCommentsLoaded, setTotalParentCommentsLoaded] = useState(0);
+    //const [totalParentCommentsLoaded, setTotalParentCommentsLoaded] = useState(0);
     const navigate = useNavigate();
 
     const handleReadBlog = async () => {
@@ -38,11 +38,12 @@ export default function ReadBlog() {
                 },
             );
             const data2 = await res2.json();
-            console.log(data.blog);
-            data.blog.comments = await fetchComments({
+            let comments = await fetchComments({
                 blogId: data.blog._id,
-                setParentCommentCountFun: setTotalParentCommentsLoaded,
+                //setParentCommentCountFun: setTotalParentCommentsLoaded,
             });
+            //console.log(comments);
+            data.blog.comments = comments;
             setBlog(data.blog);
             setSuggest(data2.blogs);
         } catch (error) {
@@ -50,15 +51,18 @@ export default function ReadBlog() {
         }
     };
 
+    // console.log(slug);
+    // console.log(blog);
     useEffect(() => {
-        if (blog.title.length) {
-            setBlog(blog);
-            return;
-        }
+        // if (blog.title.length) {
+        //     setBlog(blog);
+        //     return;
+        // }
         setBlog(blogStructure);
         setSuggest(null);
         handleReadBlog();
-    }, [slug, blog]);
+        //}, [slug, blog]);
+    }, [slug]);
 
     const handleGetAvgRating = () => {
         let sum = 0;
@@ -89,8 +93,8 @@ export default function ReadBlog() {
                         setBlog,
                         commentsWrapper,
                         setCommentsWrapper,
-                        totalParentCommentsLoaded,
-                        setTotalParentCommentsLoaded,
+                        //totalParentCommentsLoaded,
+                        //setTotalParentCommentsLoaded,
                     }}
                 >
                     <CommentsContainer />

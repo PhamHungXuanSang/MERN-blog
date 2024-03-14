@@ -31,6 +31,10 @@ const notiSchema = new mongoose.Schema(
             required: true,
             default: 'system',
         },
+        repliedOnComment: {
+            type: Schema.Types.ObjectId,
+            ref: 'Comment',
+        },
     },
     { timestamps: true },
 );
