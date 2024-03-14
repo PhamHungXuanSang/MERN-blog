@@ -19,8 +19,8 @@ const commentSchema = new mongoose.Schema(
         },
         isReply: { type: Boolean, default: false },
         content: { type: String, required: true },
-        parent: { type: Schema.Types.ObjectId, ref: 'comments' },
-        children: { type: [Schema.Types.ObjectId], ref: 'comments' },
+        parent: { type: Schema.Types.ObjectId, ref: 'Comment' },
+        children: { type: [Schema.Types.ObjectId], ref: 'Comment' },
         likes: {
             type: Array,
             default: [],

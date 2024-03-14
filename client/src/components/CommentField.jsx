@@ -4,7 +4,6 @@ import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import toast, { Toaster } from 'react-hot-toast';
 import { BlogContext } from '../pages/ReadBlog';
-import { fetchComments } from './CommentsContainer.jsx';
 
 export default function CommentField({ action, index = undefined, replyingTo = undefined, setIsReplying }) {
     const currentUser = useSelector((state) => state.user.currentUser);

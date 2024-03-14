@@ -69,3 +69,39 @@ export const getBlogComment = async (req, res, next) => {
         next(error);
     }
 };
+
+export const getBlogReplies = async (req, res, next) => {
+    let { _id, skip } = req.body;
+    let maxLimit = 5;
+
+    try {
+        const doc = await Comment.findOne({ _id })
+            .populate({
+                path: 'children',
+                option: {
+                    limit: maxLimit,
+                    skip: skip,
+                    sort: { updatedAt: -1 },
+                },
+                populate: {
+                    path: 'commentedBy',
+                    select: 'username userAvatar',
+                },
+                select: '-blogId',
+            })
+            .select('children');
+        return res.status(200).json({ replies: doc.children });
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const deleteComment = async (req, res, next) => {
+    let userId = req.user._id;
+    let { _id } = req.body;
+    const comment = await Comment.findOne({_id});
+    if (req.user.isAdmin == true || userId == comment.blogAuthor || userId == comment.commentedBy) {
+    } else {
+        return next(errorHandler(403, "You can't delete this comment"));
+    }
+};
