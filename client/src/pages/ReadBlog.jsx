@@ -18,7 +18,7 @@ export default function ReadBlog() {
     const [blog, setBlog] = useState(blogStructure);
     const currentUser = useSelector((state) => state.user.currentUser);
     const [suggest, setSuggest] = useState(null);
-    const [commentsWrapper, setCommentsWrapper] = useState(true);
+    const [commentsWrapper, setCommentsWrapper] = useState(false);
     //const [totalParentCommentsLoaded, setTotalParentCommentsLoaded] = useState(0);
     const navigate = useNavigate();
 

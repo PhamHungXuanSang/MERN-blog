@@ -34,6 +34,7 @@ export const addComment = async (req, res, next) => {
 
         let blog = await Blog.findOneAndUpdate({ _id }, { $push: { comments: newComment._id } });
 
+        // Nếu tác giả tự cmt vào bài viết của mình thì không tạo thông báo, nếu tác giả rep cmt của người khác thì thông báo cho người đó
         let newNotification = {
             type: replyingTo ? 'reply' : 'comment',
             blogId: _id,
@@ -50,7 +51,7 @@ export const addComment = async (req, res, next) => {
             newNotification.recipient = parentComment.commentedBy;
         }
         newNotification = await new Noti(newNotification).save();
-        //return res.status(200).json({ comment, commentedAt, _id: newComment._id, userId: commentedBy, children });
+
         return res.status(200).json({ ...newComment });
     } catch (error) {
         next(error);
@@ -78,7 +79,7 @@ export const getBlogReplies = async (req, res, next) => {
         const doc = await Comment.findOne({ _id })
             .populate({
                 path: 'children',
-                option: {
+                options: {
                     limit: maxLimit,
                     skip: skip,
                     sort: { updatedAt: -1 },
@@ -96,11 +97,40 @@ export const getBlogReplies = async (req, res, next) => {
     }
 };
 
+const deleteCommentAndNoti = (_id) => {
+    Comment.findOneAndDelete({ _id })
+        .then((comment) => {
+            // Nếu cmt này là children (reply) của một cmt khác
+            if (comment.parent) {
+                Comment.findOneAndUpdate({ _id: comment.parent }, { $pull: { children: _id } })
+                    .then((cmt) => {})
+                    .catch((error) => console.log(error));
+            }
+            // Noti.findOneAndDelete({ _id }) // Xóa cái thông báo về cmt
+            //     .then((noti) => console.log('comment or reply noti deleted: ' + noti))
+            //     .catch((error) => console.log(error));
+
+            Blog.findOneAndUpdate({ _id: comment.blogId }, { $pull: { comments: comment._id } }, { new: true }) // Xóa cái id của cmt lưu trong blog.comments
+                .then((blog) => {
+                    // Nếu cmt đang xóa có reply thì lặp qua xóa luôn các reply
+                    if (comment.children.length) {
+                        comment.children.map((replies) => {
+                            deleteCommentAndNoti(replies); // Gọi lại hàm deleteCommentAndNoti để thực hiện xóa các cmt là reply của cmt
+                        });
+                    }
+                })
+                .catch((error) => console.log(error));
+        })
+        .catch((error) => console.log(error));
+};
+
 export const deleteComment = async (req, res, next) => {
     let userId = req.user._id;
     let { _id } = req.body;
-    const comment = await Comment.findOne({_id});
+    const comment = await Comment.findOne({ _id });
     if (req.user.isAdmin == true || userId == comment.blogAuthor || userId == comment.commentedBy) {
+        deleteCommentAndNoti(_id);
+        return res.status(200).json({ status: 'OK' });
     } else {
         return next(errorHandler(403, "You can't delete this comment"));
     }

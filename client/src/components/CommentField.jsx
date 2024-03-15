@@ -1,11 +1,14 @@
 import { Button, Textarea } from 'flowbite-react';
 import { useContext, useState } from 'react';
-import { useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { Link, useNavigate } from 'react-router-dom';
 import toast, { Toaster } from 'react-hot-toast';
 import { BlogContext } from '../pages/ReadBlog';
+import { signOutSuccess } from '../redux/user/userSlice.js';
 
 export default function CommentField({ action, index = undefined, replyingTo = undefined, setIsReplying }) {
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
     const currentUser = useSelector((state) => state.user.currentUser);
     if (currentUser) {
         var { username, userAvatar, _id: userId } = currentUser;
@@ -38,6 +41,10 @@ export default function CommentField({ action, index = undefined, replyingTo = u
                 body: JSON.stringify(body),
             });
             let data = await res.json();
+            if (res.status === 403) {
+                dispatch(signOutSuccess());
+                return navigate('/sign-in');
+            }
             data = data._doc;
             setComment('');
             data.commentedBy = { username, userAvatar, _id: userId };
@@ -59,7 +66,6 @@ export default function CommentField({ action, index = undefined, replyingTo = u
             blog.commentCount = blog.commentCount + 1;
             setBlog({ ...blog, comments: { ...comments, results: newCommentArr } });
             //setTotalParentCommentsLoaded((preVal) => preVal + 1);
-            console.log()
         } catch (error) {
             console.log(error);
         }
