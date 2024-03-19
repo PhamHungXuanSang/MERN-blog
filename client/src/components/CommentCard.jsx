@@ -72,7 +72,6 @@ export default function CommentCard({ index, leftVal, commentData }) {
         // Nếu hành động này là xóa cmt
         if (isDelete) {
             let parentIndex = getParentIndex();
-            console.log(parentIndex);
             // Nếu reply có cmt parent
             if (parentIndex != undefined) {
                 // Cập nhật lại danh sách children của cmt parent sẽ loại đi thằng cmt có _id vừa bị xóa
@@ -209,9 +208,9 @@ export default function CommentCard({ index, leftVal, commentData }) {
                         Reply
                     </button>
 
-                    {currentUser.isAdmin == true ||
-                    currentUser.username == blog.authorId.username ||
-                    currentUser.username == username ? (
+                    {currentUser?.isAdmin == true ||
+                    currentUser?.username == blog.authorId.username ||
+                    currentUser?.username == username ? (
                         <button
                             onClick={() => {
                                 setShowModal(!showModal);

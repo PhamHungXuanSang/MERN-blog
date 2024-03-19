@@ -1,16 +1,16 @@
 import Blog from '../models/blog.model.js';
 import { errorHandler } from '../utils/error.js';
-import { io, userSockets } from '../index.js';
 
 export const latestBlogs = async (req, res, next) => {
     try {
         const page = req.query.page;
+        const startIndex = req.query.startIndex;
         const limit = req.query.limit;
         const totalBlogs = await Blog.countDocuments({});
         const latestBlogs = await Blog.find({})
             .populate('authorId', '_id username email userAvatar')
             .sort({ createdAt: -1 })
-            .skip(page != 1 ? (page - 1) * limit : 0)
+            .skip(startIndex ? startIndex : page != 1 ? (page - 1) * limit : 0)
             .limit(limit);
         res.status(200).json({ blogs: latestBlogs, total: totalBlogs });
     } catch (error) {
@@ -133,11 +133,11 @@ export const updateLikeBlog = async (req, res, next) => {
             blog.likes.push(userId);
         }
         blog = await blog.save();
-        const authorId = blog.authorId._id ? blog.authorId._id.toString() : null;
-        const socketId = userSockets.get(authorId.toString());
-        if (socketId) {
-            io.to(socketId).emit('push-like-noti', `User ${userId} đã thích bài viết của bạn`);
-        }
+        // const authorId = blog.authorId._id ? blog.authorId._id.toString() : null;
+        // const socketId = userSockets.get(authorId.toString());
+        // if (socketId) {
+        //     io.to(socketId).emit('push-like-noti', `User ${userId} đã thích bài viết của bạn`);
+        // }
         res.status(200).json({ blog });
     } catch (error) {
         next(error);
@@ -161,11 +161,11 @@ export const ratingBlog = async (req, res, next) => {
         if (!blog) {
             return next(errorHandler(404, 'Blog not found'));
         }
-        const authorId = blog.authorId._id ? blog.authorId._id.toString() : null;
-        const socketId = userSockets.get(authorId.toString());
-        if (socketId) {
-            io.to(socketId).emit('push-rating-noti', `User ${userId} đã đánh giá ${ratingStar} cho bài viết ${blog._id}`);
-        }
+        // const authorId = blog.authorId._id ? blog.authorId._id.toString() : null;
+        // const socketId = userSockets.get(authorId.toString());
+        // if (socketId) {
+        //     io.to(socketId).emit('push-rating-noti', `User ${userId} đã đánh giá ${ratingStar} cho bài viết ${blog._id}`);
+        // }
         res.status(200).json({ blog });
     } catch (error) {
         next(error);

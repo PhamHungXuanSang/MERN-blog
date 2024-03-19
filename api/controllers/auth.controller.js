@@ -3,8 +3,10 @@ import bcryptjs from 'bcryptjs';
 import { errorHandler } from '../utils/error.js';
 import jwt from 'jsonwebtoken';
 import RefreshToken from '../models/refreshToken.model.js';
-import { io, userSockets } from '../index.js';
-import { socket } from '../../client/src/utils/socket.js';
+import { userOnline } from '../index.js';
+import Transaction from '../models/transaction.model.js';
+//import { io, userSockets } from '../index.js';
+//import { socket } from '../../client/src/utils/socket.js';
 
 export const signup = async (req, res, next) => {
     const { username, email, password } = req.body;
@@ -80,7 +82,7 @@ export const google = async (req, res, next) => {
     try {
         const user = await User.findOne({ email });
         if (user) {
-            if (userSockets.get(user._id.toString())) {
+            if (userOnline.get(user._id.toString())) {
                 return res.status(400).json({ message: 'Account is in use' });
             }
             const payload = {
@@ -108,7 +110,7 @@ export const google = async (req, res, next) => {
             const generatedPassword = Math.random().toString(36).slice(-8) + Math.random().toString(36).slice(-8);
             const hashedPassword = bcryptjs.hashSync(generatedPassword, 10);
 
-            const newUser = new User({
+            let newUser = new User({
                 username: username.toLowerCase().split(' ').join('') + Math.random().toString(9).slice(-4),
                 email,
                 password: hashedPassword,
@@ -116,7 +118,17 @@ export const google = async (req, res, next) => {
             });
 
             try {
-                await newUser.save();
+                const user = await newUser.save();
+                const transaction = new Transaction({
+                    userId: user._id,
+                });
+                const userTransaction = await transaction.save();
+                newUser = await User.findOneAndUpdate(
+                    { _id: user._id },
+                    { $push: { transaction: userTransaction._id } },
+                    { new: true },
+                );
+
                 const payload = {
                     _id: newUser._id,
                     username: newUser.username,

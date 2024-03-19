@@ -6,7 +6,6 @@ import { useNavigate } from 'react-router-dom';
 
 import { GoogleAuthProvider, signInWithPopup, getAuth } from 'firebase/auth';
 import { app } from '../firebase.js';
-
 import { socket } from '../utils/socket.js';
 
 export default function OAuth() {
@@ -36,8 +35,9 @@ export default function OAuth() {
                     return;
                 }
                 if (res.ok) {
+                    socket.emit('newUserLogin', data._id);
+                    console.log(data);
                     dispatch(signInSuccess(data));
-                    socket.emit('user-login', data._id);
                     return navigate('/');
                 } else {
                     dispatch(signInFailure(data.message));

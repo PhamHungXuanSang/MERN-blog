@@ -7,11 +7,10 @@ import { FaMoon, FaSun } from 'react-icons/fa';
 import { signOutSuccess } from '../redux/user/userSlice.js';
 import { darkModeToogle } from '../redux/theme/themeSlice.js';
 import { useDispatch, useSelector } from 'react-redux';
-
 import { socket } from '../utils/socket.js';
 
 export default function Header() {
-    const path = useLocation().pathname;
+    // const path = useLocation().pathname;
     const currentUser = useSelector((state) => state.user.currentUser);
     const darkModeObj = useSelector((state) => state.darkMode);
 
@@ -26,7 +25,7 @@ export default function Header() {
             if (!res.ok) {
                 console.log(data.message);
             } else {
-                socket.emit('sign-out', currentUser._id.toString());
+                socket.emit('signOut', currentUser._id.toString());
                 dispatch(signOutSuccess());
                 return navigate('/sign-in');
             }
@@ -82,10 +81,14 @@ export default function Header() {
                         <Link to={'/dash-board?tab=profile'}>
                             <Dropdown.Item>Dashboard</Dropdown.Item>
                         </Link>
-                        <Dropdown.Divider />
-                        <Link to={'/about'}>
-                            <Dropdown.Item>About</Dropdown.Item>
-                        </Link>
+                        {currentUser.isAdmin && (
+                            <>
+                                <Dropdown.Divider />
+                                <Link to={'/admin?tab=main-board'}>
+                                    <Dropdown.Item>Admin</Dropdown.Item>
+                                </Link>
+                            </>
+                        )}
                         <Dropdown.Divider />
                         <Dropdown.Item onClick={handleSignOut}>Sign out</Dropdown.Item>
                     </Dropdown>
@@ -98,14 +101,14 @@ export default function Header() {
                 )}
                 <Navbar.Toggle />
             </div>
-            <Navbar.Collapse>
+            {/* <Navbar.Collapse>
                 <Navbar.Link active={path === '/'} as={'div'}>
                     <Link to="/">Home</Link>
                 </Navbar.Link>
                 <Navbar.Link active={path === '/about'} as={'div'}>
                     <Link to="/about">About</Link>
                 </Navbar.Link>
-            </Navbar.Collapse>
+            </Navbar.Collapse> */}
         </Navbar>
     );
 }

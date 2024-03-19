@@ -6,6 +6,7 @@ export default {
     },
     plugins: [
         require('flowbite/plugin'),
+        require('tailwind-scrollbar'),
         function ({ addUtilities }) {
             const newUtilities = {
                 '.scrollbar-thin': { scrollbarWidth: 'thin', scrollbarColor: 'rgb(31 29 29) white' },

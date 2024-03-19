@@ -6,6 +6,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { signOutSuccess } from '../redux/user/userSlice.js';
 import { Spinner } from 'flowbite-react';
+import toast from 'react-hot-toast';
 
 export const EditorContext = createContext({});
 
@@ -14,6 +15,12 @@ export default function Editor() {
     const navigate = useNavigate();
     let { slug } = useParams();
     const currentUser = useSelector((state) => state.user.currentUser);
+    if (!currentUser.isAdmin) {
+        if (currentUser.createPermission == false) {
+            navigate('/offer');
+            toast.error('You need to purchase a plan to use this feature', { id: 'toast-need-offer' });
+        }
+    }
     const [blog, setBlog] = useState(blogStructure);
     const [editorState, setEditorState] = useState('editor');
     const [textEditor, setTextEditor] = useState({ isReady: false });

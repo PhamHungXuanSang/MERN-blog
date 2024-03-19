@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import mongoose, { Schema } from 'mongoose';
 
 const userSchema = new mongoose.Schema(
     {
@@ -42,6 +42,15 @@ const userSchema = new mongoose.Schema(
             default: '',
         },
         isAdmin: {
+            type: Boolean,
+            default: false,
+        },
+        transaction: {
+            type: Schema.Types.ObjectId,
+            ref: 'Transaction',
+        },
+        createPermission: {
+            // Query userId ở bảng Transaction để biết true / false
             type: Boolean,
             default: false,
         },

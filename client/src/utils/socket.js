@@ -1,6 +1,9 @@
-import io from 'socket.io-client';
-var connectOptions = {
-    transports: ['websocket'],
-};
+// import io from 'socket.io-client';
+// var connectOptions = {
+//     transports: ['websocket'],
+// };
 
-export const socket = io.connect('http://localhost:3000', connectOptions);
+// export const socket = io.connect('http://localhost:3000', connectOptions);
+
+import { io } from 'socket.io-client';
+export const socket = io('http://localhost:3000');

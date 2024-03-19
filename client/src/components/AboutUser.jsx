@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { Link } from 'react-router-dom';
 import { FaFacebookSquare, FaGithubSquare, FaTiktok, FaYoutube } from 'react-icons/fa';
 import formatDate from '../utils/formatDate.js';
@@ -12,7 +13,7 @@ export default function AboutUser({
     createdAt,
 }) {
     return (
-        <div className={'md:w-[90%] md:mt-7 ' + className}>
+        <div className={'md:mt-7 ' + className}>
             <p className="text-xl leading-7">{userDesc.length ? userDesc : 'No description about this account'}</p>
             <div className="flex gap-x-7 gap-y-2 flex-wrap my-7 items-center text-gray-300">
                 {youtubeLink ? (

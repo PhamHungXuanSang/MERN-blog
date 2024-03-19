@@ -34,7 +34,14 @@ export default function CommentField({ action, index = undefined, replyingTo = u
         }
 
         try {
-            let body = { _id, comment, blogAuthor: authorId._id, userId: currentUser._id, replyingTo: replyingTo };
+            let body = {
+                _id,
+                comment,
+                blogAuthor: authorId._id,
+                userId: currentUser._id,
+                username: currentUser.username,
+                replyingTo: replyingTo,
+            };
             const res = await fetch(`/api/comment/add-comment`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },

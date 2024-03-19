@@ -6,6 +6,7 @@ import { signInStart, signInSuccess, signInFailure } from '../redux/user/userSli
 import { useDispatch, useSelector } from 'react-redux';
 import OAuth from '../components/OAuth.jsx';
 import MoveFromTopEffect from '../components/MoveFromTopEffect.jsx';
+import { socket } from '../utils/socket.js';
 
 export default function SignIn() {
     const [formData, setFormData] = useState({});
@@ -38,6 +39,7 @@ export default function SignIn() {
                 return;
             }
             if (res.ok) {
+                socket.emit('newUserLogin', data._id);
                 dispatch(signInSuccess(data));
                 return navigate('/');
             }

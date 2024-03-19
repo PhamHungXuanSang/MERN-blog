@@ -1,5 +1,5 @@
 import express from 'express';
-import http from 'http';
+import { createServer } from 'http';
 import { Server } from 'socket.io';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
@@ -9,57 +9,79 @@ import authRoutes from './routes/auth.route.js';
 import blogRoutes from './routes/blog.route.js';
 import searchRoutes from './routes/search.route.js';
 import commentRoutes from './routes/comment.route.js';
+import transactionRoutes from './routes/transaction.route.js';
 import cookieParser from 'cookie-parser';
 
 dotenv.config();
 mongoose
     .connect(process.env.DATABASE)
-    .then
-    //() =>
-    //console.log('Mongodb connected');
-    ()
+    .then(() => {})
     .catch(() => console.log('Mongodb has not been connected'));
 const app = express();
 app.use(
     cors({
-        // Một cách tiếp cận khác bạn có thể chấp nhận mọi origin nếu đó là môi trường phát triển
         origin: 'http://localhost:5173',
         methods: ['GET', 'POST'],
-        // Chấp nhận cookies và credentials từ client
         credentials: true,
     }),
 );
-const server = http.createServer(app);
-export const io = new Server(server, {
+const httpServer = createServer(app);
+
+export let userOnline = new Map();
+export const getUser = (userId) => {
+    return userOnline.find((user) => user.userId === userId);
+};
+const addOnlineUser = (userId, socketId) => {
+    // if (
+    //     !userOnline.some((user) => {
+    //         user.userId === userId;
+    //     })
+    // ) {
+    //     userOnline.push({ userId, socketId });
+    // }
+    if (!userOnline.get(userId.toString())) {
+        userOnline.set(userId.toString(), socketId);
+    }
+};
+const removeOnlineUser = (userId, socketId) => {
+    if (userId != null) {
+        userOnline.delete(userId.toString());
+    } else {
+        userOnline.delete(socketId);
+    }
+};
+export const io = new Server(httpServer, {
     cors: {
-        // Cho phép origin mà client của bạn đang sử dụng để truy cập server
         origin: 'http://localhost:5173',
-        // Cấu hình thêm nếu bạn cần các header hoặc phương thức HTTP khác
         methods: ['GET', 'POST'],
     },
 });
 
-export const userSockets = new Map();
 io.on('connection', (socket) => {
-    socket.on('user-login', (userId) => {
-        userSockets.set(userId.toString(), socket.id); // Lưu dưới dạng string
-        socket.userId = userId.toString(); // Lưu userId vào socket để sử dụng khi disconnect
-        console.log(userSockets);
+    socket.on('newUserLogin', (userId) => {
+        addOnlineUser(userId, socket.id);
+        console.log(userOnline);
     });
 
-    // socket.on('disconnect', () => {
-    //     console.log('Vô disconnect: ');
-    //     console.log(userSockets);
-    //     if (socket.userId) {
-    //         userSockets.delete(socket.userId);
-    //         console.log('Đã xóa userId');
-    //         console.log(userSockets);
-    //     }
-    // });
+    //io.emit('testEvent', 'Hello refresh brower bro');
 
-    socket.on('sign-out', (userId) => {
-        userSockets.delete(userId.toString());
-        console.log(userSockets);
+    socket.on('refreshBrower', (userId) => {
+        console.log(`Người dùng ${userId} refresh trình duyệt`);
+        removeOnlineUser(userId, null);
+        addOnlineUser(userId, socket.id);
+        console.log(userOnline);
+    });
+
+    socket.on('disconnect', () => {
+        console.log('Some one disconnect');
+        removeOnlineUser(null, socket.id);
+        console.log(userOnline);
+    });
+
+    socket.on('signOut', (userId, socketId = null) => {
+        console.log('Some one sign out');
+        removeOnlineUser(userId, null);
+        console.log(userOnline);
     });
 });
 
@@ -71,6 +93,7 @@ app.use('/api/user', userRoutes);
 app.use('/api/blog', blogRoutes);
 app.use('/api/search', searchRoutes);
 app.use('/api/comment', commentRoutes);
+app.use('/api/transaction', transactionRoutes);
 
 app.use((err, req, res, next) => {
     const statusCode = err.statusCode || 500;
@@ -82,6 +105,6 @@ app.use((err, req, res, next) => {
     });
 });
 
-server.listen(3000, () => {
+httpServer.listen(3000, () => {
     //console.log('Server is running at port 3000');
 });
