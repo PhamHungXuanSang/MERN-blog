@@ -113,7 +113,10 @@ export default function ReadBlog() {
                                 </div>
                                 <div className="flex flex-col items-end">
                                     <p className="opacity-75 max-sm:mt-6 max-sm:ml-12 max-sm:pl-5">
-                                        Publish on {formatDate(blog.createdAt)}
+                                        Publish on {formatDate(blog.createdAt)}{' '}
+                                        {blog.updatedAt != blog.createdAt
+                                            ? '(Updated at ' + formatDate(blog.updatedAt) + ')'
+                                            : ''}
                                     </p>
                                     <p>{blog.viewed} Views</p>
                                 </div>

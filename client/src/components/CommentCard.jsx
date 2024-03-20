@@ -238,10 +238,10 @@ export default function CommentCard({ index, leftVal, commentData }) {
                 <ModalConfirm
                     showModal={showModal}
                     setShowModal={setShowModal} // Giả định rằng setShowModal là một hàm setState từ component cha
-                    title={`You definitely want to delete this comment ?`}
+                    title="You definitely want to delete this comment ?"
                     onConfirm={handleDeleteComment}
                     onNoConfirm={() => setShowModal(false)}
-                    confirm={`Yes I am sure`}
+                    confirm="Yes I am sure"
                     noConfirm="No, I'm not sure"
                 />
             )}

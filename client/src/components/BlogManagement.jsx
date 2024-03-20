@@ -1,15 +1,22 @@
 import { useEffect, useState } from 'react';
 import NotFound from './NotFound';
 import { Spinner, Table } from 'flowbite-react';
-import { Link } from 'react-router-dom';
-import { useSelector } from 'react-redux';
-// import formatDate from '../utils/formatDate.js';
+import { Link, useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import ModalConfirm from './ModalConfirm';
+import { signOutSuccess } from '../redux/user/userSlice.js';
 
 export default function BlogManagement() {
     const [blogs, setBlogs] = useState(null);
     const [showMore, setShowMore] = useState(true);
     const [allBlogs, setAllBlogs] = useState(0);
+    const [showModal, setShowModal] = useState(false);
+    const [blogIdToDelete, setBlogIdToDelete] = useState('');
     const currentUser = useSelector((state) => state.user.currentUser);
+
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+
     const handleGetLatestBlogs = async () => {
         try {
             const res = await fetch(`/api/blog/latest-blogs?page=${1}&&limit=${999999}`, {
@@ -33,7 +40,6 @@ export default function BlogManagement() {
         handleGetLatestBlogs();
     }, []);
 
-    console.log(allBlogs);
     const handleShowMore = async () => {
         const startIndex = blogs.length;
         try {
@@ -51,8 +57,31 @@ export default function BlogManagement() {
             console.log(error);
         }
     };
+
+    const handleDeleteBlog = async () => {
+        setShowModal(false);
+        try {
+            const res = await fetch(`/api/blog/delete-blog/${blogIdToDelete}`, {
+                method: 'DELETE',
+                headers: { 'Content-Type': 'application/json' },
+            });
+            const data = await res.json();
+            if (res.status === 403) {
+                dispatch(signOutSuccess());
+                return navigate('/sign-in');
+            }
+            if (!res.ok) {
+                console.log(data.message);
+            } else {
+                setBlogs((prev) => prev.filter((blog) => blog._id !== blogIdToDelete));
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
     return (
-        <div className="py-12 px-4 table-auto overflow-x-scroll md:mx-auto p-3 scrollbarssssss">
+        <div className="py-12 px-4 table-auto overflow-x-scroll md:mx-auto p-3 scrollbar">
             {blogs != null ? (
                 blogs?.length > 0 ? (
                     <>
@@ -97,7 +126,13 @@ export default function BlogManagement() {
                                             <Table.Cell>{new Date(blog.updatedAt).toLocaleDateString()}</Table.Cell>
                                             <Table.Cell>{blog.category}</Table.Cell>
                                             <Table.Cell>
-                                                <span className="text-red-500 font-medium hover:underline cursor-pointer">
+                                                <span
+                                                    onClick={() => {
+                                                        setShowModal(true);
+                                                        setBlogIdToDelete(blog._id);
+                                                    }}
+                                                    className="text-red-500 font-medium hover:underline cursor-pointer"
+                                                >
                                                     Delete
                                                 </span>
                                             </Table.Cell>
@@ -130,6 +165,15 @@ export default function BlogManagement() {
             ) : (
                 <Spinner className="block mx-auto mt-4" size="xl" />
             )}
+            <ModalConfirm
+                showModal={showModal}
+                setShowModal={setShowModal} // Giả định rằng setShowModal là một hàm setState từ component cha
+                title={`You definitely want to delete this blog ?`}
+                onConfirm={handleDeleteBlog}
+                onNoConfirm={() => setShowModal(false)}
+                confirm="Yes I am sure"
+                noConfirm="No, I'm not sure"
+            />
         </div>
     );
 }

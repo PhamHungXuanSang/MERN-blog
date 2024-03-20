@@ -1,6 +1,7 @@
 import { Button, Navbar, TextInput } from 'flowbite-react';
 import { Avatar, Dropdown } from 'flowbite-react';
 
+// eslint-disable-next-line no-unused-vars
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { LuSearch } from 'react-icons/lu';
 import { FaMoon, FaSun } from 'react-icons/fa';
@@ -18,7 +19,7 @@ export default function Header() {
     const dispatch = useDispatch();
     const handleSignOut = async () => {
         try {
-            const res = await fetch('/api/user/signout', {
+            const res = await fetch('/api/auth/signout', {
                 method: 'POST',
             });
             const data = await res.json();

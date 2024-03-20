@@ -1,18 +1,33 @@
-import Blog from '../models/blog.model.js';
 import { errorHandler } from '../utils/error.js';
+import Blog from '../models/blog.model.js';
+import Comment from '../models/comment.model.js';
+import Noti from '../models/noti.model.js';
 
 export const latestBlogs = async (req, res, next) => {
     try {
         const page = req.query.page;
         const startIndex = req.query.startIndex;
         const limit = req.query.limit;
-        const totalBlogs = await Blog.countDocuments({});
-        const latestBlogs = await Blog.find({})
-            .populate('authorId', '_id username email userAvatar')
-            .sort({ createdAt: -1 })
-            .skip(startIndex ? startIndex : page != 1 ? (page - 1) * limit : 0)
-            .limit(limit);
-        res.status(200).json({ blogs: latestBlogs, total: totalBlogs });
+
+        const now = new Date();
+        const oneMonthAgo = new Date(now.getFullYear(), now.getMonth() - 1, now.getDate());
+
+        const [latestBlogs, lastMonthBlogs, totalBlogs] = await Promise.all([
+            Blog.find()
+                .populate('authorId', '_id username email userAvatar')
+                .sort({ createdAt: -1 })
+                .skip(startIndex ? startIndex : page != 1 ? (page - 1) * limit : 0)
+                .limit(limit),
+            Blog.countDocuments({ createdAt: { $gte: oneMonthAgo } }).exec(),
+            Blog.countDocuments(),
+        ]);
+        // const totalBlogs = await Blog.countDocuments({});
+        // const latestBlogs = await Blog.find()
+        //     .populate('authorId', '_id username email userAvatar')
+        //     .sort({ createdAt: -1 })
+        //     .skip(startIndex ? startIndex : page != 1 ? (page - 1) * limit : 0)
+        //     .limit(limit);
+        res.status(200).json({ blogs: latestBlogs, lastMonthBlogs, total: totalBlogs });
     } catch (error) {
         next(error);
     }
@@ -20,7 +35,7 @@ export const latestBlogs = async (req, res, next) => {
 
 export const trendingBlogs = async (req, res, next) => {
     try {
-        const trendingBlogs = await Blog.find({})
+        const trendingBlogs = await Blog.find()
             .populate('authorId', '_id username email userAvatar')
             .sort({ viewed: -1, likeCount: -1, createdAt: -1 })
             .limit(5);
@@ -133,11 +148,6 @@ export const updateLikeBlog = async (req, res, next) => {
             blog.likes.push(userId);
         }
         blog = await blog.save();
-        // const authorId = blog.authorId._id ? blog.authorId._id.toString() : null;
-        // const socketId = userSockets.get(authorId.toString());
-        // if (socketId) {
-        //     io.to(socketId).emit('push-like-noti', `User ${userId} đã thích bài viết của bạn`);
-        // }
         res.status(200).json({ blog });
     } catch (error) {
         next(error);
@@ -161,11 +171,6 @@ export const ratingBlog = async (req, res, next) => {
         if (!blog) {
             return next(errorHandler(404, 'Blog not found'));
         }
-        // const authorId = blog.authorId._id ? blog.authorId._id.toString() : null;
-        // const socketId = userSockets.get(authorId.toString());
-        // if (socketId) {
-        //     io.to(socketId).emit('push-rating-noti', `User ${userId} đã đánh giá ${ratingStar} cho bài viết ${blog._id}`);
-        // }
         res.status(200).json({ blog });
     } catch (error) {
         next(error);
@@ -187,5 +192,33 @@ export const editBlog = async (req, res, next) => {
         res.status(200).json({ blog });
     } catch (error) {
         next(errorHandler(400, 'Blog not found'));
+    }
+};
+
+export const deleteBlog = async (req, res, next) => {
+    const blogId = req.params.blogId;
+    const userId = req.user._id;
+
+    try {
+        if (!req.user.isAdmin) {
+            const blog = await Blog.findById(blogId, 'authorId').exec(); // Chỉ lấy trường cần thiết
+            if (!blog) {
+                return next(errorHandler(400, 'Blog not found'));
+            }
+            if (blog.authorId.toString() !== userId.toString()) {
+                // Nếu không phải admin và chủ bài viết thì ko cho xóa
+                return next(errorHandler(400, 'You are not allowed to delete this blog'));
+            }
+        }
+
+        await Promise.all([
+            Blog.deleteOne({ _id: blogId }),
+            Comment.deleteMany({ blogId }),
+            Noti.deleteMany({ blogId }),
+        ]);
+
+        return res.status(200).json('The blog has been deleted');
+    } catch (error) {
+        next(error);
     }
 };

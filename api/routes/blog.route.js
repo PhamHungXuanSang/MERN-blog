@@ -9,6 +9,7 @@ import {
     readBlog,
     updateLikeBlog,
     ratingBlog,
+    deleteBlog,
 } from '../controllers/blog.controller.js';
 
 const router = express.Router();
@@ -21,5 +22,6 @@ router.post('/edit-blog/:slug', authenToken, editBlog);
 router.get('/read-blog/:slug', readBlog);
 router.post('/update-like-blog/:userId', authenToken, updateLikeBlog);
 router.post('/rating-blog/:blogId/:userId', authenToken, ratingBlog);
+router.delete('/delete-blog/:blogId', authenToken, deleteBlog);
 
 export default router;

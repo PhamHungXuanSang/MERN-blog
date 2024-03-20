@@ -4,6 +4,7 @@ import AdminSideBar from '../components/AdminSideBar';
 import PackageManagement from '../components/PackageManagement';
 import BlogManagement from '../components/BlogManagement';
 import MainBoardManagement from '../components/MainBoardManagement';
+import UserManagement from '../components/UserManagement';
 
 export default function Admin() {
     const [tab, setTab] = useState('');
@@ -26,6 +27,7 @@ export default function Admin() {
                 {tab === 'main-board' && <MainBoardManagement />}
                 {tab === 'package-management' && <PackageManagement />}
                 {tab === 'blog-management' && <BlogManagement />}
+                {tab === 'user-management' && <UserManagement />}
             </div>
         </div>
     );

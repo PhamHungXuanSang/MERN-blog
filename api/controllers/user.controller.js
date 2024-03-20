@@ -84,13 +84,6 @@ export const updateUserProfile = async (req, res, next) => {
     }
 };
 
-export const allblog = async (req, res) => {
-    const filter = {};
-    const blogs = await Blog.find(filter);
-
-    res.json(blogs);
-};
-
 export const deleteAccount = async (req, res, next) => {
     if (req.user._id !== req.params.userId) {
         return next(errorHandler(403, 'Unauthorized'));
@@ -110,13 +103,52 @@ export const deleteAccount = async (req, res, next) => {
     }
 };
 
-export const signout = async (req, res, next) => {
+export const getAllUser = async (req, res, next) => {
+    if (!req.user.isAdmin) {
+        return next(errorHandler(400, 'You are not allowed to see all users'));
+    }
+
+    const startIndex = parseInt(req.query.startIndex || 0);
+    const limit = parseInt(req.query.limit || 2);
+    const sortDirection = req.query.sort === 'asc' ? 1 : -1;
+    const now = new Date();
+    const oneMonthAgo = new Date(now.getFullYear(), now.getMonth() - 1, now.getDate());
+
     try {
-        const refreshToken = req.cookies.refresh_token;
-        await RefreshToken.deleteOne({ refreshToken });
-        res.clearCookie('access_token');
-        res.clearCookie('refresh_token');
-        res.status(200).json('User has been signed out');
+        const [users, totalUsers, lastMonthUsers] = await Promise.all([
+            User.find().sort({ createdAt: sortDirection }).skip(startIndex).limit(limit).select('-password').exec(),
+            User.countDocuments().exec(),
+            User.countDocuments({ createdAt: { $gte: oneMonthAgo } }).exec(),
+        ]);
+
+        return res.status(200).json({ users, totalUsers, lastMonthUsers });
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const updateUserRole = async (req, res, next) => {
+    if (!req.user.isAdmin) {
+        return next(errorHandler(400, 'You are not allowed to update user role'));
+    }
+    try {
+        const { userId } = req.params;
+        const { role } = req.body;
+        const isBlocked = role === 'blocked-user';
+        const isAdmin = role === 'admin';
+        const usersLength = parseInt(req.query.usersLength); // trả về làm sao để đảm bảo phân trang
+        const updatedUser = await User.findByIdAndUpdate(
+            userId,
+            { $set: { isBlocked, isAdmin } },
+            { new: true },
+        ).select('-password');
+        if (!updatedUser) {
+            throw new Error('User not found');
+        }
+
+        const users = await User.find().sort({ createdAt: -1 }).limit(usersLength).select('-password').exec();
+        console.log(users);
+        return res.status(200).json({ users });
     } catch (error) {
         next(error);
     }

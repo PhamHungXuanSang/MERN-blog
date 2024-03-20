@@ -51,39 +51,60 @@ export const getFreeTrial = async (req, res, next) => {
 };
 
 export const checkCreatePermission = async (req, res, next) => {
-    const userId = req.params.userId;
+    const { userId } = req.params;
     try {
         let user = await User.findOne({ _id: userId });
-        // if (!user) {
-        //     return next(errorHandler(404, 'User not found'));
-        // }
+        if (!user) return next(errorHandler(404, 'User not found'));
         if (user.isAdmin) {
             if (user.createPermission == false)
                 await User.findOneAndUpdate({ _id: userId }, { $set: { createPermission: true } }, { new: true });
             return res.status(200).json({ ...user.toObject(), createPermission: true });
         }
+
         const userTransaction = await Transaction.findOne({ userId });
-        // if (!userTransaction) {
-        //     return next(errorHandler(404, 'User not found'));
-        // }
+        if (!userTransaction) return next(errorHandler(404, 'User Transaction not found'));
+
+        if (
+            (!user.isAdmin && !userTransaction.expirationDate) ||
+            (!user.isAdmin && userTransaction.expirationDate < new Date())
+        ) {
+            if (userTransaction.createPermission == true) {
+                await Promise.all([
+                    User.findOneAndUpdate({ _id: userId }, { $set: { createPermission: false } }, { new: true }),
+                    Transaction.findOneAndUpdate({ userId }, { $set: { createPermission: false } }, { new: true }),
+                ]);
+            }
+            return res.status(200).json({ ...user.toObject(), createPermission: false });
+        } else if (
+            (!user.isAdmin && userTransaction.expirationDate > new Date()) ||
+            (!user.isAdmin && userTransaction.createPermission == true)
+        ) {
+            if (user.createPermission == false) {
+                await Promise.all([
+                    User.findOneAndUpdate({ _id: userId }, { $set: { createPermission: true } }, { new: true }),
+                    Transaction.findOneAndUpdate({ userId }, { $set: { createPermission: true } }, { new: true }),
+                ]);
+            }
+            return res.status(200).json({ ...user.toObject(), createPermission: true });
+        }
+
         if (!userTransaction.expirationDate) {
             return res.status(200).json(user);
         } else {
             if (userTransaction.expirationDate < new Date()) {
                 if (userTransaction.createPermission == true) {
-                    // Thay đổi sang sử dụng promise.all để tăng hiệu năng
-                    await User.findOneAndUpdate({ _id: userId }, { $set: { createPermission: false } }, { new: true });
-                    await Transaction.findOneAndUpdate(
-                        { userId },
-                        { $set: { createPermission: false } },
-                        { new: true },
-                    );
+                    await Promise.all([
+                        User.findOneAndUpdate({ _id: userId }, { $set: { createPermission: false } }, { new: true }),
+                        Transaction.findOneAndUpdate({ userId }, { $set: { createPermission: false } }, { new: true }),
+                    ]);
                 }
                 return res.status(200).json({ ...user.toObject(), createPermission: false });
             } else {
                 if (userTransaction.createPermission == false) {
-                    await User.findOneAndUpdate({ _id: userId }, { $set: { createPermission: true } }, { new: true });
-                    await Transaction.findOneAndUpdate({ userId }, { $set: { createPermission: true } }, { new: true });
+                    await Promise.all([
+                        User.findOneAndUpdate({ _id: userId }, { $set: { createPermission: true } }, { new: true }),
+                        Transaction.findOneAndUpdate({ userId }, { $set: { createPermission: true } }, { new: true }),
+                    ]);
                 }
                 return res.status(200).json({ ...user.toObject(), createPermission: true });
             }

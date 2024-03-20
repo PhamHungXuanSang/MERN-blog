@@ -1,6 +1,9 @@
 import { Sidebar } from 'flowbite-react';
 import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { HiOutlineUserGroup, HiDocumentText } from 'react-icons/hi';
+import { TbShoppingCartDollar } from 'react-icons/tb';
+import { FcStatistics } from 'react-icons/fc';
 
 export default function AdminSideBar() {
     const location = useLocation();
@@ -32,27 +35,27 @@ export default function AdminSideBar() {
         <Sidebar aria-label="Sidebar with content separator example" className="w-full md:w-56">
             <Sidebar.Items className="pt-8">
                 <Sidebar.ItemGroup>
-                    <span className="text-3xl font-semibold pb-2 pl-2">Management</span>
-                    <Link to="/admin?tab=kinhte-management">
+                    <span className="text-3xl font-semibold pb-2 pl-2">Business</span>
+                    <Link to="/admin?tab=main-board">
                         <Sidebar.Item
-                            active={tab === 'kinhte-management'}
+                            active={tab === 'main-board'}
+                            icon={FcStatistics}
                             label={'Statistical'}
                             labelColor="dark"
                             as="div"
                             className="mt-2"
                         >
-                            Kinh tế
+                            Overview
                         </Sidebar.Item>
                     </Link>
                     <Link to="/admin?tab=package-management">
                         <Sidebar.Item
                             className="mt-1"
                             active={tab === 'package-management'}
-                            label={'Package'}
-                            labelColor="dark"
+                            icon={TbShoppingCartDollar}
                             as="div"
                         >
-                            Package
+                            Package Management
                         </Sidebar.Item>
                     </Link>
                 </Sidebar.ItemGroup>
@@ -61,12 +64,24 @@ export default function AdminSideBar() {
                     <Link to="/admin?tab=blog-management">
                         <Sidebar.Item
                             active={tab === 'blog-management'}
-                            label={'All'}
-                            labelColor="dark"
+                            icon={HiDocumentText}
                             as="div"
                             className="mt-2"
                         >
                             Blog Management
+                        </Sidebar.Item>
+                    </Link>
+                </Sidebar.ItemGroup>
+                <Sidebar.ItemGroup>
+                    <span className="text-3xl font-semibold pb-2 pl-2">User</span>
+                    <Link to="/admin?tab=user-management">
+                        <Sidebar.Item
+                            active={tab === 'user-management'}
+                            icon={HiOutlineUserGroup}
+                            as="div"
+                            className="mt-2"
+                        >
+                            User Management
                         </Sidebar.Item>
                     </Link>
                 </Sidebar.ItemGroup>
