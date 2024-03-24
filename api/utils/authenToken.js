@@ -9,8 +9,9 @@ export const authenToken = async (req, res, next) => {
     }
 
     try {
-        const userData = jwt.verify(token, process.env.JWT_SECRET);
-        req.user = userData;
+        const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
+        const { iat, exp, ...rest } = decodedToken;
+        req.user = rest;
         return next();
     } catch (err) {
         if (err.name === 'TokenExpiredError') {
@@ -36,12 +37,12 @@ export const authenToken = async (req, res, next) => {
                 res.cookie('access_token', newAccessToken, {
                     httpOnly: true,
                     secure: process.env.NODE_ENV === 'production',
-                    sameSite: 'strict',
+                    sameSite: 'Strict',
                 });
                 res.cookie('refresh_token', newRefreshToken, {
                     httpOnly: true,
                     secure: process.env.NODE_ENV === 'production',
-                    sameSite: 'strict',
+                    sameSite: 'Strict',
                 });
 
                 req.user = rest;

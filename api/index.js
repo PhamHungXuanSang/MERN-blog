@@ -11,6 +11,7 @@ import searchRoutes from './routes/search.route.js';
 import commentRoutes from './routes/comment.route.js';
 import transactionRoutes from './routes/transaction.route.js';
 import packageRoutes from './routes/package.route.js';
+import emailRoutes from './routes/email.route.js';
 import cookieParser from 'cookie-parser';
 
 dotenv.config();
@@ -96,6 +97,7 @@ app.use('/api/search', searchRoutes);
 app.use('/api/comment', commentRoutes);
 app.use('/api/transaction', transactionRoutes);
 app.use('/api/package', packageRoutes);
+app.use('/api/email', emailRoutes);
 
 app.use((err, req, res, next) => {
     const statusCode = err.statusCode || 500;
