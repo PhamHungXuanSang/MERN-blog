@@ -12,6 +12,10 @@ const packageSchema = new mongoose.Schema({
         min: 0,
     },
     packageDescription: {
+        type: Array,
+        required: true,
+    },
+    packageExpiry: {
         type: String,
         required: true,
     },

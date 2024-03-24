@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { getDownloadURL, getStorage, ref, uploadBytesResumable } from 'firebase/storage';
 import { Alert, Button, FileInput, Label, Textarea } from 'flowbite-react';
 import { useContext, useEffect, useRef, useState } from 'react';
@@ -6,12 +7,16 @@ import toast from 'react-hot-toast';
 import { EditorContext } from '../pages/Editor';
 import EditorJS from '@editorjs/editorjs';
 import { tools } from './Tools';
+import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 export default function BlogEditor() {
     const targetRef = useRef(null);
     const hiddenElementRef = useRef(null);
     const [imageFile, setImageFile] = useState(null);
     const [imageFileUploadError, setImageFileUploadError] = useState(null);
+    const currentUser = useSelector((state) => state.user.currentUser);
+    const navigate = useNavigate();
 
     let {
         blog,
@@ -25,6 +30,10 @@ export default function BlogEditor() {
     useEffect(() => {
         if (blog.slug || textEditor.isReady) {
             console.log('Edit blog');
+            // Nếu người vào trang edit khác so với tác giả thì không cho edit
+            if (blog?.authorId != currentUser._id) {
+                return navigate('/');
+            }
             setTextEditor(
                 new EditorJS({
                     holder: 'textEditor',
@@ -46,62 +55,6 @@ export default function BlogEditor() {
             );
         }
     }, []);
-
-    // useEffect(() => {
-    //     console.log(textEditor.isReady);
-
-    //     // Nếu blog.slug == "" và textEditor.isReady == false => tạo bài viết mới
-    //     // Nếu blog.slug khác rỗng và textEditor.isReady là 1 promise => đang ở mode edit lại blog đã có
-
-    //     //if (!textEditor.isReady) {
-    //     // setTextEditor(
-    //     //     new EditorJS({
-    //     //         holder: 'textEditor',
-    //     //         //data: Array.isArray(content) ? content[0] : content,
-    //     //         // data: {
-    //     //         //     time: 1552744582955,
-    //     //         //     blocks: [
-    //     //         //         {
-    //     //         //             type: 'paragraph',
-    //     //         //             data: {
-    //     //         //                 text: 'https://cdn.pixabay.com/photo/2017/09/01/21/53/blue-2705642_1280.jpg',
-    //     //         //             },
-    //     //         //         },
-    //     //         //     ],
-    //     //         //     version: '2.11.10',
-    //     //         // },
-    //     //         data: null,
-    //     //         inlineToolbar: ['link', 'marker', 'bold', 'italic'],
-    //     //         tools: tools,
-    //     //         placeholder: 'Write your new blog ...',
-    //     //     }),
-    //     // );
-    //     //} else {
-    //     setTextEditor(
-    //         new EditorJS({
-    //             holder: 'textEditor',
-    //             data: Array.isArray(content) && content.length > 0 ? content[0] : content,
-    //             inlineToolbar: ['link', 'marker', 'bold', 'italic'],
-    //             tools: tools,
-    //             placeholder: 'Write your new blog ...',
-    //         }),
-    //     );
-    //     //}
-    // }, [blog]);
-
-    // useEffect(() => {
-    //     console.log('HAHAHHAHAHA');
-    //     console.log(blog.content[0]);
-    //     setTextEditor(
-    //         new EditorJS({
-    //             holder: 'textEditor',
-    //             data: Array.isArray(content) && content.length > 0 ? content[0] : content,
-    //             inlineToolbar: ['link', 'marker', 'bold', 'italic'],
-    //             tools: tools,
-    //             placeholder: 'Write your new blog ...',
-    //         }),
-    //     );
-    // }, [blog]);
 
     const handleImageChange = (e) => {
         const file = e.target.files[0];
@@ -182,7 +135,7 @@ export default function BlogEditor() {
     };
 
     return (
-        <div className="flex-1 pt-4">
+        <div className="flex-1 py-4">
             <section>
                 <Textarea
                     defaultValue={title}

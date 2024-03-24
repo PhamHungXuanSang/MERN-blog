@@ -1,3 +1,4 @@
+import PaymentHistory from '../models/paymentHistory.model.js';
 import Transaction from '../models/transaction.model.js';
 import User from '../models/user.model.js';
 import { errorHandler } from '../utils/error.js';
@@ -109,6 +110,57 @@ export const checkCreatePermission = async (req, res, next) => {
                 return res.status(200).json({ ...user.toObject(), createPermission: true });
             }
         }
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const choosePlan = async (req, res, next) => {
+    const userId = req.user._id;
+    const { _id:packageId, packageName, packagePrice, packageExpiry } = req.body;
+    let currentDate = new Date();
+    const numberOfMonth = parseInt(packageExpiry[0], 10);
+    try {
+        const userTransaction = await Transaction.findOne({ userId }).exec();
+        if (!userTransaction) {
+            return next(errorHandler(404, 'User transaction not found'));
+        }
+        if (!userTransaction.expirationDate || userTransaction.expirationDate < currentDate) {
+            currentDate.setMonth(currentDate.getMonth() + numberOfMonth);
+        } else {
+            const expirationDate = new Date(userTransaction.expirationDate);
+            expirationDate.setMonth(expirationDate.getMonth() + numberOfMonth);
+            currentDate = expirationDate;
+        }
+        const updatedTransaction = await Transaction.findOneAndUpdate(
+            { userId },
+            {
+                $set: {
+                    createPermission: true,
+                    packageId,
+                    expirationDate: currentDate,
+                },
+            },
+            { new: true },
+        ).exec();
+        if (!updatedTransaction) {
+            return next(errorHandler(404, 'User transaction not found'));
+        }
+
+        const paymentHistory = new PaymentHistory({
+            userId,
+            packageId,
+            packageName,
+            packageExpiry,
+            packagePrice,
+            paymentDate: new Date(),
+        });
+        await paymentHistory.save();
+
+        const updatedUser = await User.findByIdAndUpdate(userId, { $set: { createPermission: true } }, { new: true })
+            .select('-password')
+            .exec();
+        return res.status(200).json(updatedUser);
     } catch (error) {
         next(error);
     }

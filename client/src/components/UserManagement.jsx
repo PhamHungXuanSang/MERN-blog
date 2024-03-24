@@ -115,7 +115,7 @@ export default function UserManagement() {
                                 <Table.HeadCell>Username</Table.HeadCell>
                                 <Table.HeadCell>Email</Table.HeadCell>
                                 <Table.HeadCell>Avatar</Table.HeadCell>
-                                <Table.HeadCell>User authorization (Role)</Table.HeadCell>
+                                <Table.HeadCell>User Role</Table.HeadCell>
                             </Table.Head>
                             <Table.Body className="divide-y">
                                 {users.map((user, i) => {

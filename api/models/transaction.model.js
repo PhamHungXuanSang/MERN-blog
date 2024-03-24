@@ -15,8 +15,9 @@ const transactionSchema = new mongoose.Schema( // Dựa vô bảng này để bi
             type: Boolean,
             default: false,
         },
-        packageName: {
-            type: String,
+        packageId: {
+            type: Schema.Types.ObjectId,
+            ref: 'Package',
         },
         expirationDate: {
             type: Date,

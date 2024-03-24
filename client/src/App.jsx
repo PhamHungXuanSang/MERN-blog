@@ -1,4 +1,6 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { PayPalScriptProvider } from '@paypal/react-paypal-js';
 import Home from './pages/Home';
 import SignIn from './pages/SignIn';
 import SignUp from './pages/SignUp';
@@ -19,14 +21,14 @@ import { useSelector } from 'react-redux';
 import Offer from './pages/Offer.jsx';
 import AdminPrivateRoute from './components/AdminPrivateRoute.jsx';
 import Admin from './pages/Admin.jsx';
-// socket.on('push-like-noti', (data) => {
-//     console.log(data);
-// });
-// socket.on('push-rating-noti', (data) => {
-//     console.log(data);
-// });
+import Checkout from './pages/Checkout.jsx';
 
 export default function App() {
+    const initialOptions = {
+        'client-id': import.meta.env.VITE_REACT_APP_PAYPAL_CLIENT_ID,
+        currency: 'USD',
+        intent: 'capture',
+    };
     const currentUser = useSelector((state) => state.user.currentUser);
     useEffect(() => {
         if (currentUser) {
@@ -65,28 +67,31 @@ export default function App() {
     }, []);
 
     return (
-        <BrowserRouter>
-            <ScrollToTop />
-            <Header />
-            <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/sign-in" element={<SignIn />} />
-                <Route path="/sign-up" element={<SignUp />} />
-                <Route element={<PrivateRoute />}>
-                    <Route path="/dash-board" element={<Dashboard />} />
-                </Route>
-                <Route path="/search/:query" element={<Search />} />
-                <Route path="/user/:username" element={<UserProfile />} />
-                <Route path="/blog/:slug" element={<ReadBlog />} />
-                <Route path="/editor/:slug" element={<Editor />} />
-                <Route path="/offer" element={<Offer />} />
-                <Route element={<AdminPrivateRoute />}>
-                    <Route path="/admin" element={<Admin />} />
-                </Route>
-                <Route path="*" element={<PageNotFound />} />
-            </Routes>
-            <Footer />
-            <Toaster position="top-center" />
-        </BrowserRouter>
+        <PayPalScriptProvider options={initialOptions}>
+            <BrowserRouter>
+                <ScrollToTop />
+                <Header />
+                <Routes>
+                    <Route path="/" element={<Home />} />
+                    <Route path="/sign-in" element={<SignIn />} />
+                    <Route path="/sign-up" element={<SignUp />} />
+                    <Route path="/search/:query" element={<Search />} />
+                    <Route path="/user/:username" element={<UserProfile />} />
+                    <Route path="/blog/:slug" element={<ReadBlog />} />
+                    <Route element={<PrivateRoute />}>
+                        <Route path="/dash-board" element={<Dashboard />} />
+                        <Route path="/editor/:slug" element={<Editor />} />
+                        <Route path="/offer" element={<Offer />} />
+                        <Route path="/checkout" element={<Checkout />} />
+                    </Route>
+                    <Route element={<AdminPrivateRoute />}>
+                        <Route path="/admin" element={<Admin />} />
+                    </Route>
+                    <Route path="*" element={<PageNotFound />} />
+                </Routes>
+                <Footer />
+                <Toaster position="top-center" />
+            </BrowserRouter>
+        </PayPalScriptProvider>
     );
 }

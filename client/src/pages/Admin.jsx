@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import AdminSideBar from '../components/AdminSideBar';
-import PackageManagement from '../components/PackageManagement';
+import NewPackage from '../components/NewPackage';
 import BlogManagement from '../components/BlogManagement';
 import MainBoardManagement from '../components/MainBoardManagement';
 import UserManagement from '../components/UserManagement';
+import RevenueManagement from '../components/RevenueManagement';
 
 export default function Admin() {
     const [tab, setTab] = useState('');
@@ -25,7 +26,8 @@ export default function Admin() {
             </div>
             <div className="min-h-screen container mx-auto">
                 {tab === 'main-board' && <MainBoardManagement />}
-                {tab === 'package-management' && <PackageManagement />}
+                {tab === 'revenue' && <RevenueManagement />}
+                {tab === 'new-package' && <NewPackage />}
                 {tab === 'blog-management' && <BlogManagement />}
                 {tab === 'user-management' && <UserManagement />}
             </div>

@@ -2,8 +2,9 @@ import { Sidebar } from 'flowbite-react';
 import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { HiOutlineUserGroup, HiDocumentText } from 'react-icons/hi';
-import { TbShoppingCartDollar } from 'react-icons/tb';
+import { TbBusinessplan } from 'react-icons/tb';
 import { FcStatistics } from 'react-icons/fc';
+import { BiSolidCartAdd } from 'react-icons/bi';
 
 export default function AdminSideBar() {
     const location = useLocation();
@@ -48,14 +49,14 @@ export default function AdminSideBar() {
                             Overview
                         </Sidebar.Item>
                     </Link>
-                    <Link to="/admin?tab=package-management">
-                        <Sidebar.Item
-                            className="mt-1"
-                            active={tab === 'package-management'}
-                            icon={TbShoppingCartDollar}
-                            as="div"
-                        >
-                            Package Management
+                    <Link to="/admin?tab=revenue">
+                        <Sidebar.Item className="mt-1" active={tab === 'revenue'} icon={TbBusinessplan} as="div">
+                            Revenue
+                        </Sidebar.Item>
+                    </Link>
+                    <Link to="/admin?tab=new-package">
+                        <Sidebar.Item className="mt-1" active={tab === 'new-package'} icon={BiSolidCartAdd} as="div">
+                            New Package
                         </Sidebar.Item>
                     </Link>
                 </Sidebar.ItemGroup>

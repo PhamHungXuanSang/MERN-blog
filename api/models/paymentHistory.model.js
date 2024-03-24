@@ -5,10 +5,17 @@ const paymentHistorySchema = new mongoose.Schema({
         type: Schema.Types.ObjectId,
         ref: 'User',
     },
+    packageId: {
+        type: Schema.Types.ObjectId,
+        ref: 'Package',
+    },
     packageName: {
         type: String,
         required: true,
-        ref: 'Package',
+    },
+    packageExpiry: {
+        type: String,
+        required: true,
     },
     packagePrice: {
         type: Number,

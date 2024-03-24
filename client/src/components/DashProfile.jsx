@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { Link, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
@@ -70,17 +71,24 @@ export default function DashProfile() {
                     />
                     <b className="block my-3">@{currentUser.username}</b>
                     <span className="block mb-4">{currentUser.email}</span>
+                    <i className="block my-3">{currentUser.userDesc || 'No description about this account'}</i>
+                    <span className="block mt-8">
+                        {dashProfile?.blogs?.length} Blogs - {totalViewed} Views
+                    </span>
+                    <i
+                        className="block mt-2 mb-4 text-gray-500 text-
+                        md"
+                    >
+                        Joined on {formatDate(currentUser.createdAt)}
+                    </i>
+                    <div className="block text-center">
+                        <Link to="/dash-board?tab=update-profile" className="block w-fit mx-auto text-center">
+                            <Button gradientDuoTone="greenToBlue" outline>
+                                Update Profile
+                            </Button>
+                        </Link>
+                    </div>
                 </div>
-                <i className="block my-3">{currentUser.userDesc || 'No description about this account'}</i>
-                <span className="block mt-8">
-                    {dashProfile?.blogs?.length} Blogs - {totalViewed} Views
-                </span>
-                <i className="block mt-2 mb-4 text-gray-500 text-md">Joined on {formatDate(currentUser.createdAt)}</i>
-                <Link to="/dash-board?tab=update-profile">
-                    <Button gradientDuoTone="greenToBlue" outline>
-                        Update Profile
-                    </Button>
-                </Link>
             </div>
         </div>
     );

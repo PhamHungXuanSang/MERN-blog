@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
@@ -105,7 +106,7 @@ export default function MainBoardManagement() {
                                 </div>
                                 <HiOutlineUserGroup className="bg-teal-600 text-white rounded-full p-3 text-5xl shadow-lg" />
                             </div>
-                            <div className="flex gap-10 text-sm">
+                            <div className="flex gap-2 text-sm">
                                 <span className="text-green-500 flex items-center">
                                     <HiArrowNarrowUp />
                                     {lastMonthUsers}
@@ -128,7 +129,7 @@ export default function MainBoardManagement() {
                                 </div>
                                 <HiDocumentText className="bg-lime-600 text-white rounded-full p-3 text-5xl shadow-lg" />
                             </div>
-                            <div className="flex gap-10 text-sm">
+                            <div className="flex gap-2 text-sm">
                                 <span className="text-green-500 flex items-center">
                                     <HiArrowNarrowUp />
                                     {lastMonthBlogs}
@@ -151,7 +152,7 @@ export default function MainBoardManagement() {
                                 </div>
                                 <HiAnnotation className="bg-indigo-600 text-white rounded-full p-3 text-5xl shadow-lg" />
                             </div>
-                            <div className="flex gap-10 text-sm">
+                            <div className="flex gap-2 text-sm">
                                 <span className="text-green-500 flex items-center">
                                     <HiArrowNarrowUp />
                                     {lastMonthComments}
@@ -168,100 +169,119 @@ export default function MainBoardManagement() {
             <div className="flex flex-wrap gap-4 py-3 mx-auto justify-center">
                 <div className="flex flex-col w-full md:w-auto shadow-md p-2 rounded-md dark:bg-gray-800">
                     <div className="flex justify-between p-3 text-sm font-semibold">
-                        <h1 className="text-center p-2">Recent users</h1>
+                        <h1 className="text-center p-2">RECENT USERS</h1>
                         <Button outline gradientDuoTone="greenToBlue">
                             <Link to={'/admin?tab=user-management'}>See all</Link>
                         </Button>
                     </div>
                     <Table hoverable>
                         <Table.Head>
-                            <Table.HeadCell>User avatar</Table.HeadCell>
-                            <Table.HeadCell>Username</Table.HeadCell>
+                            <Table.HeadCell className="text-center p-2">User avatar</Table.HeadCell>
+                            <Table.HeadCell className="text-center p-2">Username</Table.HeadCell>
+                            <Table.HeadCell className="text-center p-2">Joined on</Table.HeadCell>
                         </Table.Head>
-                        {users &&
+                        {users ? (
                             users.map((user, i) => {
                                 return (
-                                    <Table.Body key={i} className="divide-y">
+                                    <Table.Body key={i} className="divide-y text-center">
                                         <Table.Row className="bg-white dark:border-gray-700 dark:bg-gray-800">
-                                            <Table.Cell>
-                                                <img
-                                                    src={user.userAvatar}
-                                                    alt="avatar"
-                                                    className="w-10 h-10 rounded-full bg-gray-500"
-                                                />
+                                            <Table.Cell className="p-2">
+                                                <Link to={`/user/${user.username}`}>
+                                                    <img
+                                                        src={user.userAvatar}
+                                                        alt="avatar"
+                                                        className="w-10 h-10 rounded-full bg-gray-500 mx-auto"
+                                                    />
+                                                </Link>
                                             </Table.Cell>
-                                            <Table.Cell>{user.username}</Table.Cell>
+                                            <Table.Cell className="p-2">
+                                                <Link to={`/user/${user.username}`}>{user.username}</Link>
+                                            </Table.Cell>
+                                            <Table.Cell className="p-2">
+                                                {new Date(user.createdAt).toLocaleDateString()}
+                                            </Table.Cell>
                                         </Table.Row>
                                     </Table.Body>
                                 );
-                            })}
+                            })
+                        ) : (
+                            <Spinner className="block mx-auto mt-4" size="sm" />
+                        )}
                     </Table>
                 </div>
 
                 <div className="flex flex-col w-full md:w-auto shadow-md p-2 rounded-md dark:bg-gray-800">
                     <div className="flex justify-between p-3 text-sm font-semibold">
-                        <h1 className="text-center p-2">Recent blogs</h1>
+                        <h1 className="text-center p-2">RECENT BLOGS</h1>
                         <Button outline gradientMonochrome="success">
                             <Link to={'/admin?tab=blog-management'}>See all</Link>
                         </Button>
                     </div>
                     <Table hoverable>
                         <Table.Head>
-                            <Table.HeadCell>Blog Thumbnail</Table.HeadCell>
-                            <Table.HeadCell>Blog title</Table.HeadCell>
-                            <Table.HeadCell>Author</Table.HeadCell>
+                            <Table.HeadCell className="text-center p-2">Blog Thumbnail</Table.HeadCell>
+                            <Table.HeadCell className="text-center p-2">Blog title</Table.HeadCell>
+                            <Table.HeadCell className="text-center p-2">Author</Table.HeadCell>
                         </Table.Head>
-                        {blogs &&
+                        {blogs ? (
                             blogs.map((blog, i) => {
                                 return (
-                                    <Table.Body key={i} className="divide-y">
+                                    <Table.Body key={i} className="divide-y text-center">
                                         <Table.Row className="bg-white dark:border-gray-700 dark:bg-gray-800">
-                                            <Table.Cell>
+                                            <Table.Cell className="p-2">
                                                 <img
                                                     src={blog.thumb}
                                                     alt="avatar"
-                                                    className="max-w-20 rounded-sm bg-gray-500"
+                                                    className="max-w-20 rounded-sm bg-gray-500 mx-auto"
                                                 />
                                             </Table.Cell>
-                                            <Table.Cell>{blog.title}</Table.Cell>
-                                            <Table.Cell>{blog.authorId.username}</Table.Cell>
+                                            <Table.Cell className="p-2">{blog.title}</Table.Cell>
+                                            <Table.Cell className="p-2">{blog.authorId.username}</Table.Cell>
                                         </Table.Row>
                                     </Table.Body>
                                 );
-                            })}
+                            })
+                        ) : (
+                            <Spinner className="block mx-auto mt-4" size="sm" />
+                        )}
                     </Table>
                 </div>
 
                 <div className="flex flex-col w-full md:w-auto shadow-md p-2 rounded-md dark:bg-gray-800">
                     <div className="flex justify-between p-3 text-sm font-semibold">
-                        <h1 className="text-center p-2">Recent comments</h1>
+                        <h1 className="text-center p-2">RECENT COMMENTS</h1>
                     </div>
                     <Table hoverable>
                         <Table.Head>
-                            <Table.HeadCell>User avatar</Table.HeadCell>
-                            <Table.HeadCell>Username</Table.HeadCell>
-                            <Table.HeadCell>Content</Table.HeadCell>
-                            <Table.HeadCell>Status</Table.HeadCell>
+                            <Table.HeadCell className="text-center p-2">User avatar</Table.HeadCell>
+                            <Table.HeadCell className="text-center p-2">Username</Table.HeadCell>
+                            <Table.HeadCell className="text-center p-2">Content</Table.HeadCell>
+                            <Table.HeadCell className="text-center p-2">Type</Table.HeadCell>
                         </Table.Head>
-                        {comments &&
+                        {comments ? (
                             comments.map((comment, i) => {
                                 return (
                                     <Table.Body key={i} className="divide-y">
                                         <Table.Row className="bg-white dark:border-gray-700 dark:bg-gray-800">
-                                            <Table.Cell>
+                                            <Table.Cell className="p-2">
                                                 <img
                                                     src={comment.commentedBy.userAvatar}
                                                     alt="avatar"
-                                                    className="w-10 h-10 rounded-full bg-gray-500"
+                                                    className="w-10 h-10 rounded-full bg-gray-500  mx-auto"
                                                 />
                                             </Table.Cell>
-                                            <Table.Cell>{comment.commentedBy.username}</Table.Cell>
-                                            <Table.Cell>{comment.content}</Table.Cell>
-                                            <Table.Cell>{comment.isReply ? 'Reply' : 'Comment'}</Table.Cell>
+                                            <Table.Cell className="p-2">{comment.commentedBy.username}</Table.Cell>
+                                            <Table.Cell className="p-2">{comment.content}</Table.Cell>
+                                            <Table.Cell className="p-2">
+                                                {comment.isReply ? 'Reply' : 'Comment'}
+                                            </Table.Cell>
                                         </Table.Row>
                                     </Table.Body>
                                 );
-                            })}
+                            })
+                        ) : (
+                            <Spinner className="block mx-auto mt-4" size="sm" />
+                        )}
                     </Table>
                 </div>
             </div>
