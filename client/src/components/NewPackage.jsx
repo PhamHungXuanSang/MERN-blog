@@ -98,6 +98,7 @@ export default function PackageManagement() {
                             <Label htmlFor="packagePrice" value="Package Price" />
                         </div>
                         <TextInput
+                            className="spin-button-none"
                             id="packagePrice"
                             type="number"
                             min={0}

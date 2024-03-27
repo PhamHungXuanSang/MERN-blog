@@ -38,19 +38,18 @@ export default function AdminSideBar() {
                 <Sidebar.ItemGroup>
                     <span className="text-3xl font-semibold pb-2 pl-2">Business</span>
                     <Link to="/admin?tab=main-board">
-                        <Sidebar.Item
-                            active={tab === 'main-board'}
-                            icon={FcStatistics}
-                            label={'Statistical'}
-                            labelColor="dark"
-                            as="div"
-                            className="mt-2"
-                        >
+                        <Sidebar.Item active={tab === 'main-board'} icon={FcStatistics} as="div" className="mt-2">
                             Overview
                         </Sidebar.Item>
                     </Link>
                     <Link to="/admin?tab=revenue">
-                        <Sidebar.Item className="mt-1" active={tab === 'revenue'} icon={TbBusinessplan} as="div">
+                        <Sidebar.Item
+                            className="mt-1"
+                            label={tab === 'revenue' ? '' : 'Chart'}
+                            active={tab === 'revenue' || tab === 'revenue-each-package'}
+                            icon={TbBusinessplan}
+                            as="div"
+                        >
                             Revenue
                         </Sidebar.Item>
                     </Link>

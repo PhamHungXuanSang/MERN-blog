@@ -4,6 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { HiInformationCircle } from 'react-icons/hi';
 import OAuth from '../components/OAuth';
 import MoveFromTopEffect from '../components/MoveFromTopEffect';
+import toast from 'react-hot-toast';
 
 export default function SignUp() {
     const [formData, setFormData] = useState({});
@@ -46,6 +47,9 @@ export default function SignUp() {
                 return;
             }
             if (res.ok) {
+                toast('Sign up success.\nPlease log in to gmail to verify your email.', {
+                    duration: 6000,
+                });
                 return navigate('/sign-in');
             }
         } catch (err) {
@@ -88,7 +92,7 @@ export default function SignUp() {
                             <Label value="Your password" />
                             <TextInput type="password" placeholder="Password" id="password" onChange={handleChange} />
                         </div>
-                        <div className="mb-6">
+                        {/* <div className="mb-6">
                             <button
                                 data-popover-target="popover-default"
                                 type="button"
@@ -111,7 +115,7 @@ export default function SignUp() {
                                 </div>
                                 <div data-popper-arrow></div>
                             </div>
-                        </div>
+                        </div> */}
                         <div>
                             <Label value="Password confirm" />
                             <TextInput

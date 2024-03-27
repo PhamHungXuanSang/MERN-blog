@@ -22,6 +22,7 @@ import Offer from './pages/Offer.jsx';
 import AdminPrivateRoute from './components/AdminPrivateRoute.jsx';
 import Admin from './pages/Admin.jsx';
 import Checkout from './pages/Checkout.jsx';
+import ForgotPassword from './pages/ForgotPassword.jsx';
 
 export default function App() {
     const initialOptions = {
@@ -87,6 +88,7 @@ export default function App() {
                     <Route element={<AdminPrivateRoute />}>
                         <Route path="/admin" element={<Admin />} />
                     </Route>
+                    <Route path="/forgot-password" element={<ForgotPassword />} />
                     <Route path="*" element={<PageNotFound />} />
                 </Routes>
                 <Footer />

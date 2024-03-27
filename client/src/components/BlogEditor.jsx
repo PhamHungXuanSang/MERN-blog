@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 import { getDownloadURL, getStorage, ref, uploadBytesResumable } from 'firebase/storage';
-import { Alert, Button, FileInput, Label, Textarea } from 'flowbite-react';
+import { Alert, Button, FileInput, Label, TextInput, Textarea } from 'flowbite-react';
 import { useContext, useEffect, useRef, useState } from 'react';
 import { app } from '../firebase';
 import toast from 'react-hot-toast';
@@ -9,12 +9,14 @@ import EditorJS from '@editorjs/editorjs';
 import { tools } from './Tools';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { IoSend } from 'react-icons/io5';
 
 export default function BlogEditor() {
     const targetRef = useRef(null);
     const hiddenElementRef = useRef(null);
     const [imageFile, setImageFile] = useState(null);
     const [imageFileUploadError, setImageFileUploadError] = useState(null);
+    //const [inputIdea, setInputIdea] = useState(null);
     const currentUser = useSelector((state) => state.user.currentUser);
     const navigate = useNavigate();
 
@@ -29,7 +31,6 @@ export default function BlogEditor() {
 
     useEffect(() => {
         if (blog.slug || textEditor.isReady) {
-            console.log('Edit blog');
             // Nếu người vào trang edit khác so với tác giả thì không cho edit
             if (blog?.authorId != currentUser._id) {
                 return navigate('/');
@@ -44,7 +45,6 @@ export default function BlogEditor() {
                 }),
             );
         } else {
-            console.log('Tạo mới blog');
             setTextEditor(
                 new EditorJS({
                     holder: 'textEditor',
@@ -134,9 +134,39 @@ export default function BlogEditor() {
         }
     };
 
+    // const handleChangeImageInput = (e) => {
+    //     setInputIdea(e.target.value);
+    // };
+
+    // const handleShowCreateImage = () => {};
+
+    // const getImages = async () => {
+    //     try {
+    //         console.log(inputIdea);
+    //         console.log(import.meta.env.VITE_REACT_APP_AI_DALL_E_KEY);
+    //         const res = await fetch('https://api.openai.com/v1/images/generations', {
+    //             method: 'POST',
+    //             headers: {
+    //                 Authorization: `Bearer ${import.meta.env.VITE_REACT_APP_AI_DALL_E_KEY}`,
+    //                 'Content-Type': 'application/json',
+    //             },
+    //             body: JSON.stringify({
+    //                 prompt: inputIdea,
+    //                 n: 2,
+    //                 size: '1024x1024',
+    //             }),
+    //         });
+
+    //         const data = await res.json();
+    //         console.log(data);
+    //     } catch (error) {
+    //         console.log(error);
+    //     }
+    // };
+
     return (
         <div className="flex-1 py-4">
-            <section>
+            <section className="w-full">
                 <Textarea
                     defaultValue={title}
                     placeholder="Blog Title"
@@ -199,14 +229,41 @@ export default function BlogEditor() {
                         </Alert>
                     )}
                 </div>
-                <hr className="w-full opacity-10 my-5" />
-                <div id="textEditor" className="w-full"></div>
-                <div className="flex gap-4 w-full mx-auto">
+                <hr className="w-full opacity-50 my-5 h-1" />
+                <div id="textEditor" className=""></div>
+                <div className="flex justify-end gap-4 w-full md:max-w-[650px] mx-auto">
+                    {/* <Button outline gradientDuoTone="redToYellow" onClick={handleShowCreateImage}>
+                        Create images with AI
+                    </Button> */}
                     <Button gradientDuoTone="greenToBlue" onClick={handlePublishEditor}>
                         Publish
                     </Button>
                 </div>
             </section>
+            {/*<div className="fixed inset-0 bg-black bg-opacity-50 overflow-y-auto h-full w-full">
+                <div
+                    className="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white"
+                    onClick={(e) => e.stopPropagation()}
+                >
+                    <div className="flex justify-between items-center">
+                        <h3 className="text-lg font-bold text-black">Create suitable images using AI</h3>
+                        <button className="text-gray-700 border-none bg-transparent hover:bg-gray-200 rounded-lg text-lg p-2 ml-auto inline-flex items-center">
+                            &#x2715;
+                        </button>
+                    </div>
+                    <p className="text-sm mt-4">
+                        <div className="flex gap-4 w-full">
+                            <TextInput
+                                type="text"
+                                placeholder="Describe ideas for creating images"
+                                className="flex-1"
+                                onChange={handleChangeImageInput}
+                            ></TextInput>
+                            <IoSend className="w-10 h-10" onClick={getImages} />
+                        </div>
+                    </p>
+                </div>
+                    </div>*/}
         </div>
     );
 }

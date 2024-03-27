@@ -103,11 +103,11 @@ export const createBlog = async (req, res, next) => {
             .split(' ')
             .join('-'.toLowerCase().replace(/[^a-zA-Z0-9-]/g, '-'))
             .trim();
-        let { slug, ...rest } = req.body;
+        let { slug, isUpdated, ...rest } = req.body;
         try {
             const updatedBlog = await Blog.findOneAndUpdate(
                 { slug: req.body.slug },
-                { ...rest, slug: newSlug },
+                { ...rest, slug: newSlug, isUpdated: true },
                 {
                     new: true,
                 },

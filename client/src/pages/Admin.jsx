@@ -6,6 +6,8 @@ import BlogManagement from '../components/BlogManagement';
 import MainBoardManagement from '../components/MainBoardManagement';
 import UserManagement from '../components/UserManagement';
 import RevenueManagement from '../components/RevenueManagement';
+import RevenueEachPackage from '../components/RevenueEachPackage';
+import RevenuePackage from '../components/RevenuePackage';
 
 export default function Admin() {
     const [tab, setTab] = useState('');
@@ -27,6 +29,8 @@ export default function Admin() {
             <div className="min-h-screen container mx-auto">
                 {tab === 'main-board' && <MainBoardManagement />}
                 {tab === 'revenue' && <RevenueManagement />}
+                {tab === 'revenue-each-package' && <RevenueEachPackage />}
+                {tab === 'revenue-package' && <RevenuePackage />}
                 {tab === 'new-package' && <NewPackage />}
                 {tab === 'blog-management' && <BlogManagement />}
                 {tab === 'user-management' && <UserManagement />}

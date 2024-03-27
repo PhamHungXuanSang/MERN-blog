@@ -2,6 +2,7 @@ import Blog from '../models/blog.model.js';
 import RefreshToken from '../models/refreshToken.model.js';
 import User from '../models/user.model.js';
 import { errorHandler } from '../utils/error.js';
+import bcryptjs from 'bcryptjs';
 
 export const getUserProfile = async (req, res, next) => {
     const username = req.params.username;
@@ -147,8 +148,24 @@ export const updateUserRole = async (req, res, next) => {
         }
 
         const users = await User.find().sort({ createdAt: -1 }).limit(usersLength).select('-password').exec();
-        console.log(users);
         return res.status(200).json({ users });
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const resetPassword = async (req, res, next) => {
+    try {
+        const userId = req.params.userId;
+        const newPassword = req.body.newPassword;
+        // Update lại mật khẩu cho người dùng
+        const hashedPassword = await bcryptjs.hashSync(newPassword, 10);
+        const user = await User.findByIdAndUpdate(userId, { $set: { password: hashedPassword } }, { new: true });
+        if(user.password) {
+            return res.status(200).json("Password has been reset")
+        } else {
+            return next(errorHandler(400, "Some thing went wrong"))
+        }
     } catch (error) {
         next(error);
     }

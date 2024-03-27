@@ -58,6 +58,10 @@ const blogSchema = new mongoose.Schema(
             unique: true,
             trim: true,
         },
+        isUpdated: {
+            type: Boolean,
+            default: false,
+        }
     },
     { timestamps: true },
 );

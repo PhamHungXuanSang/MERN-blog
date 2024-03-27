@@ -5,6 +5,8 @@ import jwt from 'jsonwebtoken';
 export const authenToken = async (req, res, next) => {
     const token = req.cookies.access_token;
     if (!token) {
+        res.clearCookie('access_token');
+        res.clearCookie('refresh_token');
         return next(errorHandler(403, 'No access token provided.'));
     }
 
@@ -17,12 +19,16 @@ export const authenToken = async (req, res, next) => {
         if (err.name === 'TokenExpiredError') {
             const prevRefreshToken = req.cookies.refresh_token;
             if (!prevRefreshToken) {
+                res.clearCookie('access_token');
+                res.clearCookie('refresh_token');
                 return next(errorHandler(403, 'No refresh token provided.'));
             }
 
             try {
                 const refreshTokenDoc = await RefreshToken.findOne({ refreshToken: prevRefreshToken });
                 if (!refreshTokenDoc) {
+                    res.clearCookie('access_token');
+                    res.clearCookie('refresh_token');
                     return next(errorHandler(403, 'Refresh token not found in database.'));
                 }
 
@@ -49,12 +55,18 @@ export const authenToken = async (req, res, next) => {
                 next();
             } catch (error) {
                 if (error.name === 'TokenExpiredError') {
+                    res.clearCookie('access_token');
+                    res.clearCookie('refresh_token');
                     return next(errorHandler(403, 'Refresh token expired.'));
                 } else {
+                    res.clearCookie('access_token');
+                    res.clearCookie('refresh_token');
                     return next(errorHandler(403, 'Error while refreshing tokens.'));
                 }
             }
         } else {
+            res.clearCookie('access_token');
+            res.clearCookie('refresh_token');
             return next(errorHandler(403, 'Invalid access token.'));
         }
     }

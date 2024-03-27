@@ -1,6 +1,7 @@
 import PaymentHistory from '../models/paymentHistory.model.js';
 import Transaction from '../models/transaction.model.js';
 import User from '../models/user.model.js';
+import { sendEmailServices } from '../services/emailService.js';
 import { errorHandler } from '../utils/error.js';
 
 export const checkFreeTrial = async (req, res, next) => {
@@ -44,7 +45,7 @@ export const getFreeTrial = async (req, res, next) => {
             { _id: userId },
             { $set: { createPermission: true } }, // set ở phần User
             { new: true },
-        );
+        ).select('-password');
         return res.status(200).json(currentUser);
     } catch (error) {
         next(error);
@@ -54,11 +55,15 @@ export const getFreeTrial = async (req, res, next) => {
 export const checkCreatePermission = async (req, res, next) => {
     const { userId } = req.params;
     try {
-        let user = await User.findOne({ _id: userId });
+        let user = await User.findOne({ _id: userId }).select('-password');
         if (!user) return next(errorHandler(404, 'User not found'));
         if (user.isAdmin) {
             if (user.createPermission == false)
-                await User.findOneAndUpdate({ _id: userId }, { $set: { createPermission: true } }, { new: true });
+                await User.findOneAndUpdate(
+                    { _id: userId },
+                    { $set: { createPermission: true } },
+                    { new: true },
+                ).select('-password');
             return res.status(200).json({ ...user.toObject(), createPermission: true });
         }
 
@@ -71,7 +76,9 @@ export const checkCreatePermission = async (req, res, next) => {
         ) {
             if (userTransaction.createPermission == true) {
                 await Promise.all([
-                    User.findOneAndUpdate({ _id: userId }, { $set: { createPermission: false } }, { new: true }),
+                    User.findOneAndUpdate({ _id: userId }, { $set: { createPermission: false } }, { new: true }).select(
+                        '-password',
+                    ),
                     Transaction.findOneAndUpdate({ userId }, { $set: { createPermission: false } }, { new: true }),
                 ]);
             }
@@ -82,7 +89,9 @@ export const checkCreatePermission = async (req, res, next) => {
         ) {
             if (user.createPermission == false) {
                 await Promise.all([
-                    User.findOneAndUpdate({ _id: userId }, { $set: { createPermission: true } }, { new: true }),
+                    User.findOneAndUpdate({ _id: userId }, { $set: { createPermission: true } }, { new: true }).select(
+                        '-password',
+                    ),
                     Transaction.findOneAndUpdate({ userId }, { $set: { createPermission: true } }, { new: true }),
                 ]);
             }
@@ -95,7 +104,11 @@ export const checkCreatePermission = async (req, res, next) => {
             if (userTransaction.expirationDate < new Date()) {
                 if (userTransaction.createPermission == true) {
                     await Promise.all([
-                        User.findOneAndUpdate({ _id: userId }, { $set: { createPermission: false } }, { new: true }),
+                        User.findOneAndUpdate(
+                            { _id: userId },
+                            { $set: { createPermission: false } },
+                            { new: true },
+                        ).select('-password'),
                         Transaction.findOneAndUpdate({ userId }, { $set: { createPermission: false } }, { new: true }),
                     ]);
                 }
@@ -103,7 +116,11 @@ export const checkCreatePermission = async (req, res, next) => {
             } else {
                 if (userTransaction.createPermission == false) {
                     await Promise.all([
-                        User.findOneAndUpdate({ _id: userId }, { $set: { createPermission: true } }, { new: true }),
+                        User.findOneAndUpdate(
+                            { _id: userId },
+                            { $set: { createPermission: true } },
+                            { new: true },
+                        ).select('-password'),
                         Transaction.findOneAndUpdate({ userId }, { $set: { createPermission: true } }, { new: true }),
                     ]);
                 }
@@ -117,7 +134,7 @@ export const checkCreatePermission = async (req, res, next) => {
 
 export const choosePlan = async (req, res, next) => {
     const userId = req.user._id;
-    const { _id:packageId, packageName, packagePrice, packageExpiry } = req.body;
+    const { _id: packageId, packageName, packagePrice, packageExpiry } = req.body;
     let currentDate = new Date();
     const numberOfMonth = parseInt(packageExpiry[0], 10);
     try {
@@ -160,6 +177,18 @@ export const choosePlan = async (req, res, next) => {
         const updatedUser = await User.findByIdAndUpdate(userId, { $set: { createPermission: true } }, { new: true })
             .select('-password')
             .exec();
+        // Thêm code gửi email đến người dùng
+        sendEmailServices(
+            updatedUser.email,
+            `<b>Hello, ${updatedUser.username}</b>
+            <p>You have successfully registered for the Create Blog feature on our platform.</p>
+            <p>We're thrilled to have you onboard and can't wait to see the amazing content you'll create. Get started by clicking the button below!</p>
+            <div>
+                <a href="http://localhost:5173/dash-board?tab=create-blog">Create your blog here</a>
+            </div>
+            <p>If you have any questions, feel free to <a href="mailto:support@yourwebsite.com">contact our support team</a>. We're here to help!</p>
+            <p>&copy; MERN Blog. All rights reserved.</p>`,
+        );
         return res.status(200).json(updatedUser);
     } catch (error) {
         next(error);

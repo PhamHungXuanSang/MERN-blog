@@ -6,10 +6,11 @@ import blogStructure from '../context/blog/blogStructure.js';
 import BlogSuggested from '../components/BlogSuggested.jsx';
 import OneByOneAppearEffect from '../components/OneByOneAppearEffect.jsx';
 import ContentItem from '../components/ContentItem.jsx';
-import formatDate from '../utils/formatDate.js';
+//import formatDate from '../utils/formatDate.js';
 import { useSelector } from 'react-redux';
 import StarRating from '../components/StarRating.jsx';
 import CommentsContainer, { fetchComments } from '../components/CommentsContainer.jsx';
+import dateToDateAndTime from '../utils/dateToDateAndTime.js';
 
 export const BlogContext = createContext({});
 
@@ -113,10 +114,8 @@ export default function ReadBlog() {
                                 </div>
                                 <div className="flex flex-col items-end">
                                     <p className="opacity-75 max-sm:mt-6 max-sm:ml-12 max-sm:pl-5">
-                                        Publish on {formatDate(blog.createdAt)}{' '}
-                                        {blog.updatedAt != blog.createdAt
-                                            ? '(Updated at ' + formatDate(blog.updatedAt) + ')'
-                                            : ''}
+                                        Publish on {dateToDateAndTime(blog.createdAt)}{' '}
+                                        {blog.isUpdated ? '(Updated: ' + dateToDateAndTime(blog.updatedAt) + ')' : ''}
                                     </p>
                                     <p>{blog.viewed} Views</p>
                                 </div>

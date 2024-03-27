@@ -5,8 +5,7 @@ import jwt from 'jsonwebtoken';
 import RefreshToken from '../models/refreshToken.model.js';
 import { userOnline } from '../index.js';
 import Transaction from '../models/transaction.model.js';
-//import { io, userSockets } from '../index.js';
-//import { socket } from '../../client/src/utils/socket.js';
+import { sendEmailServices } from '../services/emailService.js';
 
 export const signup = async (req, res, next) => {
     const { username, email, password } = req.body;
@@ -15,22 +14,33 @@ export const signup = async (req, res, next) => {
         return next(errorHandler(400, 'Please enter all fields'));
     }
 
-    // Thêm đoạn kiểm tra nếu username trùng vs csdl thì báo duplicate
     const un = await User.findOne({ username });
     if (un) {
-        return next(errorHandler(500, 'Username already exists, please choose another name'));
+        return next(errorHandler(500, 'Username already exists, please choose another'));
     }
 
     const hashedPassword = bcryptjs.hashSync(password, 10);
 
     const newUser = new User({
-        username,
+        username: username.split(' ').join('') + Math.random().toString(9).slice(-4),
         email,
         password: hashedPassword,
     });
 
     try {
-        await newUser.save();
+        let user = await newUser.save();
+        const transaction = new Transaction({
+            userId: user._id,
+        });
+        const userTransaction = await transaction.save();
+        await User.findOneAndUpdate({ _id: user._id }, { $push: { transaction: userTransaction._id } }, { new: true });
+        // Mã hóa email để send đế email acc người dùng
+        const hashedEmail = bcryptjs.hashSync(user.email, 10);
+        sendEmailServices(
+            user.email,
+            'MERN Blog email verify',
+            `<a href="http://localhost:3000/api/email/verify?email=${user.email}&&token=${hashedEmail}">Click here to verify your email</a>`,
+        );
         res.json('Dang ky thanh cong');
     } catch (error) {
         next(error);
@@ -55,6 +65,11 @@ export const signin = async (req, res, next) => {
             return next(errorHandler(400, 'Wrong password'));
         }
 
+        // Kiểm tra nếu email chưa được verified thì không cho đăng nhập, báo lỗi email chưa được xác thực
+        if (!validUser.emailVerified.verifiedAt) {
+            return next(errorHandler(400, 'Email not verified'));
+        }
+
         // Authenticate user with jwt
         // Mục đích cũng tương tự như hash password, làm các giá trị đăng nhập không xem được để bảo mật
         // Sau khi encrypt xong thì lưu vào cookies của trình duyệt
@@ -65,9 +80,19 @@ export const signin = async (req, res, next) => {
             isAdmin: validUser.isAdmin,
         };
 
-        const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '30s' });
+        const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: 1 * 60 });
+        const refToken = jwt.sign(payload, process.env.JWT_REFRESH_SECRET, { expiresIn: 1 * 60 * 1440 });
+        const refreshToken = new RefreshToken({
+            refreshToken: refToken,
+        });
+        try {
+            await refreshToken.save();
+        } catch (error) {
+            next(error);
+        }
+        res.cookie('refresh_token', refToken);
 
-        const { password: secretPassword, ...rest } = validUser._doc; // Tách phần password ra để díu không res trả về để đảm bảo ko lộ password
+        const { password: secret, ...rest } = validUser._doc; // Tách phần password ra để díu không res trả về để đảm bảo ko lộ password
 
         res.status(200).cookie('access_token', token).json(rest);
     } catch (error) {
@@ -107,14 +132,15 @@ export const google = async (req, res, next) => {
             const { password: secret, ...rest } = user._doc;
             res.status(200).cookie('access_token', token).json(rest);
         } else {
-            const generatedPassword = Math.random().toString(36).slice(-8) + Math.random().toString(36).slice(-8);
-            const hashedPassword = bcryptjs.hashSync(generatedPassword, 10);
+            //const generatedPassword = Math.random().toString(36).slice(-8) + Math.random().toString(36).slice(-8);
+            //const hashedPassword = bcryptjs.hashSync(generatedPassword, 10);
 
             let newUser = new User({
-                username: username.toLowerCase().split(' ').join('') + Math.random().toString(9).slice(-4),
+                username: username.split(' ').join('') + Math.random().toString(9).slice(-4),
                 email,
-                password: hashedPassword,
+                //password: hashedPassword,
                 userAvatar: googleAvatar,
+                emailVerified: { method: 'google', verifiedAt: new Date() },
             });
 
             try {

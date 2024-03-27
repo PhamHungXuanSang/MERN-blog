@@ -2,7 +2,7 @@ import nodemailer from 'nodemailer';
 import dotenv from 'dotenv';
 dotenv.config();
 
-export const sendEmailServices = async (recipient) => {
+export const sendEmailServices = async (recipient, subject, content) => {
     const transporter = nodemailer.createTransport({
         host: 'smtp.gmail.com',
         port: 587,
@@ -16,9 +16,9 @@ export const sendEmailServices = async (recipient) => {
     const info = await transporter.sendMail({
         from: `"MERN Blog" <${process.env.EMAIL}>`, // sender address
         to: recipient, // danh sách các email nhận, cách nhau bởi dấu ,
-        subject: 'MERN Blog', // Subject line
-        text: 'Cái này gửi từ tài khoản admin xem có được không', // plain text body
-        html: '<p>Hello world?</p>', // html body nội dung email
+        subject: subject || 'MERN Blog', // Subject line
+        text: 'Plaintext version of the message', // plain text body
+        html: content, // html body nội dung email
         // Xem thêm cách gửi email với các định dạng nội dung khác: https://www.nodemailer.com/message/
     });
 

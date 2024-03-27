@@ -4,6 +4,6 @@ import { getStatistical } from '../controllers/statistical.controller.js';
 
 const router = express.Router();
 
-router.get('/get-statistical', authenToken, getStatistical);
+router.post('/get-statistical', authenToken, getStatistical);
 
 export default router;

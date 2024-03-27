@@ -14,7 +14,6 @@ const userSchema = new mongoose.Schema(
         },
         password: {
             type: String,
-            required: true,
         },
         userAvatar: {
             type: String,
@@ -49,12 +48,26 @@ const userSchema = new mongoose.Schema(
             type: Boolean,
             default: false,
         },
+        emailVerified: {
+            type: {
+                method: {
+                    type: String,
+                    enum: ['google', 'password'],
+                    required: true,
+                },
+                verifiedAt: {
+                    type: Date,
+                },
+            },
+            default: {
+                method: 'password',
+            },
+        },
         transaction: {
             type: Schema.Types.ObjectId,
             ref: 'Transaction',
         },
         createPermission: {
-            // Query userId ở bảng Transaction để biết true / false
             type: Boolean,
             default: false,
         },
