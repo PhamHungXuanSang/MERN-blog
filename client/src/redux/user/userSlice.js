@@ -58,6 +58,7 @@ const userSlice = createSlice({
             state.currentUser = action.payload;
         },
         setCurrentUser: (state, action) => {
+            // Hàm này đa năng dùng để set lại các giá trị cho currentUser
             state.currentUser = action.payload;
         },
     },

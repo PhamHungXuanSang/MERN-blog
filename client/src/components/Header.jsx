@@ -1,22 +1,45 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { Button, Navbar, TextInput } from 'flowbite-react';
 import { Avatar, Dropdown } from 'flowbite-react';
-
-// eslint-disable-next-line no-unused-vars
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { LuSearch } from 'react-icons/lu';
 import { FaMoon, FaSun } from 'react-icons/fa';
 import { signOutSuccess } from '../redux/user/userSlice.js';
 import { darkModeToogle } from '../redux/theme/themeSlice.js';
 import { useDispatch, useSelector } from 'react-redux';
 import { socket } from '../utils/socket.js';
+import { useEffect, useRef, useState } from 'react';
+import BlogFastSearch from './BlogFastSearch.jsx';
+import UserFastSearch from './UserFastSearch.jsx';
 
 export default function Header() {
-    // const path = useLocation().pathname;
+    const timeoutIdRef = useRef();
+    const [searchValue, setSearchValue] = useState('');
+    const [blogs, setBlogs] = useState(null);
+    const [users, setUsers] = useState(null);
     const currentUser = useSelector((state) => state.user.currentUser);
     const darkModeObj = useSelector((state) => state.darkMode);
-
     const navigate = useNavigate();
     const dispatch = useDispatch();
+    console.log(currentUser);
+    // useEffect(() => {
+    //     const checkNewNoti = async () => {
+    //         // Gọi api kiểm tra có thông báo mới hay không
+    //         const res = await fetch(`/api/notification/newNotification`, {
+    //             method: 'GET',
+    //             headers: { 'Content-Type': 'application/json' },
+    //         });
+    //         const data = await res.json();
+    //         console.log(data);
+    //         if (data.length > 0) {
+    //             dispatch(setCurrentUser({ ...currentUser, newNotification: true }));
+    //         } else {
+    //             dispatch(setCurrentUser({ ...currentUser, newNotification: false }));
+    //         }
+    //     };
+    //     checkNewNoti();
+    // }, []);
+
     const handleSignOut = async () => {
         try {
             const res = await fetch('/api/auth/signout', {
@@ -35,9 +58,45 @@ export default function Header() {
         }
     };
 
+    useEffect(() => {
+        const handleFastSearch = () => {
+            if (timeoutIdRef.current) {
+                clearTimeout(timeoutIdRef.current);
+            }
+            timeoutIdRef.current = setTimeout(async () => {
+                try {
+                    const res = await fetch(`/api/search/${searchValue || null}`, {
+                        method: 'POST',
+                    });
+                    const data = await res.json();
+                    setBlogs(data.blogs.length ? data.blogs : null);
+                    setUsers(data.users.length ? data.users : null);
+                } catch (error) {
+                    console.log(error);
+                }
+            }, 500);
+            return () => {
+                if (timeoutIdRef.current) {
+                    clearTimeout(timeoutIdRef.current);
+                }
+            };
+        };
+        handleFastSearch();
+    }, [searchValue]);
+
+    const handleTypeSearch = (e) => {
+        setSearchValue(e.target.value);
+    };
+
     const handleSearch = (e) => {
         if (e.keyCode == 13 && e.target.value.length) {
+            setBlogs(null);
+            setUsers(null);
             navigate(`/search/${e.target.value}`);
+        }
+        if (!e.target.value.length) {
+            setBlogs(null);
+            setUsers(null);
         }
     };
 
@@ -48,15 +107,67 @@ export default function Header() {
                     MERN Blog
                 </span>
             </Link>
-            {/* <form> */}
-            <TextInput
-                type="text"
-                placeholder="Type to search"
-                rightIcon={LuSearch}
-                className="hidden lg:inline"
-                onKeyDown={handleSearch}
-            />
-            {/* </form> */}
+            <div className="relative">
+                <TextInput
+                    type="text"
+                    placeholder="Type to search"
+                    rightIcon={LuSearch}
+                    className="hidden lg:inline"
+                    onKeyDown={handleSearch}
+                    onChange={handleTypeSearch}
+                    value={searchValue}
+                />
+                {blogs?.length || users?.length ? (
+                    <div className="absolute z-10 w-80 h-fit bg-slate-100 dark:bg-[#1f2937] top-[130%] right-[-50px] rounded p-4 shadow-2xl max-h-60 overflow-y-scroll overflow-x-hidden scrollbar-thin">
+                        {blogs ? (
+                            <div className="mb-6">
+                                <i className="block pb-2 text-sm font-semibold">Related articles</i>
+                                <hr></hr>
+                                {blogs.slice(0, 5)?.map((blog, i) => {
+                                    return (
+                                        <div
+                                            className="dark:hover:bg-slate-600 hover:bg-gray-100 rounded border-b border-gray-500 mb-2 py-1"
+                                            key={i}
+                                            onClick={() => {
+                                                setBlogs(null);
+                                                setUsers(null);
+                                            }}
+                                        >
+                                            <BlogFastSearch blog={blog} />
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        ) : (
+                            ''
+                        )}
+                        {users ? (
+                            <div>
+                                <i className="block pb-2 text-sm font-semibold">Related users</i>
+                                <hr></hr>
+                                {users.slice(0, 5)?.map((user, i) => {
+                                    return (
+                                        <div
+                                            className="dark:hover:bg-slate-600 hover:bg-gray-100 rounded border-b border-gray-500 mb-2 py-1"
+                                            key={i}
+                                            onClick={() => {
+                                                setBlogs(null);
+                                                setUsers(null);
+                                            }}
+                                        >
+                                            <UserFastSearch user={user} />
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        ) : (
+                            ''
+                        )}
+                    </div>
+                ) : (
+                    ''
+                )}
+            </div>
             <Button className="lg:hidden w-12 h-10" pill color="gray">
                 <LuSearch />
             </Button>
@@ -79,6 +190,13 @@ export default function Header() {
                             <span className="block text-sm">@{currentUser.username}</span>
                             <span className="block truncate text-sm font-medium">{currentUser.email}</span>
                         </Dropdown.Header>
+                        <Link to={'/notification'}>
+                            <Dropdown.Item className="flex gap-1 items-center">
+                                Notification
+                                <i className="px-2 rounded-full bg-red-500 text-sm font-thin">New</i>
+                            </Dropdown.Item>
+                        </Link>
+                        <Dropdown.Divider />
                         <Link to={'/dash-board?tab=profile'}>
                             <Dropdown.Item>Dashboard</Dropdown.Item>
                         </Link>
@@ -102,14 +220,6 @@ export default function Header() {
                 )}
                 <Navbar.Toggle />
             </div>
-            {/* <Navbar.Collapse>
-                <Navbar.Link active={path === '/'} as={'div'}>
-                    <Link to="/">Home</Link>
-                </Navbar.Link>
-                <Navbar.Link active={path === '/about'} as={'div'}>
-                    <Link to="/about">About</Link>
-                </Navbar.Link>
-            </Navbar.Collapse> */}
         </Navbar>
     );
 }

@@ -131,6 +131,23 @@ export default function Home() {
 
                 {/* Trending and filter by category */}
                 <div className="border-l-2 h-full pl-4 w-[30%] max-md:hidden">
+                    <div className="flex items-center gap-2">
+                        <h1 className="font-medium text-xl mr-1">Trending blogs</h1>
+                        <TbTrendingUp />
+                    </div>
+                    {trendingBlogs != null ? (
+                        trendingBlogs.length == 0 ? (
+                            <NotFound object={'Not found trending blog'} />
+                        ) : (
+                            trendingBlogs.map((blog, i) => (
+                                <OneByOneAppearFromRightEffect transition={{ duration: 1, delay: i * 0.2 }} key={i}>
+                                    <BlogMini key={i} index={i} content={blog} author={blog.authorId} />
+                                </OneByOneAppearFromRightEffect>
+                            ))
+                        )
+                    ) : (
+                        <Spinner className="block mx-auto mt-4" size="lg" />
+                    )}
                     <div className="flex flex-col gap-2 mb-8">
                         <div className="flex items-center">
                             <h1 className="font-medium text-xl mr-1">View by Category</h1>
@@ -151,23 +168,6 @@ export default function Home() {
                             })}
                         </div>
                     </div>
-                    <div className="flex items-center gap-2">
-                        <h1 className="font-medium text-xl mr-1">Trending blogs</h1>
-                        <TbTrendingUp />
-                    </div>
-                    {trendingBlogs != null ? (
-                        trendingBlogs.length == 0 ? (
-                            <NotFound object={'Not found trending blog'} />
-                        ) : (
-                            trendingBlogs.map((blog, i) => (
-                                <OneByOneAppearFromRightEffect transition={{ duration: 1, delay: i * 0.2 }} key={i}>
-                                    <BlogMini key={i} index={i} content={blog} author={blog.authorId} />
-                                </OneByOneAppearFromRightEffect>
-                            ))
-                        )
-                    ) : (
-                        <Spinner className="block mx-auto mt-4" size="lg" />
-                    )}
                 </div>
             </div>
         </section>

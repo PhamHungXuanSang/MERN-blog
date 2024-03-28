@@ -13,6 +13,7 @@ import transactionRoutes from './routes/transaction.route.js';
 import packageRoutes from './routes/package.route.js';
 import statisticalRoutes from './routes/statistical.route.js';
 import emailRoutes from './routes/email.route.js';
+import notificationRoutes from './routes/noti.route.js';
 import cookieParser from 'cookie-parser';
 
 dotenv.config();
@@ -100,6 +101,7 @@ app.use('/api/transaction', transactionRoutes);
 app.use('/api/package', packageRoutes);
 app.use('/api/statistical', statisticalRoutes);
 app.use('/api/email', emailRoutes);
+app.use('/api/notification', notificationRoutes);
 
 app.use((err, req, res, next) => {
     const statusCode = err.statusCode || 500;

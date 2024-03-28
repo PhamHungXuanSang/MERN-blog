@@ -23,8 +23,11 @@ import AdminPrivateRoute from './components/AdminPrivateRoute.jsx';
 import Admin from './pages/Admin.jsx';
 import Checkout from './pages/Checkout.jsx';
 import ForgotPassword from './pages/ForgotPassword.jsx';
+import Notification from './pages/Notification.jsx';
+//import { setCurrentUser } from './redux/user/userSlice.js';
 
 export default function App() {
+    //const dispatch = useDispatch();
     const initialOptions = {
         'client-id': import.meta.env.VITE_REACT_APP_PAYPAL_CLIENT_ID,
         currency: 'USD',
@@ -32,6 +35,20 @@ export default function App() {
     };
     const currentUser = useSelector((state) => state.user.currentUser);
     useEffect(() => {
+        // const checkNewNoti = async () => {
+        //     // Gọi api kiểm tra có thông báo mới hay không
+        //     const res = await fetch(`/api/notification/newNotification`, {
+        //         method: 'GET',
+        //         headers: { 'Content-Type': 'application/json' },
+        //     });
+        //     const data = await res.json();
+        //     console.log(data);
+        //     if (data.length > 0) {
+        //         dispatch(setCurrentUser({ ...currentUser, newNotification: true }));
+        //     } else {
+        //         dispatch(setCurrentUser({ ...currentUser, newNotification: false }));
+        //     }
+        // };
         if (currentUser) {
             socket.emit('refreshBrower', currentUser._id);
         }
@@ -80,6 +97,7 @@ export default function App() {
                     <Route path="/user/:username" element={<UserProfile />} />
                     <Route path="/blog/:slug" element={<ReadBlog />} />
                     <Route element={<PrivateRoute />}>
+                        <Route path="/notification" element={<Notification />} />
                         <Route path="/dash-board" element={<Dashboard />} />
                         <Route path="/editor/:slug" element={<Editor />} />
                         <Route path="/offer" element={<Offer />} />

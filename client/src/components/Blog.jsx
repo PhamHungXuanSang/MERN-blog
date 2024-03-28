@@ -1,9 +1,11 @@
 import { SlLike } from 'react-icons/sl';
+import { FaRegComments } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
-import formatDate from '../utils/formatDate.js';
+//import formatDate from '../utils/formatDate.js';
+import dateToDateAndTime from '../utils/dateToDateAndTime.js';
 
 export default function Blog({ content, author }) {
-    const { title, createdAt, description, tags, likeCount, thumb, slug } = content;
+    const { title, createdAt, description, tags, likeCount, commentCount, thumb, slug } = content;
     const { userAvatar, username } = author;
 
     return (
@@ -15,7 +17,7 @@ export default function Blog({ content, author }) {
                 <div className="flex gap-2 items-center mb-2">
                     <img src={userAvatar} alt={'avatar'} className="w-6 h-6 rounded-full" />
                     <p className="line-clamp-1">@{username}</p>
-                    <p className="min-w-fit">{formatDate(createdAt)}</p>
+                    <p className="min-w-fit ml-4">Published on: {dateToDateAndTime(createdAt)}</p>
                 </div>
                 <h1 className="text-xl font-semibold line-clamp-2">{title}</h1>
                 <i className="my-2 text-md leading-7 max-sm:hidden md:max-[1100px]:hidden line-clamp-1">
@@ -28,6 +30,10 @@ export default function Blog({ content, author }) {
                     <div className="flex items-center gap-2">
                         <SlLike />
                         <span>{likeCount}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                        <FaRegComments />
+                        <span>{commentCount}</span>
                     </div>
                 </div>
             </div>

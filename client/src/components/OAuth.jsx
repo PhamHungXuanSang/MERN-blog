@@ -57,11 +57,6 @@ export default function OAuth() {
                 <AiFillGoogleSquare className="w-6 h-6 mr-2" />
                 Continue with Google
             </Button>
-
-            <Button type="button" gradientDuoTone="greenToBlue" outline onClick={handleGoogleClick}>
-                <AiFillFacebook className="w-6 h-6 mr-2" />
-                Continue with Facebook
-            </Button>
         </>
     );
 }
