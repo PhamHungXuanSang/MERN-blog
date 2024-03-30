@@ -1,5 +1,4 @@
-import mongoose from 'mongoose';
-import { Schema } from 'mongoose';
+import mongoose, { Schema } from 'mongoose';
 
 const notiSchema = new mongoose.Schema(
     {
@@ -27,15 +26,17 @@ const notiSchema = new mongoose.Schema(
         },
         type: {
             type: String,
-            enum: ['system', 'like', 'comment', 'reply'], // Chỉ 1 trong các kiểu này mới được lưu vào db
+            enum: ['system', 'like', 'comment', 'reply', 'rate', 'subscribe new blog'], // Chỉ 1 trong các kiểu này mới được lưu vào db
             required: true,
             default: 'system',
         },
         commentId: {
+            // Nếu là comment thì là comment nào
             type: Schema.Types.ObjectId,
             ref: 'Comment',
         },
         repliedOnComment: {
+            // Nếu là reply thì reply của cmt nào
             type: Schema.Types.ObjectId,
             ref: 'Comment',
         },

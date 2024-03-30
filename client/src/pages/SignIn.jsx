@@ -42,6 +42,8 @@ export default function SignIn() {
                 socket.emit('newUserLogin', data._id);
                 dispatch(signInSuccess(data));
                 return navigate('/');
+            } else {
+                dispatch(signInFailure(data.message));
             }
         } catch (error) {
             dispatch(signInFailure(error.message));

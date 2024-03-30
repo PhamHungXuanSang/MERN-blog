@@ -10,6 +10,7 @@ import { MdDelete } from 'react-icons/md';
 import ModalConfirm from './ModalConfirm';
 import { useNavigate } from 'react-router-dom';
 import { signOutSuccess } from '../redux/user/userSlice.js';
+import dateToDateAndTime from '../utils/dateToDateAndTime.js';
 
 export default function CommentCard({ index, leftVal, commentData }) {
     const navigate = useNavigate();
@@ -184,7 +185,7 @@ export default function CommentCard({ index, leftVal, commentData }) {
                 <div className="flex gap-3 items-center mb-8 text-sm">
                     <img className="w-6 h-6 object-cover rounded-full" src={userAvatar} alt="avatar" />
                     <p className="line-clamp-1">@{username}</p>
-                    <p className="min-w-fit">{formatDate(updatedAt)}</p>
+                    <p className="min-w-fit">{dateToDateAndTime(updatedAt)}</p>
                 </div>
                 <p className="text-xl">{content}</p>
 

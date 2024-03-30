@@ -36,13 +36,6 @@ export const getUser = (userId) => {
     return userOnline.find((user) => user.userId === userId);
 };
 const addOnlineUser = (userId, socketId) => {
-    // if (
-    //     !userOnline.some((user) => {
-    //         user.userId === userId;
-    //     })
-    // ) {
-    //     userOnline.push({ userId, socketId });
-    // }
     if (!userOnline.get(userId.toString())) {
         userOnline.set(userId.toString(), socketId);
     }
@@ -67,23 +60,18 @@ io.on('connection', (socket) => {
         console.log(userOnline);
     });
 
-    //io.emit('testEvent', 'Hello refresh brower bro');
-
     socket.on('refreshBrower', (userId) => {
-        console.log(`Người dùng ${userId} refresh trình duyệt`);
         removeOnlineUser(userId, null);
         addOnlineUser(userId, socket.id);
         console.log(userOnline);
     });
 
     socket.on('disconnect', () => {
-        console.log('Some one disconnect');
         removeOnlineUser(null, socket.id);
         console.log(userOnline);
     });
 
     socket.on('signOut', (userId, socketId = null) => {
-        console.log('Some one sign out');
         removeOnlineUser(userId, null);
         console.log(userOnline);
     });

@@ -65,6 +65,10 @@ export const signin = async (req, res, next) => {
             return next(errorHandler(400, 'Wrong password'));
         }
 
+        if (userOnline.get(validUser._id.toString())) {
+            return res.status(400).json({ message: 'Account is in use' });
+        }
+
         // Kiểm tra nếu email chưa được verified thì không cho đăng nhập, báo lỗi email chưa được xác thực
         if (!validUser.emailVerified.verifiedAt) {
             return next(errorHandler(400, 'Email not verified'));

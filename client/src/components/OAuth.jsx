@@ -1,5 +1,5 @@
 import { Button } from 'flowbite-react';
-import { AiFillGoogleSquare, AiFillFacebook } from 'react-icons/ai';
+import { AiFillGoogleSquare } from 'react-icons/ai';
 import { useDispatch } from 'react-redux';
 import { signInStart, signInSuccess, signInFailure } from '../redux/user/userSlice.js';
 import { useNavigate } from 'react-router-dom';
@@ -19,7 +19,6 @@ export default function OAuth() {
             dispatch(signInStart());
             const resFromGG = await signInWithPopup(auth, provider);
             if (resFromGG != null) {
-                // call api đăng nhập với gg
                 const res = await fetch('./api/auth/google', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -36,7 +35,6 @@ export default function OAuth() {
                 }
                 if (res.ok) {
                     socket.emit('newUserLogin', data._id);
-                    console.log(data);
                     dispatch(signInSuccess(data));
                     return navigate('/');
                 } else {

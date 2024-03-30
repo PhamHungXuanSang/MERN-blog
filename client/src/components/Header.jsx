@@ -4,7 +4,7 @@ import { Avatar, Dropdown } from 'flowbite-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { LuSearch } from 'react-icons/lu';
 import { FaMoon, FaSun } from 'react-icons/fa';
-import { signOutSuccess } from '../redux/user/userSlice.js';
+import { signOutSuccess, setCurrentUser } from '../redux/user/userSlice.js';
 import { darkModeToogle } from '../redux/theme/themeSlice.js';
 import { useDispatch, useSelector } from 'react-redux';
 import { socket } from '../utils/socket.js';
@@ -21,24 +21,23 @@ export default function Header() {
     const darkModeObj = useSelector((state) => state.darkMode);
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    console.log(currentUser);
-    // useEffect(() => {
-    //     const checkNewNoti = async () => {
-    //         // Gọi api kiểm tra có thông báo mới hay không
-    //         const res = await fetch(`/api/notification/newNotification`, {
-    //             method: 'GET',
-    //             headers: { 'Content-Type': 'application/json' },
-    //         });
-    //         const data = await res.json();
-    //         console.log(data);
-    //         if (data.length > 0) {
-    //             dispatch(setCurrentUser({ ...currentUser, newNotification: true }));
-    //         } else {
-    //             dispatch(setCurrentUser({ ...currentUser, newNotification: false }));
-    //         }
-    //     };
-    //     checkNewNoti();
-    // }, []);
+
+    const checkNewNoti = async () => {
+        try {
+            const res = await fetch(`/api/notification/newNotification/${currentUser._id}`, {
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json' },
+            });
+            const data = await res.json();
+            if (res.status === 403) {
+                dispatch(signOutSuccess());
+                return navigate('/sign-in');
+            }
+            dispatch(setCurrentUser({ ...currentUser, newNotification: data.length > 0 }));
+        } catch (error) {
+            console.log(error);
+        }
+    };
 
     const handleSignOut = async () => {
         try {
@@ -181,36 +180,40 @@ export default function Header() {
                     {darkModeObj.darkMode === 'light' ? <FaMoon /> : <FaSun />}
                 </Button>
                 {currentUser ? (
-                    <Dropdown
-                        label={<Avatar alt="User settings" img={currentUser.userAvatar} rounded />}
-                        arrowIcon={false}
-                        inline
-                    >
-                        <Dropdown.Header>
-                            <span className="block text-sm">@{currentUser.username}</span>
-                            <span className="block truncate text-sm font-medium">{currentUser.email}</span>
-                        </Dropdown.Header>
-                        <Link to={'/notification'}>
-                            <Dropdown.Item className="flex gap-1 items-center">
-                                Notification
-                                <i className="px-2 rounded-full bg-red-500 text-sm font-thin">New</i>
-                            </Dropdown.Item>
-                        </Link>
-                        <Dropdown.Divider />
-                        <Link to={'/dash-board?tab=profile'}>
-                            <Dropdown.Item>Dashboard</Dropdown.Item>
-                        </Link>
-                        {currentUser.isAdmin && (
-                            <>
-                                <Dropdown.Divider />
-                                <Link to={'/admin?tab=main-board'}>
-                                    <Dropdown.Item>Admin</Dropdown.Item>
-                                </Link>
-                            </>
-                        )}
-                        <Dropdown.Divider />
-                        <Dropdown.Item onClick={handleSignOut}>Sign out</Dropdown.Item>
-                    </Dropdown>
+                    <div onClick={checkNewNoti}>
+                        <Dropdown
+                            label={<Avatar alt="User settings" img={currentUser.userAvatar} rounded />}
+                            arrowIcon={false}
+                            inline
+                        >
+                            <Dropdown.Header>
+                                <span className="block text-sm">@{currentUser.username}</span>
+                                <span className="block truncate text-sm font-medium">{currentUser.email}</span>
+                            </Dropdown.Header>
+                            <Link to={'/notification'}>
+                                <Dropdown.Item className="flex gap-1 items-center">
+                                    Notification
+                                    {currentUser?.newNotification == true && (
+                                        <i className="px-2 rounded-full bg-red-500 text-sm font-thin">New</i>
+                                    )}
+                                </Dropdown.Item>
+                            </Link>
+                            <Dropdown.Divider />
+                            <Link to={'/dash-board?tab=profile'}>
+                                <Dropdown.Item>Dashboard</Dropdown.Item>
+                            </Link>
+                            {currentUser.isAdmin && (
+                                <>
+                                    <Dropdown.Divider />
+                                    <Link to={'/admin?tab=main-board'}>
+                                        <Dropdown.Item>Admin</Dropdown.Item>
+                                    </Link>
+                                </>
+                            )}
+                            <Dropdown.Divider />
+                            <Dropdown.Item onClick={handleSignOut}>Sign out</Dropdown.Item>
+                        </Dropdown>
+                    </div>
                 ) : (
                     <Link to={'/sign-in'}>
                         <Button outline gradientDuoTone="greenToBlue">

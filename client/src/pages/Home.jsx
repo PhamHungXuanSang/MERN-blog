@@ -7,6 +7,8 @@ import { BiSolidCategoryAlt } from 'react-icons/bi';
 import NotFound from '../components/NotFound';
 import OneByOneAppearEffect from '../components/OneByOneAppearEffect';
 import OneByOneAppearFromRightEffect from '../components/OneByOneAppearFromRightEffect';
+// import { useDispatch, useSelector } from 'react-redux';
+// import { setCurrentUser } from '../redux/user/userSlice.js';
 
 export default function Home() {
     const [activeTab, setActiveTab] = useState('home');
@@ -15,6 +17,8 @@ export default function Home() {
     const [trendingBlogs, setTrendingBlogs] = useState(null);
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPage, setTotalPage] = useState(1);
+    // const currentUser = useSelector((state) => state.user.currentUser);
+    // const dispatch = useDispatch();
 
     ///////////// Phải đổi lại lấy từ csdl ra chứ kp cố định là 1 array
     const category = ['programing', 'travel', 'food', 'technology', 'health', 'sport', 'entertainment'];
@@ -68,6 +72,22 @@ export default function Home() {
 
     useEffect(() => {
         handleGetTrendingBlogs();
+        // if (currentUser?.email) {
+        //     // Check new noti bằng gọi api kiểm tra
+        //     const checkNewNoti = async () => {
+        //         const res = await fetch(`/api/notification/newNotification/${currentUser._id}`, {
+        //             method: 'GET',
+        //             headers: { 'Content-Type': 'application/json' },
+        //         });
+        //         const data = await res.json();
+        //         if (data.length > 0) {
+        //             dispatch(setCurrentUser({ ...currentUser, newNotification: true }));
+        //         } else {
+        //             dispatch(setCurrentUser({ ...currentUser, newNotification: false }));
+        //         }
+        //     };
+        //     checkNewNoti();
+        // }
     }, []);
 
     const loadBlogByCategory = async (e) => {

@@ -3,7 +3,7 @@ import { errorHandler } from '../utils/error.js';
 import Comment from '../models/comment.model.js';
 import Blog from '../models/blog.model.js';
 import Noti from '../models/noti.model.js';
-import { getUser, io, userOnline } from '../index.js';
+import { io, userOnline } from '../index.js';
 
 export const addComment = async (req, res, next) => {
     try {
@@ -76,17 +76,6 @@ export const addComment = async (req, res, next) => {
                 sender,
                 message,
             };
-
-            // if (type == 'reply') {
-            //     newNotification.repliedOnComment = replyingTo;
-            //     Comment.findOneAndUpdate({ _id: replyingTo }, { $push: { children: newComment._id } })
-            //         .then((parentComment) => {
-            //             newNotification.recipient = parentComment.commentedBy;
-            //         })
-            //         .catch((error) => {
-            //             console.log(error);
-            //         });
-            // }
             new Noti(newNotification)
                 .save()
                 .then(() => {})
