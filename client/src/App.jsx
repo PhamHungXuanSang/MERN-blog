@@ -8,7 +8,7 @@ import Dashboard from './pages/Dashboard';
 import Header from './components/Header';
 import Footer from './components/FooterComponent';
 import PrivateRoute from './components/PrivateRoute';
-import toast, { Toaster } from 'react-hot-toast';
+import { Toaster } from 'react-hot-toast';
 import Search from './pages/Search';
 import PageNotFound from './pages/PageNotFound';
 import UserProfile from './pages/UserProfile';
@@ -24,10 +24,8 @@ import Admin from './pages/Admin.jsx';
 import Checkout from './pages/Checkout.jsx';
 import ForgotPassword from './pages/ForgotPassword.jsx';
 import Notification from './pages/Notification.jsx';
-//import { setCurrentUser } from './redux/user/userSlice.js';
 
 export default function App() {
-    //const dispatch = useDispatch();
     const initialOptions = {
         'client-id': import.meta.env.VITE_REACT_APP_PAYPAL_CLIENT_ID,
         currency: 'USD',

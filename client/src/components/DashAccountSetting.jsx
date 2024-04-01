@@ -1,13 +1,10 @@
-import { Alert, Button, Label, Modal, Spinner, TextInput } from 'flowbite-react';
+import { Alert, Button, Label, Modal, TextInput } from 'flowbite-react';
 import { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { HiOutlineExclamationCircle } from 'react-icons/hi2';
-import { deleteUserStart, deleteUserSuccess, deleteUserFailure, signOutSuccess } from '../redux/user/userSlice.js';
-import { useNavigate, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 export default function DashAccountSetting() {
-    const dispatch = useDispatch();
-    const navigate = useNavigate();
     const [showModal, setShowModal] = useState(false);
     const currentUser = useSelector((state) => state.user.currentUser);
     const error = useSelector((state) => state.user.error);
@@ -59,10 +56,6 @@ export default function DashAccountSetting() {
                     <div className="w-full h-fit border-b-2 border-neutral-300">
                         <p className="border-b-2 text-lg w-fit py-2 px-4">Account Setting</p>
                     </div>
-
-                    {/* <Button outline gradientDuoTone="greenToBlue" onClick={() => setShowModal(true)}>
-                    Delete Account
-                </Button> */}
                     <div className="flex flex-col items-center justify-center">
                         <i className="text-xl font-bold my-4">Change Password</i>
                         <form onSubmit={handleSubmit} className="w-full max-w-xs">

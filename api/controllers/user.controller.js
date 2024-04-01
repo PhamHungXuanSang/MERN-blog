@@ -13,18 +13,18 @@ export const getUserProfile = async (req, res, next) => {
     try {
         const page = req.query.page;
         const limit = req.query.limit;
-        const totalBlogs = await Blog.find({ authorId: user._id });
-        let totalViews = 0;
-        totalBlogs.forEach((blog) => {
-            totalViews += blog.viewed;
-        });
         const blogs = await Blog.find({ authorId: user._id })
             .populate('authorId', '_id username email userAvatar createdAt')
             .sort({ createdAt: -1 })
             .skip(page != 1 ? (page - 1) * limit : 0)
             .limit(limit);
 
-        res.status(200).json({ user, blogs, total: totalBlogs.length, totalViews });
+        let totalViews = 0;
+        blogs.forEach((blog) => {
+            totalViews += blog.viewed;
+        });
+
+        res.status(200).json({ user, blogs, total: blogs.length, totalViews });
     } catch (error) {
         next(error);
     }
@@ -161,10 +161,10 @@ export const resetPassword = async (req, res, next) => {
         // Update lại mật khẩu cho người dùng
         const hashedPassword = await bcryptjs.hashSync(newPassword, 10);
         const user = await User.findByIdAndUpdate(userId, { $set: { password: hashedPassword } }, { new: true });
-        if(user.password) {
-            return res.status(200).json("Password has been reset")
+        if (user.password) {
+            return res.status(200).json('Password has been reset');
         } else {
-            return next(errorHandler(400, "Some thing went wrong"))
+            return next(errorHandler(400, 'Some thing went wrong'));
         }
     } catch (error) {
         next(error);

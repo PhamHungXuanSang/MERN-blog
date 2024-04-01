@@ -28,7 +28,7 @@ export default function Search() {
         }
         getSearchValue();
     }, [location.search]);
-    console.log(filterData);
+    
     let { query } = useParams();
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPage, setTotalPage] = useState(1);

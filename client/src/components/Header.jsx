@@ -180,9 +180,16 @@ export default function Header() {
                     {darkModeObj.darkMode === 'light' ? <FaMoon /> : <FaSun />}
                 </Button>
                 {currentUser ? (
-                    <div onClick={checkNewNoti}>
+                    <div>
                         <Dropdown
-                            label={<Avatar alt="User settings" img={currentUser.userAvatar} rounded />}
+                            label={
+                                <Avatar
+                                    onClick={checkNewNoti}
+                                    alt="User settings"
+                                    img={currentUser.userAvatar}
+                                    rounded
+                                />
+                            }
                             arrowIcon={false}
                             inline
                         >

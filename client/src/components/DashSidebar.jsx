@@ -83,7 +83,7 @@ export default function DashSidebar() {
                             </Link>
                             <Link to="/dash-board?tab=all-blog">
                                 <Sidebar.Item className="mt-1" active={tab === 'all-blog'} icon={HiDocumentText}>
-                                    All blog
+                                    All my blog
                                 </Sidebar.Item>
                             </Link>
                         </>

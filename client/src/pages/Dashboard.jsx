@@ -4,8 +4,8 @@ import DashSidebar from '../components/DashSidebar';
 import DashProfile from '../components/DashProfile';
 import DashProfileUpdate from '../components/DashProfileUpdate';
 import DashAccountSetting from '../components/DashAccountSetting';
-// import DashAdmin from '../components/DashAdmin';
 import Editor from './Editor';
+import DashAllMyBlog from '../components/DashAllMyBlog';
 
 export default function Dashboard() {
     const [tab, setTab] = useState('');
@@ -17,7 +17,7 @@ export default function Dashboard() {
         if (tabFromUrl) {
             setTab(tabFromUrl);
         }
-    }, [location.search]); // thuc hien code khi co su thay doi ve location
+    }, [location.search]);
 
     return (
         <div className="flex flex-col md:flex-row">
@@ -29,7 +29,7 @@ export default function Dashboard() {
                 {tab === 'profile' && <DashProfile />}
                 {tab === 'update-profile' && <DashProfileUpdate />}
                 {tab === 'create-blog' && <Editor />}
-                {tab === 'all-blog' && <DashBlog />}
+                {tab === 'all-blog' && <DashAllMyBlog />}
                 {tab === 'account-setting' && <DashAccountSetting />}
             </div>
         </div>

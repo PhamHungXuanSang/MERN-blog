@@ -222,3 +222,63 @@ export const deleteBlog = async (req, res, next) => {
         next(error);
     }
 };
+
+export const manageBlogs = async (req, res, next) => {
+    // const { userId } = req.params;
+    // let query = req.body.query != '' ? req.body.query : null;
+    // const category = req.body.category;
+    // const sort = req.query.sort === 'desc' ? -1 : 1;
+    // const page = parseInt(req.query.page || '1');
+    // const limit = parseInt(req.query.limit || '2');
+    // try {
+    //     console.log(query);
+    //     const regexQuery = new RegExp(query, 'i');
+    //     const [blogs, totalBlogs] = await Promise.all([
+    //         Blog.find({
+    //             authorId: userId,
+    //             $or: [{ title: new RegExp(regexQuery, 'i') }, { description: new RegExp(regexQuery, 'i') }],
+    //             category,
+    //         })
+    //             .populate('authorId', '_id username email userAvatar')
+    //             .sort({ createdAt: sort })
+    //             .skip((page - 1) * limit)
+    //             .limit(limit),
+    //         Blog.countDocuments({ authorId: userId, query }).exec(),
+    //     ]);
+    //     return res.status(200).json({ blogs, total: totalBlogs });
+    // } catch (error) {
+    //     next(error);
+    // }
+    const { userId } = req.params;
+    let query = req.body.query;
+    const category = req.body.category;
+    const sort = req.query.sort === 'desc' ? -1 : 1;
+    const page = parseInt(req.query.page || '1');
+    const limit = parseInt(req.query.limit || '2');
+
+    try {
+        const filters = {
+            authorId: userId,
+            category,
+        };
+
+        if (query) {
+            // Nếu query không phải là chuỗi rỗng
+            query = new RegExp(query.trim(), 'i'); // Sử dụng trim() để loại bỏ khoảng trắng thừa
+            filters['$or'] = [{ title: query }, { description: query }];
+        }
+
+        const [blogs, totalBlogs] = await Promise.all([
+            Blog.find(filters)
+                .populate('authorId', '_id username email userAvatar')
+                .sort({ createdAt: sort })
+                .skip((page - 1) * limit)
+                .limit(limit),
+            Blog.countDocuments(filters).exec(),
+        ]);
+
+        return res.status(200).json({ blogs, total: totalBlogs });
+    } catch (error) {
+        next(error);
+    }
+};

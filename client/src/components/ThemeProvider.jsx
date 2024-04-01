@@ -11,6 +11,8 @@ export default function ThemeProvider({ children }) {
         systemMode = mediaQuery.matches ? 'dark' : 'light';
     }
 
+    console.log(systemMode);
+
     return (
         <div className={systemMode !== null ? systemMode : darkModeObj.darkMode}>
             <div className="bg-white text-gray-700 dark:text-gray-200 dark:bg-[rgb(16,23,42)] min-h-screen">

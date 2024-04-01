@@ -11,45 +11,40 @@ export default function NotificationCard({ data, index, notificationState }) {
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const [isReplying, setIsReplying] = useState(false);
-    const { notifications, setNotifications } = notificationState;
-    let { page, results, totalDocs } = notifications;
+    let { notifications, setNotifications } = notificationState;
 
-    const handleMarkAsRead = async (notificationId) => {
-        // Cập nhật trạng thái read = true
-        // Gọi api cập nhật trong db và dùng js để set lại notifications
-        try {
-            const res = await fetch(`/api/notification/mark-as-read/${notificationId}`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-            });
-            const data = await res.json();
-            if (res.status === 403) {
-                dispatch(signOutSuccess());
-                return navigate('/sign-in');
-            }
-            if (res.status === 200) {
-                results = results.map((rs) => {
-                    if (rs._id === notificationId) {
-                        return { ...rs, read: true };
-                    }
-                    return rs;
+    const handleMarkAsRead = async (data) => {
+        if (data.read == false) {
+            try {
+                const res = await fetch(`/api/notification/mark-as-read/${data._id}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
                 });
-                setNotifications({ ...notifications, results });
-                return;
-            } else {
-                return toast.error(data.message);
+                const resMes = await res.json();
+                if (res.status === 403) {
+                    dispatch(signOutSuccess());
+                    return navigate('/sign-in');
+                }
+                if (res.status === 200) {
+                    notifications = notifications.map((nt) => {
+                        // So sánh ID của blog trong thông báo với notificationId
+                        if (nt._id === data._id) {
+                            return { ...nt, read: true };
+                        }
+                        return nt;
+                    });
+                    setNotifications([...notifications]);
+                    return;
+                } else {
+                    return toast.error(resMes.message);
+                }
+            } catch (error) {
+                console.log(error);
             }
-        } catch (error) {
-            console.log(error);
         }
     };
 
-    const handleReplyClick = (notificationId) => {
-        setIsReplying((prev) => !prev);
-        handleMarkAsRead(notificationId);
-    };
-
-    const handleDelete = async (e, notificationId) => {
+    const handleDelete = async (notificationId) => {
         try {
             const res = await fetch(`/api/notification/delete-notification/${notificationId}`, {
                 method: 'DELETE',
@@ -61,11 +56,7 @@ export default function NotificationCard({ data, index, notificationState }) {
                 return navigate('/sign-in');
             }
             if (res.status == 200) {
-                setNotifications({
-                    ...notifications,
-                    results: results.filter((rs) => rs._id != notificationId),
-                    totalDocs: totalDocs - 1,
-                });
+                setNotifications(notifications.filter((nt) => nt._id !== notificationId));
                 return toast.success('Notification deleted');
             } else {
                 return toast.error(data.message);
@@ -76,7 +67,13 @@ export default function NotificationCard({ data, index, notificationState }) {
     };
 
     return (
-        <div className={'p-4 border-b border-gray-300 ' + `${data.read ? '' : 'bg-gray-700'}`}>
+        <div
+            onClick={() => handleMarkAsRead(data)}
+            className={
+                'p-4 border-b border-gray-300 ' +
+                `${data.read ? '' : 'dark:bg-gray-700 bg-gray-200 cursor-pointer hover:opacity-80'}`
+            }
+        >
             <div className="flex gap-4 mb-3">
                 <Link to={`/user/${data.sender.username}`}>
                     <img src={data.sender.userAvatar} className="w-12 h-12 flex-none rounded-full" />
@@ -98,18 +95,7 @@ export default function NotificationCard({ data, index, notificationState }) {
                         </Link>
                     )}
                     <h1 className="font-medium text-xl">
-                        <span className="pl-4 font-normal line-clamp-2 text-sm">
-                            {/* {data.type === 'like'
-                                ? 'liked your blog'
-                                : data.type === 'comment'
-                                  ? 'commented on'
-                                  : data.type === 'reply'
-                                    ? 'replied on'
-                                    : data.type === 'rating'
-                                      ? 'rated on'
-                                      : 'notified on'} */}
-                            {data.message}
-                        </span>
+                        <span className="pl-4 font-normal line-clamp-2 text-sm">{data.message}</span>
                     </h1>
                 </div>
             </div>
@@ -122,10 +108,13 @@ export default function NotificationCard({ data, index, notificationState }) {
                 <p className="text-sm">{dateToDateAndTime(data.createdAt)}</p>
                 {data.type != 'like' && data.type != 'system' && data.type != 'rating' ? (
                     <>
-                        <button className="underline hover:cursor-pointer" onClick={() => handleReplyClick(data._id)}>
+                        <button
+                            className="underline hover:cursor-pointer"
+                            onClick={() => setIsReplying((prev) => !prev)}
+                        >
                             Reply
                         </button>
-                        <button className="underline hover:cursor-pointer" onClick={(e) => handleDelete(e, data._id)}>
+                        <button className="underline hover:cursor-pointer" onClick={() => handleDelete(data._id)}>
                             Delete
                         </button>
                     </>

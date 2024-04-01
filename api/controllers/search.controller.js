@@ -23,20 +23,18 @@ export const search = async (req, res, next) => {
             };
         }
 
-        const totalBlogs = await Blog.countDocuments(baseQuery);
-        const [searchResults, users] = await Promise.all([
+        const regexQuery = new RegExp(query, 'i');
+        const [searchResults, users, totalBlogs] = await Promise.all([
             Blog.find(baseQuery)
                 .populate('authorId', '_id username email userAvatar')
                 .sort({ createdAt: sort })
                 .skip((page - 1) * limit)
-                .limit(limit),
+                .limit(limit)
+                .exec(),
             User.find({
-                $or: [
-                    { username: new RegExp(query, 'i') },
-                    { email: new RegExp(query, 'i') },
-                    { userDesc: new RegExp(query, 'i') },
-                ],
-            }).select('-password'),
+                $or: [{ username: regexQuery }, { email: regexQuery }, { userDesc: regexQuery }],
+            }).select('_id username email userAvatar'),
+            Blog.countDocuments(baseQuery).exec(),
         ]);
         return res.status(200).json({ blogs: searchResults || [], total: totalBlogs, users: users || [] });
     } catch (error) {
