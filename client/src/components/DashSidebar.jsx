@@ -1,8 +1,8 @@
 import { Sidebar } from 'flowbite-react';
 import { MdLocalOffer } from 'react-icons/md';
 import { IoCreateSharp, IoSettings } from 'react-icons/io5';
-import { HiDocumentText, HiUser } from 'react-icons/hi';
-import { RiAdminFill } from 'react-icons/ri';
+import { HiDocumentText } from 'react-icons/hi';
+import { HiMiniClipboardDocumentCheck } from 'react-icons/hi2';
 import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
@@ -19,7 +19,6 @@ export default function DashSidebar() {
         const setCreatePermission = async () => {
             const rs = await checkCreatePermission(currentUser._id);
             if (rs) {
-                // Nếu về data thì gọi hàm set lại currentUser trong redux
                 dispatch(setCurrentUser(rs));
             }
         };
@@ -36,7 +35,7 @@ export default function DashSidebar() {
     }, [location.search]);
 
     return (
-        <Sidebar aria-label="Sidebar with content separator example" className="w-full md:w-56">
+        <Sidebar aria-label="Sidebar with content separator example" className="w-full">
             <Sidebar.Items className="pt-8">
                 <Sidebar.ItemGroup>
                     <span className="text-3xl font-semibold pb-2 pl-2">Profile</span>
@@ -56,20 +55,6 @@ export default function DashSidebar() {
                             Update Profile
                         </Sidebar.Item>
                     </Link>
-                    {/* {currentUser.isAdmin && (
-                        <Sidebar.Collapse icon={RiAdminFill} label="Admin">
-                            <Link to="/dash-board?tab=admin-dashboard">
-                                <Sidebar.Item
-                                    active={tab === 'profile'}
-                                    label={currentUser.isAdmin ? 'Admin' : 'User'}
-                                    labelColor="dark"
-                                    as="div"
-                                >
-                                    Admin
-                                </Sidebar.Item>
-                            </Link>
-                        </Sidebar.Collapse>
-                    )} */}
                 </Sidebar.ItemGroup>
 
                 <Sidebar.ItemGroup>
@@ -84,6 +69,15 @@ export default function DashSidebar() {
                             <Link to="/dash-board?tab=all-blog">
                                 <Sidebar.Item className="mt-1" active={tab === 'all-blog'} icon={HiDocumentText}>
                                     All my blog
+                                </Sidebar.Item>
+                            </Link>
+                            <Link to="/dash-board?tab=recently-viewed">
+                                <Sidebar.Item
+                                    className="mt-1"
+                                    active={tab === 'recently-viewed'}
+                                    icon={HiMiniClipboardDocumentCheck}
+                                >
+                                    Recently viewed
                                 </Sidebar.Item>
                             </Link>
                         </>

@@ -16,7 +16,8 @@ const packageSchema = new mongoose.Schema({
         required: true,
     },
     packageExpiry: {
-        type: String,
+        type: Number,
+        min: 1,
         required: true,
     },
 });

@@ -33,7 +33,7 @@ export default function AdminSideBar() {
     }, [location.search]);
 
     return (
-        <Sidebar aria-label="Sidebar with content separator example" className="w-full md:w-56">
+        <Sidebar aria-label="Sidebar with content separator example" className="w-full">
             <Sidebar.Items className="pt-8">
                 <Sidebar.ItemGroup>
                     <span className="text-3xl font-semibold pb-2 pl-2">Business</span>

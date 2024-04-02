@@ -31,7 +31,9 @@ const blogSchema = new mongoose.Schema(
         },
         category: {
             type: String,
+            enum: ['uncategorized', 'programing', 'travel', 'food', 'technology', 'health', 'sport', 'entertainment'],
             default: 'uncategorized',
+            required: true,
         },
         likes: {
             type: [],
@@ -74,7 +76,16 @@ blogSchema.virtual('commentCount').get(function () {
     return this.comments.length;
 });
 
+blogSchema.virtual('averageRating').get(function () {
+    if (this.rating.length > 0) {
+        const sumRatings = this.rating.reduce((accumulator, rating) => accumulator + rating.star, 0);
+        return (sumRatings / this.rating.length).toFixed(1);
+    }
+    return 0;
+});
+
 blogSchema.set('toJSON', { virtuals: true });
+blogSchema.set('toObject', { virtuals: true });
 
 const Blog = mongoose.model('Blog', blogSchema);
 

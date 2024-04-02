@@ -194,3 +194,22 @@ export const choosePlan = async (req, res, next) => {
         next(error);
     }
 };
+
+export const getTransactionHistory = async (req, res, next) => {
+    const userId = req.params.userId;
+    try {
+        if (!req.user.isAdmin) {
+            const user = await User.findById(userID, '_id').exec(); // Chỉ lấy trường cần thiết
+            if (!user) {
+                return next(errorHandler(400, 'User not found'));
+            }
+            if (user._id.toString() !== userId.toString()) {
+                // Nếu không phải admin và user thì ko cho xem lichj suwr giao dichj
+                return next(errorHandler(400, 'You are not allowed to get this user transaction'));
+            }
+        }
+        // Làm việc với bảng paymentHis và transaction để lấy lịch sử giao dịch
+    } catch (error) {
+        next(error);
+    }
+};

@@ -1,24 +1,20 @@
 import { useEffect, useState } from 'react';
 import Blog from '../components/Blog';
-import { Button, Spinner, Pagination } from 'flowbite-react';
+import { Button, Spinner, Pagination, Carousel } from 'flowbite-react';
 import BlogMini from '../components/BlogMini';
 import { TbTrendingUp } from 'react-icons/tb';
 import { BiSolidCategoryAlt } from 'react-icons/bi';
 import NotFound from '../components/NotFound';
 import OneByOneAppearEffect from '../components/OneByOneAppearEffect';
 import OneByOneAppearFromRightEffect from '../components/OneByOneAppearFromRightEffect';
-// import { useDispatch, useSelector } from 'react-redux';
-// import { setCurrentUser } from '../redux/user/userSlice.js';
 
 export default function Home() {
-    const [activeTab, setActiveTab] = useState('home');
+    const [activeTab, setActiveTab] = useState('all category');
     const [activeCate, setActiveCate] = useState('');
     const [blogs, setBlogs] = useState(null);
     const [trendingBlogs, setTrendingBlogs] = useState(null);
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPage, setTotalPage] = useState(1);
-    // const currentUser = useSelector((state) => state.user.currentUser);
-    // const dispatch = useDispatch();
 
     ///////////// Phải đổi lại lấy từ csdl ra chứ kp cố định là 1 array
     const category = ['programing', 'travel', 'food', 'technology', 'health', 'sport', 'entertainment'];
@@ -63,7 +59,7 @@ export default function Home() {
     };
 
     useEffect(() => {
-        if (activeTab == 'home') {
+        if (activeTab == 'all category') {
             handleGetLatestBlogs();
         } else {
             handleGetBlogsByCate(activeTab);
@@ -72,22 +68,6 @@ export default function Home() {
 
     useEffect(() => {
         handleGetTrendingBlogs();
-        // if (currentUser?.email) {
-        //     // Check new noti bằng gọi api kiểm tra
-        //     const checkNewNoti = async () => {
-        //         const res = await fetch(`/api/notification/newNotification/${currentUser._id}`, {
-        //             method: 'GET',
-        //             headers: { 'Content-Type': 'application/json' },
-        //         });
-        //         const data = await res.json();
-        //         if (data.length > 0) {
-        //             dispatch(setCurrentUser({ ...currentUser, newNotification: true }));
-        //         } else {
-        //             dispatch(setCurrentUser({ ...currentUser, newNotification: false }));
-        //         }
-        //     };
-        //     checkNewNoti();
-        // }
     }, []);
 
     const loadBlogByCategory = async (e) => {
@@ -99,7 +79,7 @@ export default function Home() {
         if (activeTab == cate) {
             setActiveCate('');
             setCurrentPage(1);
-            setActiveTab('home');
+            setActiveTab('all category');
         } else {
             setActiveCate(cate);
             setCurrentPage(1);
@@ -159,11 +139,11 @@ export default function Home() {
                         trendingBlogs.length == 0 ? (
                             <NotFound object={'Not found trending blog'} />
                         ) : (
-                            trendingBlogs.map((blog, i) => (
-                                <OneByOneAppearFromRightEffect transition={{ duration: 1, delay: i * 0.2 }} key={i}>
+                            <Carousel className="h-fit pb-8" pauseOnHover>
+                                {trendingBlogs.map((blog, i) => (
                                     <BlogMini key={i} index={i} content={blog} author={blog.authorId} />
-                                </OneByOneAppearFromRightEffect>
-                            ))
+                                ))}
+                            </Carousel>
                         )
                     ) : (
                         <Spinner className="block mx-auto mt-4" size="lg" />
@@ -176,14 +156,16 @@ export default function Home() {
                         <div className="flex gap-2 flex-wrap">
                             {category.map((cate, i) => {
                                 return (
-                                    <Button
-                                        gradientDuoTone="greenToBlue"
-                                        key={i}
-                                        outline={activeCate == cate.toLowerCase() ? false : true}
-                                        onClick={loadBlogByCategory}
-                                    >
-                                        {cate.toUpperCase()}
-                                    </Button>
+                                    <OneByOneAppearFromRightEffect transition={{ duration: 1, delay: i * 0.1 }} key={i}>
+                                        <Button
+                                            gradientDuoTone="greenToBlue"
+                                            key={i}
+                                            outline={activeCate == cate.toLowerCase() ? false : true}
+                                            onClick={loadBlogByCategory}
+                                        >
+                                            {cate.toUpperCase()}
+                                        </Button>
+                                    </OneByOneAppearFromRightEffect>
                                 );
                             })}
                         </div>

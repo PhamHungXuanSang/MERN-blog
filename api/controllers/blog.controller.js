@@ -2,6 +2,7 @@ import { errorHandler } from '../utils/error.js';
 import Blog from '../models/blog.model.js';
 import Comment from '../models/comment.model.js';
 import Noti from '../models/noti.model.js';
+import User from '../models/user.model.js';
 
 export const latestBlogs = async (req, res, next) => {
     try {
@@ -37,7 +38,7 @@ export const trendingBlogs = async (req, res, next) => {
     try {
         const trendingBlogs = await Blog.find()
             .populate('authorId', '_id username email userAvatar')
-            .sort({ viewed: -1, likeCount: -1, createdAt: -1 })
+            .sort({ viewed: -1, likeCount: -1 })
             .limit(5);
         res.status(200).json(trendingBlogs);
     } catch (error) {
@@ -121,16 +122,44 @@ export const createBlog = async (req, res, next) => {
 
 export const readBlog = async (req, res, next) => {
     const slug = req.params.slug;
+    const userId = req.params.userId;
 
     try {
         const blog = await Blog.findOneAndUpdate({ slug }, { $inc: { viewed: 1 } }, { new: true }).populate(
             'authorId',
             '_id username email userAvatar',
         );
+
         if (!blog) {
             return next(errorHandler(404, 'Blog not found'));
         }
-        res.status(200).json({ blog });
+
+        const similarAuthorBlogs = await Blog.find({
+            authorId: blog.authorId._id,
+            _id: { $ne: blog._id },
+        }).limit(5);
+
+        if (userId) {
+            const user = await User.findById(userId);
+            const hasViewed = user.viewedBlogsHistory.some(
+                (viewedBlog) => viewedBlog.blog.toString() === blog._id.toString(),
+            );
+
+            if (hasViewed) {
+                await User.updateOne(
+                    { _id: userId, 'viewedBlogsHistory.blog': blog._id },
+                    { $set: { 'viewedBlogsHistory.$.viewedAt': new Date() } },
+                );
+            } else {
+                await User.findByIdAndUpdate(
+                    userId,
+                    { $push: { viewedBlogsHistory: { blog: blog._id, viewedAt: new Date() } } },
+                    { new: true, upsert: true },
+                );
+            }
+        }
+
+        return res.status(200).json({ blog, similarAuthorBlogs });
     } catch (error) {
         next(error);
     }
@@ -224,31 +253,6 @@ export const deleteBlog = async (req, res, next) => {
 };
 
 export const manageBlogs = async (req, res, next) => {
-    // const { userId } = req.params;
-    // let query = req.body.query != '' ? req.body.query : null;
-    // const category = req.body.category;
-    // const sort = req.query.sort === 'desc' ? -1 : 1;
-    // const page = parseInt(req.query.page || '1');
-    // const limit = parseInt(req.query.limit || '2');
-    // try {
-    //     console.log(query);
-    //     const regexQuery = new RegExp(query, 'i');
-    //     const [blogs, totalBlogs] = await Promise.all([
-    //         Blog.find({
-    //             authorId: userId,
-    //             $or: [{ title: new RegExp(regexQuery, 'i') }, { description: new RegExp(regexQuery, 'i') }],
-    //             category,
-    //         })
-    //             .populate('authorId', '_id username email userAvatar')
-    //             .sort({ createdAt: sort })
-    //             .skip((page - 1) * limit)
-    //             .limit(limit),
-    //         Blog.countDocuments({ authorId: userId, query }).exec(),
-    //     ]);
-    //     return res.status(200).json({ blogs, total: totalBlogs });
-    // } catch (error) {
-    //     next(error);
-    // }
     const { userId } = req.params;
     let query = req.body.query;
     const category = req.body.category;
@@ -257,14 +261,15 @@ export const manageBlogs = async (req, res, next) => {
     const limit = parseInt(req.query.limit || '2');
 
     try {
-        const filters = {
+        let filters = {
             authorId: userId,
-            category,
         };
+        if (category != 'all category') {
+            filters.category = category;
+        }
 
         if (query) {
-            // Nếu query không phải là chuỗi rỗng
-            query = new RegExp(query.trim(), 'i'); // Sử dụng trim() để loại bỏ khoảng trắng thừa
+            query = new RegExp(query.trim(), 'i');
             filters['$or'] = [{ title: query }, { description: query }];
         }
 

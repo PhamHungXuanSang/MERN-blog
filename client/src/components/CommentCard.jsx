@@ -1,7 +1,6 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
 import { useDispatch, useSelector } from 'react-redux';
-import formatDate from '../utils/formatDate';
 import toast from 'react-hot-toast';
 import { useContext, useState } from 'react';
 import CommentField from './CommentField';

@@ -58,7 +58,7 @@ export default function MyBlogCard({ blog, setBlogs }) {
 
     return (
         <>
-            <div className="flex gap-10 border-b mb-6 max-md:px-4 border-gray-300 pb-6 items-center">
+            <div className="flex gap-10 border-b max-md:px-4 border-gray-300 pb-4 px-4 items-center">
                 <img
                     src={blog.thumb}
                     alt="blog thumb"
@@ -66,7 +66,10 @@ export default function MyBlogCard({ blog, setBlogs }) {
                 />
                 <div className="flex flex-col justify-between py-2 w-full min-w-[300px]">
                     <div>
-                        <Link to={`/blog/${blog.slug}`} className="mb-4 hover:underline text-xl font-semibold">
+                        <Link
+                            to={`/blog/${blog.slug}`}
+                            className="mb-4 hover:underline text-xl font-semibold max-w-[90%] overflow-x-hidden block"
+                        >
                             {blog.title}
                         </Link>
                         <p className="line-clamp-1">

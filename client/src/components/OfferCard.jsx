@@ -1,20 +1,16 @@
 /* eslint-disable react/prop-types */
 import { Card } from 'flowbite-react';
 
-export default function OfferCard({
-    packageName,
-    packagePrice,
-    packageDescription,
-    packageExpiry,
-    handleBuy,
-}) {
+export default function OfferCard({ packageName, packagePrice, packageDescription, packageExpiry, handleBuy }) {
     return (
         <Card className="max-w-sm mx-auto">
             <h5 className="mb-2 text-xl font-medium text-gray-500 dark:text-gray-400">{packageName}</h5>
             <div className="flex items-baseline text-gray-900 dark:text-white">
                 <span className="text-3xl font-semibold">$</span>
                 <span className="text-5xl font-extrabold tracking-tight">{packagePrice}</span>
-                <span className="ml-1 text-xl font-normal text-gray-500 dark:text-gray-400">/{packageExpiry}</span>
+                <span className="ml-1 text-xl font-normal text-gray-500 dark:text-gray-400">
+                    {packageExpiry > 365 ? '/forever' : `/${packageExpiry} days`}
+                </span>
             </div>
             <ul className="my-2 space-y-2">
                 {packageDescription.map((desc, i) => {

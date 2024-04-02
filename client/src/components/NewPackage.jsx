@@ -80,14 +80,14 @@ export default function PackageManagement() {
             </div>
 
             <form className="mt-4 px-4">
-                <div className="flex gap-8">
+                <div className="flex gap-20">
                     <div className="flex gap-4 items-center mt-4">
                         <div className="mb-2 block">
-                            <Label htmlFor="packageName" value="Package Name" />
+                            <Label htmlFor="packageName" value="Name" />
                         </div>
                         <TextInput
                             id="packageName"
-                            placeholder="Enter new package name"
+                            placeholder="Package name"
                             //defaultValue={currentUser.userDesc}
                             maxLength={50}
                             onChange={handleType}
@@ -95,24 +95,23 @@ export default function PackageManagement() {
                     </div>
                     <div className="flex gap-4 items-center mt-4">
                         <div className="mb-2 block">
-                            <Label htmlFor="packagePrice" value="Package Price" />
+                            <Label htmlFor="packagePrice" value="Price" />
                         </div>
                         <TextInput
                             className="spin-button-none"
                             id="packagePrice"
                             type="number"
                             min={0}
-                            placeholder="Enter package price"
+                            placeholder="Package price (USD)"
                             //defaultValue={currentUser.userDesc}
                             onChange={handleType}
                         />
-                        <p>USD</p>
                     </div>
                     <div className="flex gap-4 items-center mt-4">
                         <div className="mb-2 block">
-                            <Label htmlFor="packageExpiry" value="Package Expire" />
+                            <Label htmlFor="packageExpiry" value="Expire" />
                         </div>
-                        <select
+                        {/* <select
                             id="packageExpiry"
                             name="packageExpiry"
                             onChange={handleType}
@@ -125,7 +124,16 @@ export default function PackageManagement() {
                             <option value="5m">5 Month</option>
                             <option value="6m">6 Month</option>
                             <option value="12m">12 Month</option>
-                        </select>
+                        </select> */}
+                        <TextInput
+                            className="spin-button-none"
+                            id="packageExpiry"
+                            type="number"
+                            min={1}
+                            placeholder="Package expires in (day)"
+                            //defaultValue={currentUser.userDesc}
+                            onChange={handleType}
+                        />
                     </div>
                 </div>
                 <div className="flex items-start gap-4 mt-4">

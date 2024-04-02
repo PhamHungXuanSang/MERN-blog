@@ -20,7 +20,7 @@ router.get('/trending-blogs', trendingBlogs);
 router.get('/category/:cate', categoryBlogs);
 router.post('/create-blog/:userId', authenToken, createBlog);
 router.post('/edit-blog/:slug', authenToken, editBlog);
-router.get('/read-blog/:slug', readBlog);
+router.get('/read-blog/:slug/:userId', readBlog);
 router.post('/update-like-blog/:userId', authenToken, updateLikeBlog);
 router.post('/rating-blog/:blogId/:userId', authenToken, ratingBlog);
 router.delete('/delete-blog/:blogId', authenToken, deleteBlog);

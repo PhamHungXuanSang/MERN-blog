@@ -23,10 +23,10 @@ export default function Admin() {
 
     return (
         <div className="flex flex-col md:flex-row">
-            <div className="md:w-56">
+            <div className="md:w-[16%]">
                 <AdminSideBar />
             </div>
-            <div className="min-h-screen container mx-auto">
+            <div className="min-h-screen container md:w-[80%] mx-auto">
                 {tab === 'main-board' && <MainBoardManagement />}
                 {tab === 'revenue' && <RevenueManagement />}
                 {tab === 'revenue-each-package' && <RevenueEachPackage />}

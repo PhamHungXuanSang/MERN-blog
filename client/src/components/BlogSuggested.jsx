@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { Link } from 'react-router-dom';
 
 export default function BlogSuggested({ blog }) {
@@ -13,7 +14,7 @@ export default function BlogSuggested({ blog }) {
             <div className="p-3 flex flex-col gap-2">
                 <p className="text-lg font-semibold line-clamp-2">{blog.title}</p>
                 <span className="w-fit px-4 whitespace-nowrap rounded-full capitalize bg-slate-200 dark:bg-slate-500 font-semibold">
-                    {blog.tags[0]}
+                    {blog.category}
                 </span>
                 <Link
                     to={`/blog/${blog.slug}`}

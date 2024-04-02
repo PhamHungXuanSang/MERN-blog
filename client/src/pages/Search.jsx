@@ -12,7 +12,7 @@ import User from '../components/User';
 export default function Search() {
     const [filterData, setFilterData] = useState({
         sort: 'desc',
-        category: 'uncategorized',
+        category: 'all category',
     });
     const location = useLocation();
     useEffect(() => {
@@ -107,6 +107,7 @@ export default function Search() {
                         required
                         onChange={(e) => setFilterData({ ...filterData, category: e.target.value })}
                     >
+                        <option>all category</option>
                         <option>uncategorized</option>
                         <option>programing</option>
                         <option>travel</option>

@@ -6,6 +6,7 @@ import DashProfileUpdate from '../components/DashProfileUpdate';
 import DashAccountSetting from '../components/DashAccountSetting';
 import Editor from './Editor';
 import DashAllMyBlog from '../components/DashAllMyBlog';
+import DashRecentlyViewed from '../components/DashRecentlyViewed';
 
 export default function Dashboard() {
     const [tab, setTab] = useState('');
@@ -21,15 +22,15 @@ export default function Dashboard() {
 
     return (
         <div className="flex flex-col md:flex-row">
-            <div className="md:w-56">
+            <div className="md:w-[16%]">
                 <DashSidebar />
             </div>
-            <div className="min-h-screen container mx-auto">
-                {/* {tab === 'admin-dashboard' && <DashAdmin />} */}
+            <div className="min-h-screen container md:w-[80%] mx-auto">
                 {tab === 'profile' && <DashProfile />}
                 {tab === 'update-profile' && <DashProfileUpdate />}
                 {tab === 'create-blog' && <Editor />}
                 {tab === 'all-blog' && <DashAllMyBlog />}
+                {tab === 'recently-viewed' && <DashRecentlyViewed />}
                 {tab === 'account-setting' && <DashAccountSetting />}
             </div>
         </div>

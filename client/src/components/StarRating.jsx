@@ -42,7 +42,7 @@ export default function StarRating({ currentUser, blogInfo }) {
     };
 
     return (
-        <div className="flex flex-col gap-4 my-8">
+        <div className="flex flex-col gap-4 my-16">
             <i className="font-semibold text-xl">Rating for this blog</i>
             <div className="flex">
                 {[...Array(5)].map((star, index) => {

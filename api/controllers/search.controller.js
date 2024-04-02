@@ -9,15 +9,20 @@ export const search = async (req, res, next) => {
         let limit = parseInt(req.query.limit || '10');
         let sort = req.query.sort === 'desc' ? -1 : 1;
         let category = req.query.category;
+
         let baseQuery = {};
-        if (category) baseQuery.category = category;
+        if (category && category != 'all category') {
+            baseQuery.category = category;
+        }
+
         if (query) {
-            baseQuery.$or = [{ title: new RegExp(query, 'i') }, { tags: new RegExp(query, 'i') }];
+            let searchTerms = Array.isArray(query) ? query : query.split(',');
+            let regex = searchTerms.map((term) => new RegExp(term.trim(), 'i'));
+
+            baseQuery.$or = [{ title: { $in: regex } }, { tags: { $in: regex } }];
         }
         if (req.query.currentSlug) {
-            // Making sure to handle invalid ObjectId error
             let currentSlug = req.query.currentSlug;
-            // Adding a condition to exclude current blog using $ne
             baseQuery = {
                 $and: [{ slug: { $ne: currentSlug } }, baseQuery],
             };

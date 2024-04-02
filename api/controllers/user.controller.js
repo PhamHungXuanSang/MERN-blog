@@ -93,9 +93,7 @@ export const deleteAccount = async (req, res, next) => {
     try {
         const refreshToken = req.cookies.refresh_token;
         await RefreshToken.deleteOne({ refreshToken });
-
         await User.findByIdAndDelete(req.params.userId);
-
         res.clearCookie('access_token');
         res.clearCookie('refresh_token');
         res.status(200).json('User has been deleted');
@@ -166,6 +164,60 @@ export const resetPassword = async (req, res, next) => {
         } else {
             return next(errorHandler(400, 'Some thing went wrong'));
         }
+    } catch (error) {
+        next(error);
+    }
+};
+
+// export const addViewedBlogsHistory = async (req, res, next) => {
+//     const userId = req.params.userId;
+//     if (req.user._id !== userId) {
+//         return next(errorHandler(403, 'Unauthorized'));
+//     }
+//     const blogId = req.body.blogId;
+
+//     try {
+//         const updatedUser = await User.findByIdAndUpdate(
+//             userId,
+//             {
+//                 $push: {
+//                     viewedBlogsHistory: {
+//                         blog: blogId,
+//                         viewedAt: new Date(),
+//                     },
+//                 },
+//             },
+//             { new: true, upsert: true },
+//         ).select('-password');
+//         if (!updatedUser) {
+//             return next(errorHandler(404, 'User not found'));
+//         }
+//         return res.status(200).json('ok');
+//     } catch (error) {
+//         next(error);
+//     }
+// };
+
+export const getViewedBlogsHistory = async (req, res, next) => {
+    const userId = req.params.userId;
+    if (req.user._id !== userId) {
+        return next(errorHandler(403, 'Unauthorized'));
+    }
+    const startIndex = parseInt(req.query.startIndex || 0);
+    const limit = parseInt(req.query.limit || 2);
+
+    try {
+        const userWithBlogs = await User.findById(userId).populate('viewedBlogsHistory.blog').exec();
+
+        if (!userWithBlogs) {
+            return next(errorHandler(404, 'User not found'));
+        }
+        userWithBlogs.viewedBlogsHistory.sort((a, b) => b.viewedAt - a.viewedAt);
+        const slicedViewedBlogsHistory = userWithBlogs.viewedBlogsHistory.slice(startIndex, startIndex + limit);
+
+        return res
+            .status(200)
+            .json({ viewedBlogsHistory: slicedViewedBlogsHistory, total: userWithBlogs.viewedBlogsHistory.length });
     } catch (error) {
         next(error);
     }

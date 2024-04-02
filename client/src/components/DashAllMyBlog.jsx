@@ -1,16 +1,13 @@
 import { Button, Label, Pagination, Select, Spinner, TextInput } from 'flowbite-react';
 import { useEffect, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
-//import { signOutSuccess } from '../redux/user/userSlice.js';
+import { useLocation } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import NotFound from './NotFound';
 import OneByOneAppearEffect from './OneByOneAppearEffect';
 import MyBlogCard from './MyBlogCard.jsx';
 
 export default function DashAllMyBlog() {
     const currentUser = useSelector((state) => state.user.currentUser);
-    // const dispatch = useDispatch();
-    // const navigate = useNavigate();
     const [query, setQuery] = useState('');
     const [blogs, setBlogs] = useState(null);
     const [currentPage, setCurrentPage] = useState(1);
@@ -20,7 +17,7 @@ export default function DashAllMyBlog() {
     const [filterData, setFilterData] = useState({
         query: query,
         sort: 'desc',
-        category: 'uncategorized',
+        category: 'all category',
     });
     const location = useLocation();
 
@@ -50,10 +47,6 @@ export default function DashAllMyBlog() {
                 },
             );
             const data = await res.json();
-            // if (res.status === 403) {
-            //     dispatch(signOutSuccess());
-            //     return navigate('/sign-in');
-            // }
             if (res.status === 200) {
                 setBlogs(data.blogs);
                 setTotalPage(data.total);
@@ -126,6 +119,7 @@ export default function DashAllMyBlog() {
                             required
                             onChange={(e) => setFilterData({ ...filterData, category: e.target.value })}
                         >
+                            <option>all category</option>
                             <option>uncategorized</option>
                             <option>programing</option>
                             <option>travel</option>

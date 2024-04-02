@@ -4,9 +4,9 @@ export const addNewPackage = async (req, res, next) => {
     if (!req.user.isAdmin) {
         return next(errorHandler(400, 'You are not allowed to add new package'));
     }
-    
+
     let { packageName, packagePrice, packageDescription, packageExpiry } = req.body;
-    
+
     try {
         const exists = await Package.findOne({ packageName, packageExpiry });
         if (exists) {
