@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable no-unused-vars */
 import { Alert, Button, Label, Spinner, TextInput, Textarea } from 'flowbite-react';
 import { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -133,7 +135,7 @@ export default function DashProfileUpdate() {
 
     return (
         <div className="flex-1 mx-auto py-12 px-4">
-            <div className="h-full px-4">
+            <div className="h-full">
                 <div className="w-full h-fit border-b-2 border-neutral-300">
                     <p className="border-b-2 text-lg w-fit py-2 px-4">Update Profile</p>
                 </div>

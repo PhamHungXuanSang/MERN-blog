@@ -43,7 +43,7 @@ export default function DashProfile() {
 
     return (
         <div className="flex py-12 px-4">
-            <div className="h-full w-[70%] px-4">
+            <div className="h-full w-[70%] pr-4">
                 <div className="w-full h-fit border-b-2 border-neutral-300">
                     <p className="font-bold border-b-2 border-black dark:bg-[#4b5563] bg-[#f3f4f6] text-lg w-fit py-2 px-4 inline-block">
                         Blogs Pushlish

@@ -134,20 +134,24 @@ export const checkCreatePermission = async (req, res, next) => {
 
 export const choosePlan = async (req, res, next) => {
     const userId = req.user._id;
-    const { _id: packageId, packageName, packagePrice, packageExpiry } = req.body;
+    const { _id: packageId, packageName, packagePrice, packageExpiry } = req.body; // Giả sử packageExpiry là số ngày
     let currentDate = new Date();
-    const numberOfMonth = parseInt(packageExpiry[0], 10);
     try {
         const userTransaction = await Transaction.findOne({ userId }).exec();
         if (!userTransaction) {
             return next(errorHandler(404, 'User transaction not found'));
         }
+
+        let transactionType;
+        // Bây giờ packageExpiry là số ngày, ta sẽ cộng trực tiếp vào currentDate hoặc expirationDate
         if (!userTransaction.expirationDate || userTransaction.expirationDate < currentDate) {
-            currentDate.setMonth(currentDate.getMonth() + numberOfMonth);
+            currentDate.setDate(currentDate.getDate() + packageExpiry);
+            transactionType = 'buy package';
         } else {
             const expirationDate = new Date(userTransaction.expirationDate);
-            expirationDate.setMonth(expirationDate.getMonth() + numberOfMonth);
+            expirationDate.setDate(expirationDate.getDate() + packageExpiry);
             currentDate = expirationDate;
+            transactionType = 'package renewal';
         }
         const updatedTransaction = await Transaction.findOneAndUpdate(
             { userId },
@@ -170,6 +174,7 @@ export const choosePlan = async (req, res, next) => {
             packageName,
             packageExpiry,
             packagePrice,
+            transactionType,
             paymentDate: new Date(),
         });
         await paymentHistory.save();
@@ -180,14 +185,7 @@ export const choosePlan = async (req, res, next) => {
         // Thêm code gửi email đến người dùng
         sendEmailServices(
             updatedUser.email,
-            `<b>Hello, ${updatedUser.username}</b>
-            <p>You have successfully registered for the Create Blog feature on our platform.</p>
-            <p>We're thrilled to have you onboard and can't wait to see the amazing content you'll create. Get started by clicking the button below!</p>
-            <div>
-                <a href="http://localhost:5173/dash-board?tab=create-blog">Create your blog here</a>
-            </div>
-            <p>If you have any questions, feel free to <a href="mailto:support@yourwebsite.com">contact our support team</a>. We're here to help!</p>
-            <p>&copy; MERN Blog. All rights reserved.</p>`,
+            `<b>Hello, ${updatedUser.username}</b><p>You have successfully registered for the Create Blog feature on our platform.</p><p>We're thrilled to have you onboard and can't wait to see the amazing content you'll create. Get started by clicking the button below!</p><div><a href="http://localhost:5173/dash-board?tab=create-blog">Create your blog here</a></div><p>If you have any questions, feel free to <a href="mailto:support@yourwebsite.com">contact our support team</a>. We're here to help!</p><p>&copy; MERN Blog. All rights reserved.</p>`,
         );
         return res.status(200).json(updatedUser);
     } catch (error) {
@@ -197,18 +195,23 @@ export const choosePlan = async (req, res, next) => {
 
 export const getTransactionHistory = async (req, res, next) => {
     const userId = req.params.userId;
+    const startIndex = parseInt(req.query.startIndex || 0);
+    const limit = parseInt(req.query.limit || 2);
     try {
         if (!req.user.isAdmin) {
-            const user = await User.findById(userID, '_id').exec(); // Chỉ lấy trường cần thiết
+            const user = await User.findById(userId, '_id').exec(); // Chỉ lấy trường cần thiết
             if (!user) {
                 return next(errorHandler(400, 'User not found'));
             }
             if (user._id.toString() !== userId.toString()) {
-                // Nếu không phải admin và user thì ko cho xem lichj suwr giao dichj
                 return next(errorHandler(400, 'You are not allowed to get this user transaction'));
             }
         }
-        // Làm việc với bảng paymentHis và transaction để lấy lịch sử giao dịch
+        const [userTransactionHistorys, userTransactionInfo] = await Promise.all([
+            PaymentHistory.find({ userId }).skip(startIndex).limit(limit),
+            Transaction.findOne({ userId }).populate("userId", 'username userAvatar email createdAt'),
+        ]);
+        return res.status(200).json({ userTransactionHistorys, userTransactionInfo });
     } catch (error) {
         next(error);
     }

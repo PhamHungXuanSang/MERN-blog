@@ -14,11 +14,10 @@ export default function UserProfile() {
     const [currentPage, setCurrentPage] = useState(1);
     const [totalBlogs, setTotalBlogs] = useState(1);
     const [totalViews, setTotalViews] = useState(0);
-    const limit = 2;
 
     const handleGetUserProfile = async () => {
         try {
-            const res = await fetch(`/api/user/profile/${username}?page=${currentPage}&&limit=${limit}`, {
+            const res = await fetch(`/api/user/profile/${username}?page=${currentPage}&&limit=2`, {
                 method: 'GET',
             });
             if (res.status == 404) {
@@ -44,8 +43,8 @@ export default function UserProfile() {
     };
 
     return (
-        <section className="container mx-auto pt-12 h-full md:flex flex-row-reverse items-start gap-5 min-[1100px]:gap-12">
-            <div className="flex flex-col max-md:items-center gap-5 min-w-[250px] md:w-[50%] md:pl-8 md:border-l border-gray-300 md:sticky md:top-[100px] md:py-10">
+        <section className="container mx-auto py-12 min-h-screen md:flex flex-row-reverse items-start gap-4">
+            <div className="flex flex-col max-md:items-center gap-5 min-w-[250px] md:w-[50%] md:pl-4 md:border-l border-gray-300 md:sticky md:top-[100px] md:py-10">
                 {userProfile == null ? (
                     <Spinner className="block mt-4" size="lg" />
                 ) : (
@@ -54,8 +53,8 @@ export default function UserProfile() {
                             src={userProfile.userAvatar}
                             className="w-48 h-48 bg-gray-300 rounded-full md:w-32 md:h-32"
                         />
-                        <h1 className="text-2xl font-medium">@{userProfile.username}</h1>
-                        <p className="text-xl h-6">{userProfile.email}</p>
+                        <h1 className="text-2xl font-medium break-words">@{userProfile.username}</h1>
+                        <p className="text-xl break-words">{userProfile.email}</p>
                         <p>
                             {totalBlogs.toLocaleString()} Blogs - {totalViews.toLocaleString()} Views
                         </p>
@@ -93,7 +92,7 @@ export default function UserProfile() {
                             <Pagination
                                 className="text-center mt-4"
                                 currentPage={currentPage}
-                                totalPages={Math.ceil(totalBlogs / limit)}
+                                totalPages={Math.ceil(totalBlogs / 2)}
                                 onPageChange={onPageChange}
                                 showIcons
                             />

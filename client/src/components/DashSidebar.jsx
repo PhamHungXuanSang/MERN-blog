@@ -8,6 +8,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import checkCreatePermission from '../utils/checkCreatePermission.js';
 import { setCurrentUser } from '../redux/user/userSlice.js';
+import { AiOutlineTransaction } from 'react-icons/ai';
 
 export default function DashSidebar() {
     const location = useLocation();
@@ -38,7 +39,7 @@ export default function DashSidebar() {
         <Sidebar aria-label="Sidebar with content separator example" className="w-full">
             <Sidebar.Items className="pt-8">
                 <Sidebar.ItemGroup>
-                    <span className="text-3xl font-semibold pb-2 pl-2">Profile</span>
+                    <span className="text-2xl font-semibold pl-2">Profile</span>
                     <Link to="/dash-board?tab=profile">
                         <Sidebar.Item
                             active={tab === 'profile'}
@@ -52,13 +53,12 @@ export default function DashSidebar() {
                     </Link>
                     <Link to="/dash-board?tab=update-profile">
                         <Sidebar.Item className="mt-1" active={tab === 'update-profile'} labelColor="dark" as="div">
-                            Update Profile
+                            Update profile
                         </Sidebar.Item>
                     </Link>
                 </Sidebar.ItemGroup>
-
                 <Sidebar.ItemGroup>
-                    <span className="text-3xl font-semibold pb-2 pl-2">Blog</span>
+                    <span className="text-2xl font-semibold pl-2">Blog</span>
                     {currentUser.isAdmin || currentUser.createPermission ? (
                         <>
                             <Link to="/dash-board?tab=create-blog">
@@ -89,12 +89,33 @@ export default function DashSidebar() {
                         </Link>
                     )}
                 </Sidebar.ItemGroup>
+                {!currentUser.isAdmin && (
+                    <Sidebar.ItemGroup>
+                        <span className="text-2xl font-semibold pl-2">Transaction</span>
+                        <>
+                            <Link to="/offer">
+                                <Sidebar.Item className="mt-2" icon={MdLocalOffer}>
+                                    Buy package
+                                </Sidebar.Item>
+                            </Link>
+                            <Link to="/dash-board?tab=transaction">
+                                <Sidebar.Item
+                                    className="mt-2"
+                                    active={tab === 'transaction'}
+                                    icon={AiOutlineTransaction}
+                                >
+                                    All transaction
+                                </Sidebar.Item>
+                            </Link>
+                        </>
+                    </Sidebar.ItemGroup>
+                )}
                 <Sidebar.ItemGroup>
-                    <span className="text-3xl font-semibold pb-2 pl-2">Setting</span>
+                    <span className="text-2xl font-semibold pl-2">Setting</span>
                     <>
                         <Link to="/dash-board?tab=account-setting">
                             <Sidebar.Item className="mt-2" active={tab === 'account-setting'} icon={IoSettings}>
-                                Account Setting
+                                Account setting
                             </Sidebar.Item>
                         </Link>
                     </>

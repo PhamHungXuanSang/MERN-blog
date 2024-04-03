@@ -18,7 +18,7 @@ export default function BlogMini({ content, author, index }) {
                     <p className="min-w-fit">{formatDate(createdAt)}</p>
                 </div>
 
-                <h1 className="text-base font-medium leading-7 line-clamp-2">{title}</h1>
+                <h1 className="text-base font-medium leading-7 line-clamp-2 break-words">{title}</h1>
             </Link>
         </div>
     );

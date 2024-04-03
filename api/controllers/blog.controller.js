@@ -3,6 +3,7 @@ import Blog from '../models/blog.model.js';
 import Comment from '../models/comment.model.js';
 import Noti from '../models/noti.model.js';
 import User from '../models/user.model.js';
+import createNoti from '../utils/createNoti.js';
 
 export const latestBlogs = async (req, res, next) => {
     try {
@@ -95,6 +96,16 @@ export const createBlog = async (req, res, next) => {
 
         try {
             const savedBlog = await newBlog.save();
+            const author = await User.findById(userId);
+            author.subscribeUsers.forEach((user) =>
+                createNoti(
+                    'new blog',
+                    user,
+                    author._id,
+                    `Author ${author.username} just posted a new blog with the title: ${savedBlog.title}`,
+                ),
+            );
+
             res.status(200).json(savedBlog);
         } catch (error) {
             next(error);
@@ -123,13 +134,11 @@ export const createBlog = async (req, res, next) => {
 export const readBlog = async (req, res, next) => {
     const slug = req.params.slug;
     const userId = req.params.userId;
-
     try {
         const blog = await Blog.findOneAndUpdate({ slug }, { $inc: { viewed: 1 } }, { new: true }).populate(
             'authorId',
-            '_id username email userAvatar',
+            '_id username email userAvatar subscribeUsers',
         );
-
         if (!blog) {
             return next(errorHandler(404, 'Blog not found'));
         }
@@ -139,7 +148,7 @@ export const readBlog = async (req, res, next) => {
             _id: { $ne: blog._id },
         }).limit(5);
 
-        if (userId) {
+        if (userId != 'undefined') {
             const user = await User.findById(userId);
             const hasViewed = user.viewedBlogsHistory.some(
                 (viewedBlog) => viewedBlog.blog.toString() === blog._id.toString(),
@@ -157,8 +166,12 @@ export const readBlog = async (req, res, next) => {
                     { new: true, upsert: true },
                 );
             }
-        }
 
+            let subscribed = blog.authorId.subscribeUsers.some(
+                (subscribedUser) => subscribedUser.toString() === userId.toString(),
+            );
+            return res.status(200).json({ blog, similarAuthorBlogs, isSubscribed: subscribed });
+        }
         return res.status(200).json({ blog, similarAuthorBlogs });
     } catch (error) {
         next(error);

@@ -10,7 +10,7 @@ export default function Notification() {
     const [filter, setFilter] = useState('all');
     const [notifications, setNotifications] = useState(null);
     const [data, setData] = useState([]);
-    let filters = ['all', 'system', 'like', 'comment', 'reply', 'rate', 'subscribe new blog'];
+    let filters = ['all', 'system', 'like', 'comment', 'reply', 'rate', 'subscriber', 'new blog'];
 
     const fetchNotifications = async () => {
         try {

@@ -16,7 +16,7 @@ export const newNotification = async (req, res, next) => {
 
 export const getNotifications = async (req, res, next) => {
     // Lấy ra trả về kiểu mảng, mỗi phần tử mảng là một loại (reply, comment, rate, ...) và nó chứa nội dung thông báo của loại, số lượng thông báo chưa đọc
-    const allNotiType = ['system', 'like', 'comment', 'reply', 'rate', 'subscribe new blog'];
+    const allNotiType = ['system', 'like', 'comment', 'reply', 'rate', 'subscriber', 'new blog'];
     const userId = req.params.userId;
     try {
         // Tạo một Promise để đếm số thông báo chưa đọc cho mỗi loại

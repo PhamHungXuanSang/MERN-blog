@@ -14,7 +14,8 @@ const paymentHistorySchema = new mongoose.Schema({
         required: true,
     },
     packageExpiry: {
-        type: String,
+        type: Number,
+        min: 1,
         required: true,
     },
     packagePrice: {
@@ -25,6 +26,11 @@ const paymentHistorySchema = new mongoose.Schema({
     paymentDate: {
         type: Date,
         default: Date.now,
+    },
+    transactionType: {
+        type: String,
+        enum: ['package renewal', 'buy package'],
+        required: true,
     },
 });
 

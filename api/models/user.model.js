@@ -63,18 +63,26 @@ const userSchema = new mongoose.Schema(
                 method: 'password',
             },
         },
-        viewedBlogsHistory: [
-            {
-                blog: {
-                    type: Schema.Types.ObjectId,
-                    ref: 'Blog',
+        viewedBlogsHistory: {
+            type: [
+                {
+                    blog: {
+                        type: Schema.Types.ObjectId,
+                        ref: 'Blog',
+                    },
+                    viewedAt: {
+                        type: Date,
+                        default: Date.now,
+                    },
                 },
-                viewedAt: {
-                    type: Date,
-                    default: Date.now,
-                },
-            },
-        ],
+            ],
+            default: [],
+        },
+        subscribeUsers: {
+            type: [Schema.Types.ObjectId],
+            ref: 'User',
+            default: [],
+        },
         transaction: {
             type: Schema.Types.ObjectId,
             ref: 'Transaction',

@@ -52,7 +52,7 @@ export default function DashAccountSetting() {
     if (currentUser.emailVerified.method === 'password') {
         return (
             <div className="container mx-auto py-12 px-4">
-                <div className="h-full px-4">
+                <div className="h-full">
                     <div className="w-full h-fit border-b-2 border-neutral-300">
                         <p className="border-b-2 text-lg w-fit py-2 px-4">Account Setting</p>
                     </div>
@@ -140,7 +140,7 @@ export default function DashAccountSetting() {
     } else {
         return (
             <div className="container mx-auto py-12 px-4">
-                <div className="h-full px-4">
+                <div className="h-full">
                     <div className="w-full h-fit border-b-2 border-neutral-300">
                         <p className="border-b-2 text-lg w-fit py-2 px-4">Account Setting</p>
                     </div>

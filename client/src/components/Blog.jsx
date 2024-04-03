@@ -11,15 +11,15 @@ export default function Blog({ content, author }) {
     return (
         <Link
             to={`/blog/${slug}`}
-            className="flex gap-8 items-center border-b-2 my-2 dark:hover:bg-slate-600 hover:bg-gray-100 p-2 rounded"
+            className="flex gap-8 justify-between items-center border-b-2 my-2 dark:hover:bg-slate-600 hover:bg-gray-100 p-2 rounded"
         >
-            <div className="max-w-[70%]">
+            <div className="max-w-[70%] flex-grow">
                 <div className="flex gap-2 items-center mb-2">
                     <img src={userAvatar} alt={'avatar'} className="w-6 h-6 rounded-full" />
-                    <p className="line-clamp-1">@{username}</p>
+                    <p className="line-clamp-1 break-words">@{username}</p>
                     <p className="min-w-fit ml-4">Published on: {dateToDateAndTime(createdAt)}</p>
                 </div>
-                <h1 className="text-xl font-semibold line-clamp-1">{title}</h1>
+                <h1 className="text-xl font-semibold line-clamp-2 break-words">{title}</h1>
                 <i className="my-2 text-md leading-7 max-sm:hidden md:max-[1100px]:hidden line-clamp-1">
                     {description}
                 </i>
@@ -45,7 +45,7 @@ export default function Blog({ content, author }) {
                     )}
                 </div>
             </div>
-            <div className="h-28 aspect-square flex-grow">
+            <div className="h-28 aspect-auto">
                 <img src={thumb} className="w-full h-full aspect-square object-cover rounded" />
             </div>
         </Link>

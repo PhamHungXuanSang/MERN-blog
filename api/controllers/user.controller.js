@@ -1,30 +1,35 @@
 import Blog from '../models/blog.model.js';
 import RefreshToken from '../models/refreshToken.model.js';
 import User from '../models/user.model.js';
+import createNoti from '../utils/createNoti.js';
 import { errorHandler } from '../utils/error.js';
 import bcryptjs from 'bcryptjs';
 
 export const getUserProfile = async (req, res, next) => {
     const username = req.params.username;
+    const page = req.query.page || 1;
+    const limit = req.query.limit || 2;
     const user = await User.findOne({ username }).select('-password');
     if (!user) {
         return next(errorHandler(404, 'User not found'));
     }
     try {
-        const page = req.query.page;
-        const limit = req.query.limit;
-        const blogs = await Blog.find({ authorId: user._id })
+        let blogs = await Blog.find({ authorId: user._id })
             .populate('authorId', '_id username email userAvatar createdAt')
-            .sort({ createdAt: -1 })
-            .skip(page != 1 ? (page - 1) * limit : 0)
-            .limit(limit);
+            .sort({ createdAt: -1 });
+        // .skip(page != 1 ? (page - 1) * limit : 0)
+        // .limit(limit);
+
+        let totalUserBlogs = blogs.length;
 
         let totalViews = 0;
         blogs.forEach((blog) => {
             totalViews += blog.viewed;
         });
 
-        res.status(200).json({ user, blogs, total: blogs.length, totalViews });
+        blogs = blogs.slice(page != 1 ? (page - 1) * limit : 0, page != 1 ? (page - 1) * limit + limit : 0 + limit);
+
+        res.status(200).json({ user, blogs, total: totalUserBlogs, totalViews });
     } catch (error) {
         next(error);
     }
@@ -169,34 +174,40 @@ export const resetPassword = async (req, res, next) => {
     }
 };
 
-// export const addViewedBlogsHistory = async (req, res, next) => {
-//     const userId = req.params.userId;
-//     if (req.user._id !== userId) {
-//         return next(errorHandler(403, 'Unauthorized'));
-//     }
-//     const blogId = req.body.blogId;
+export const toggleSubscribe = async (req, res, next) => {
+    const authorId = req.params.authorId; // tác giả
+    const userId = req.params.userId; // Người bấm đăng ký
 
-//     try {
-//         const updatedUser = await User.findByIdAndUpdate(
-//             userId,
-//             {
-//                 $push: {
-//                     viewedBlogsHistory: {
-//                         blog: blogId,
-//                         viewedAt: new Date(),
-//                     },
-//                 },
-//             },
-//             { new: true, upsert: true },
-//         ).select('-password');
-//         if (!updatedUser) {
-//             return next(errorHandler(404, 'User not found'));
-//         }
-//         return res.status(200).json('ok');
-//     } catch (error) {
-//         next(error);
-//     }
-// };
+    try {
+        const user = await User.findOne({ _id: authorId });
+        if (!user) {
+            return res.status(404).json('User not found');
+        }
+        const index = user.subscribeUsers.indexOf(userId);
+        if (index > -1) {
+            user.subscribeUsers.splice(index, 1);
+            const isSaved = await user.save();
+            if (isSaved) {
+                createNoti('subscriber', authorId, userId, `User ${user.username} just unsubscribed`);
+                return res.status(200).json('Unsubscribed');
+            }
+        } else {
+            user.subscribeUsers.push(userId);
+            const isSaved = await user.save();
+            if (isSaved) {
+                createNoti(
+                    'subscriber',
+                    authorId,
+                    userId,
+                    `User ${user.username} just subscribed to receive notifications about your new blog`,
+                );
+                return res.status(200).json('Subscribed');
+            }
+        }
+    } catch (error) {
+        next(error);
+    }
+};
 
 export const getViewedBlogsHistory = async (req, res, next) => {
     const userId = req.params.userId;
