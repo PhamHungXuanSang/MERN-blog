@@ -6,7 +6,7 @@ const router = express.Router();
 
 router.post('/sendEmail', sendEmail);
 router.get('/verify', verifyEmail);
-router.post('/sendEmailOTP', authenToken, sendEmailOTP);
-router.post('/verifyEmailOTP', authenToken, verifyEmailOTP);
+router.post('/sendEmailOTP', sendEmailOTP);
+router.post('/verifyEmailOTP', verifyEmailOTP);
 
 export default router;

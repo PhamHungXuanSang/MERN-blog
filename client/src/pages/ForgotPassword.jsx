@@ -1,5 +1,5 @@
 import { Button, Label, TextInput } from 'flowbite-react';
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { signOutSuccess } from '../redux/user/userSlice.js';
@@ -20,20 +20,20 @@ export default function ForgotPassword() {
     const navigate = useNavigate();
     const dispatch = useDispatch();
     useEffect(() => {
-        if (currentUser.emailVerified.method !== 'password') {
+        if (currentUser && currentUser.emailVerified.method !== 'password') {
             return navigate('/');
         }
     }, []);
 
     const handleSendCode = async () => {
-        if (email != currentUser.email) {
+        if (currentUser && email != currentUser.email) {
             return toast.error('Please enter the email you registered with');
         }
         try {
             const res = await fetch(`/api/email/sendEmailOTP`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ userId: currentUser._id, email }),
+                body: JSON.stringify({ email }), // Đoạn này bỏ id đi chỉ lấy email để phân biệt người dùng
             });
             const data = await res.json();
             if (res.status === 403) {
@@ -85,7 +85,7 @@ export default function ForgotPassword() {
                 const res = await fetch(`/api/email/verifyEmailOTP`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ userId: currentUser._id, OTP: code }),
+                    body: JSON.stringify({ email, OTP: code }),
                 });
                 const data = await res.json();
                 if (res.status === 403) {
@@ -114,7 +114,7 @@ export default function ForgotPassword() {
             return toast.error('Password confirm not match');
         }
         try {
-            const res = await fetch(`/api/user/resetPassword/${currentUser._id}`, {
+            const res = await fetch(`/api/user/resetPassword/${email}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ newPassword, confirmNewPassword }),

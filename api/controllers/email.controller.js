@@ -40,27 +40,29 @@ export const verifyEmail = async (req, res, next) => {
 
 export const sendEmailOTP = async (req, res, next) => {
     try {
-        const { userId, email: recipientEmail } = req.body;
-        if (req.user._id !== userId) {
-            return next(errorHandler(403, 'Unauthorized'));
-        }
-        // Kiểm tra và xóa tất cả OTP của người dùng userId
-        await UserOTP.deleteMany({ userId });
-        const OTP = `${Math.floor(1000 + Math.random() * 9000)}`;
+        const { email } = req.body;
+        const user = await User.findOne({ email });
+        if (user) {
+            // Kiểm tra và xóa tất cả OTP của người dùng có email
+            await UserOTP.deleteMany({ email });
+            const OTP = `${Math.floor(1000 + Math.random() * 9000)}`;
 
-        const hashedOTP = await bcryptjs.hashSync(OTP, 10);
-        const newOTP = new UserOTP({
-            userId,
-            OTP: hashedOTP,
-            expiresAt: Date.now() + 300000,
-        });
-        await newOTP.save();
-        sendEmailServices(
-            recipientEmail,
-            'MERN Blog authenticate by OTP',
-            `<p>Enter <b>${OTP}</b> in the app to verify your email address.</p><p>This code <b>expires in 5 minute.</b>.</p>`,
-        );
-        return res.status(200).json('OTP has been send');
+            const hashedOTP = await bcryptjs.hashSync(OTP, 10);
+            const newOTP = new UserOTP({
+                email,
+                OTP: hashedOTP,
+                expiresAt: Date.now() + 300000,
+            });
+            await newOTP.save();
+            sendEmailServices(
+                email,
+                'MERN Blog authenticate by OTP',
+                `<p>Enter <b>${OTP}</b> in the app to verify your email address.</p><p>This code <b>expires in 5 minute.</b>.</p>`,
+            );
+            return res.status(200).json('OTP has been send');
+        } else {
+            return next(errorHandler(401, 'Please enter the email you registered with'));
+        }
     } catch (error) {
         next(error);
     }
@@ -68,25 +70,25 @@ export const sendEmailOTP = async (req, res, next) => {
 
 export const verifyEmailOTP = async (req, res, next) => {
     try {
-        const { userId, OTP } = req.body;
-        if (!userId || !OTP) {
+        const { email, OTP } = req.body;
+        if (!email || !OTP) {
             return next(errorHandler(400, 'Please enter OTP'));
         } else {
-            const userOTP = await UserOTP.findOne({ userId });
+            const userOTP = await UserOTP.findOne({ email });
             if (!userOTP) {
                 return next(errorHandler(404, "User OTP doesn't exist or has been verified already."));
             } else {
                 const { expiresAt } = userOTP;
                 const hashedOTP = userOTP.OTP;
                 if (expiresAt < Date.now()) {
-                    await UserOTP.deleteMany({ userId });
+                    await UserOTP.deleteMany({ email });
                     return next(errorHandler(401, 'Code has expired. Please request again.'));
                 } else {
                     const validOTP = await bcryptjs.compare(OTP, hashedOTP);
                     if (!validOTP) {
                         return next(errorHandler(401, 'Invalid OTP'));
                     } else {
-                        await UserOTP.deleteMany({ userId });
+                        await UserOTP.deleteMany({ email });
                         return res.status(200).json('OTP has been verified successfully.');
                     }
                 }

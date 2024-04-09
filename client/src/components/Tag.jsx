@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { useContext } from 'react';
 import { IoCloseOutline } from 'react-icons/io5';
 import { EditorContext } from '../pages/Editor';
@@ -8,6 +9,7 @@ export default function Tag({ tag }) {
         blog: { tags },
         setBlog,
     } = useContext(EditorContext);
+
     const handleDeleteTag = () => {
         tags = tags.filter((t) => t != tag);
         setBlog({ ...blog, tags });

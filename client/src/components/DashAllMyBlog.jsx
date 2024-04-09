@@ -59,10 +59,14 @@ export default function DashAllMyBlog() {
     };
 
     const handleSearch = (e) => {
-        let searchQuery = e.target.value;
-        setQuery(searchQuery);
-        if (e.keyCode === 13 && searchQuery.length) {
-            setBlogs(null);
+        if (e.keyCode == 13) {
+            e.preventDefault();
+        } else {
+            let searchQuery = e.target.value;
+            setQuery(searchQuery);
+            if (e.keyCode === 13 && searchQuery.length) {
+                setBlogs(null);
+            }
         }
     };
 

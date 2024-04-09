@@ -2,6 +2,7 @@ import { Alert, Button, Label, Spinner, TextInput } from 'flowbite-react';
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { HiInformationCircle } from 'react-icons/hi';
+import { FaTimes, FaCheck } from 'react-icons/fa';
 import OAuth from '../components/OAuth';
 import MoveFromTopEffect from '../components/MoveFromTopEffect';
 import toast from 'react-hot-toast';
@@ -10,6 +11,8 @@ export default function SignUp() {
     const [formData, setFormData] = useState({});
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
+    const [showPasswordValidation, setShowPasswordValidation] = useState(false);
+    const [arrValid, setArrValid] = useState([false, false, false, false, false]);
 
     const navigate = useNavigate();
 
@@ -19,6 +22,11 @@ export default function SignUp() {
 
     const handleSubmitSignUp = async (e) => {
         e.preventDefault(); // Ngừng hành động tải lại trang khi nhấn submit
+        // Kiểm tra nếu tất cả điều kiện password chưa thỏa thì không sign up được
+        if (arrValid.some((item) => item == false)) {
+            setError('Please enter a password that meets the requirements');
+            return;
+        }
         setError(null);
         if (!formData.username || !formData.email || !formData.password) {
             setError('Please enter all fields');
@@ -59,6 +67,14 @@ export default function SignUp() {
         }
     };
 
+    let validationRegex = [
+        { regex: /.{6,}/ },
+        { regex: /[0-9]/ },
+        { regex: /[a-z]/ },
+        { regex: /[A-Z]/ },
+        { regex: /[^A-Za-z0-9]/ },
+    ];
+
     return (
         <div className="min-h-screen mt-20">
             <div className="flex flex-col md:flex-row p-3 max-w-3xl mx-auto md-items-center">
@@ -88,34 +104,62 @@ export default function SignUp() {
                             <Label value="Your email" />
                             <TextInput type="email" placeholder="Email" id="email" onChange={handleChange} />
                         </div>
-                        <div>
+                        <div className="relative">
                             <Label value="Your password" />
-                            <TextInput type="password" placeholder="Password" id="password" onChange={handleChange} />
-                        </div>
-                        {/* <div className="mb-6">
-                            <button
-                                data-popover-target="popover-default"
-                                type="button"
-                                className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                            >
-                                Default popover
-                            </button>
-
+                            <TextInput
+                                type="password"
+                                placeholder="Password"
+                                id="password"
+                                onChange={handleChange}
+                                onFocus={() => setShowPasswordValidation(true)}
+                                onBlur={() => setShowPasswordValidation(false)}
+                                onKeyUp={(e) => {
+                                    const newValidityArray = validationRegex.map((item) =>
+                                        item.regex.test(e.target.value),
+                                    );
+                                    setArrValid(newValidityArray);
+                                }}
+                            />
                             <div
-                                data-popover
-                                id="popover-default"
-                                role="tooltip"
-                                className="absolute z-10 invisible inline-block w-64 text-sm text-gray-500 transition-opacity duration-300 bg-white border border-gray-200 rounded-lg shadow-sm opacity-0 dark:text-gray-400 dark:border-gray-600 dark:bg-gray-800"
+                                className={`transition-opacity duration-300 transform ${
+                                    showPasswordValidation ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-96'
+                                } password-checklist absolute top-20 w-full z-10 w-fit py-2 px-4 dark:bg-slate-500 bg-slate-100 rounded-3xl`}
                             >
-                                <div className="px-3 py-2 bg-gray-100 border-b border-gray-200 rounded-t-lg dark:border-gray-600 dark:bg-gray-700">
-                                    <h3 className="font-semibold text-gray-900 dark:text-white">Popover title</h3>
-                                </div>
-                                <div className="px-3 py-2">
-                                    <p>Right?</p>
-                                </div>
-                                <div data-popper-arrow></div>
+                                <i className="checklist-title text-lg">Password should be</i>
+                                <ul className="checklist list-none ml-2">
+                                    <li
+                                        className={`flex items-center gap-2${arrValid[0] ? ' opacity-100' : ' opacity-50'}`}
+                                    >
+                                        {arrValid[0] ? <FaCheck fill="green" /> : <FaTimes fill="red" />}
+                                        <p>At least 6 characters long</p>
+                                    </li>
+                                    <li
+                                        className={`flex items-center gap-2${arrValid[1] ? ' opacity-100' : ' opacity-50'}`}
+                                    >
+                                        {arrValid[1] ? <FaCheck fill="green" /> : <FaTimes fill="red" />}
+                                        <p>At least 1 number</p>
+                                    </li>
+                                    <li
+                                        className={`flex items-center gap-2${arrValid[2] ? ' opacity-100' : ' opacity-50'}`}
+                                    >
+                                        {arrValid[2] ? <FaCheck fill="green" /> : <FaTimes fill="red" />}
+                                        <p>At least 1 lowercase letter</p>
+                                    </li>
+                                    <li
+                                        className={`flex items-center gap-2${arrValid[3] ? ' opacity-100' : ' opacity-50'}`}
+                                    >
+                                        {arrValid[3] ? <FaCheck fill="green" /> : <FaTimes fill="red" />}
+                                        <p>At least 1 uppercase letter</p>
+                                    </li>
+                                    <li
+                                        className={`flex items-center gap-2${arrValid[4] ? ' opacity-100' : ' opacity-50'}`}
+                                    >
+                                        {arrValid[4] ? <FaCheck fill="green" /> : <FaTimes fill="red" />}
+                                        <p>At least 1 special characters</p>
+                                    </li>
+                                </ul>
                             </div>
-                        </div> */}
+                        </div>
                         <div>
                             <Label value="Password confirm" />
                             <TextInput

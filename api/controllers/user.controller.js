@@ -159,11 +159,12 @@ export const updateUserRole = async (req, res, next) => {
 
 export const resetPassword = async (req, res, next) => {
     try {
-        const userId = req.params.userId;
+        const email = req.params.email;
         const newPassword = req.body.newPassword;
         // Update lại mật khẩu cho người dùng
         const hashedPassword = await bcryptjs.hashSync(newPassword, 10);
-        const user = await User.findByIdAndUpdate(userId, { $set: { password: hashedPassword } }, { new: true });
+        const user = await User.findOneAndUpdate({ email }, { $set: { password: hashedPassword } }, { new: true });
+        console.log(user.email, email);
         if (user.password) {
             return res.status(200).json('Password has been reset');
         } else {

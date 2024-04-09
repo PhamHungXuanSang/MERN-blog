@@ -130,6 +130,7 @@ export default function PackageManagement() {
                             id="packageExpiry"
                             type="number"
                             min={1}
+                            max={365}
                             placeholder="Package expires in (day)"
                             //defaultValue={currentUser.userDesc}
                             onChange={handleType}

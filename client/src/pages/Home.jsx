@@ -131,7 +131,7 @@ export default function Home() {
 
                 {/* Trending and filter by category */}
                 <div className="border-l-2 h-full pl-4 w-[30%] max-md:hidden">
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 mb-2">
                         <h1 className="font-medium text-xl mr-1">Trending blogs</h1>
                         <TbTrendingUp />
                     </div>
@@ -139,7 +139,7 @@ export default function Home() {
                         trendingBlogs.length == 0 ? (
                             <NotFound object={'Not found trending blog'} />
                         ) : (
-                            <Carousel className="h-fit pb-8" pauseOnHover>
+                            <Carousel className="h-fit py-4 px-1 border-2 border-teal-500 rounded-3xl" pauseOnHover>
                                 {trendingBlogs.map((blog, i) => (
                                     <BlogMini key={i} index={i} content={blog} author={blog.authorId} />
                                 ))}
@@ -148,7 +148,7 @@ export default function Home() {
                     ) : (
                         <Spinner className="block mx-auto mt-4" size="lg" />
                     )}
-                    <div className="flex flex-col gap-2 mb-8">
+                    <div className="flex flex-col gap-2 my-4">
                         <div className="flex items-center">
                             <h1 className="font-medium text-xl mr-1">View by Category</h1>
                             <BiSolidCategoryAlt />

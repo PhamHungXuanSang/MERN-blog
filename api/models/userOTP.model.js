@@ -2,10 +2,9 @@ import mongoose, { Schema } from 'mongoose';
 
 const UserOTPSchema = new Schema(
     {
-        userId: {
-            type: Schema.Types.ObjectId,
+        email: {
+            type: String,
             required: true,
-            ref: 'User',
         },
         OTP: {
             type: String,

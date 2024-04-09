@@ -14,11 +14,6 @@ export const signup = async (req, res, next) => {
         return next(errorHandler(400, 'Please enter all fields'));
     }
 
-    const un = await User.findOne({ username });
-    if (un) {
-        return next(errorHandler(500, 'Username already exists, please choose another'));
-    }
-
     const hashedPassword = bcryptjs.hashSync(password, 10);
 
     const newUser = new User({
@@ -34,7 +29,7 @@ export const signup = async (req, res, next) => {
         });
         const userTransaction = await transaction.save();
         await User.findOneAndUpdate({ _id: user._id }, { $push: { transaction: userTransaction._id } }, { new: true });
-        // Mã hóa email để send đế email acc người dùng
+        // Mã hóa email để send đến email acc người dùng
         const hashedEmail = bcryptjs.hashSync(user.email, 10);
         sendEmailServices(
             user.email,

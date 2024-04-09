@@ -76,11 +76,16 @@ export default function SignIn() {
                     <form className="flex flex-col gap-4" onSubmit={handleSubmitSignIn}>
                         <div>
                             <Label value="Your email" />
-                            <TextInput type="email" placeholder="Email" id="email" onChange={handleChange} />
+                            <TextInput type="email" placeholder="Enter email" id="email" onChange={handleChange} />
                         </div>
                         <div>
                             <Label value="Your password" />
-                            <TextInput type="password" placeholder="Password" id="password" onChange={handleChange} />
+                            <TextInput
+                                type="password"
+                                placeholder="Enter Password"
+                                id="password"
+                                onChange={handleChange}
+                            />
                         </div>
                         <Button gradientDuoTone="greenToBlue" type="submit">
                             {loading ? (
@@ -104,6 +109,16 @@ export default function SignIn() {
                         <span>Do not have an account?</span>
                         <Link to="/sign-up" className="text-blue-500">
                             Sign up
+                        </Link>
+                    </div>
+                    {/* Quên mật khẩu */}
+                    <div className="mt-5">
+                        <span>Forgot your password? </span>
+                        <Link
+                            to="/forgot-password"
+                            className="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800"
+                        >
+                            Reset password
                         </Link>
                     </div>
                 </div>

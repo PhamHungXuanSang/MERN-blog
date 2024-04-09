@@ -168,6 +168,19 @@ export default function ReadBlog() {
                             <Spinner className="block mx-auto mt-4" size="md" />
                         )}
 
+                        {/* Tags */}
+                        {blog != null && (
+                            <div className="flex flex-wrap gap-2">
+                                {blog.tags.map((tag, i) => (
+                                    <div key={i}>
+                                        <div className="relative py-2 px-4 dark:bg-slate-500 bg-gray-200 rounded-full inline-block hover:bg-opacity-50">
+                                            <p className="outline-none"># {tag}</p>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+
                         {/* Rating blog */}
                         {currentUser && !blog.rating.some((item) => item.userId == currentUser._id) && (
                             <StarRating currentUser={currentUser} blogInfo={blog} />

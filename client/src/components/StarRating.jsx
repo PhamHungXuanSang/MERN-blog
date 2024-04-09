@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { useContext, useState } from 'react';
 import { FaStar } from 'react-icons/fa';
 import ModalConfirm from './ModalConfirm';
@@ -64,7 +65,7 @@ export default function StarRating({ currentUser, blogInfo }) {
                                 <FaStar
                                     size={24}
                                     color={currentRate <= (hoverRating || rating) ? '#FACA15' : 'gray'}
-                                    className="hover:fill-yellow-300"
+                                    className="hover:fill-yellow-300 hover:cursor-pointer"
                                 />
                             </label>
                         </div>
