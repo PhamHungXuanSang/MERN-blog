@@ -1,11 +1,13 @@
 /* eslint-disable react/prop-types */
 import { SlLike } from 'react-icons/sl';
 import { FaRegComments, FaStarHalfAlt } from 'react-icons/fa';
+import { GrView } from 'react-icons/gr';
 import { Link } from 'react-router-dom';
 import dateToDateAndTime from '../utils/dateToDateAndTime.js';
 
 export default function Blog({ content, author }) {
-    const { title, createdAt, description, category, likeCount, commentCount, averageRating, thumb, slug } = content;
+    const { title, createdAt, description, category, viewed, likeCount, commentCount, averageRating, thumb, slug } =
+        content;
     const { userAvatar, username } = author;
 
     return (
@@ -23,10 +25,14 @@ export default function Blog({ content, author }) {
                 <i className="my-2 text-md leading-7 max-sm:hidden md:max-[1100px]:hidden line-clamp-1">
                     {description}
                 </i>
-                <div className="flex gap-4 mt-4">
+                <div className="flex gap-5 mt-4">
                     <span className="px-4 whitespace-nowrap rounded-full capitalize bg-slate-200 dark:bg-slate-500 font-semibold">
                         {category}
                     </span>
+                    <div className="flex items-center gap-2">
+                        <GrView />
+                        <span>{viewed}</span>
+                    </div>
                     <div className="flex items-center gap-2">
                         <SlLike />
                         <span>{likeCount}</span>

@@ -2,7 +2,9 @@ import { Alert, Button, Label, Modal, TextInput } from 'flowbite-react';
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { HiOutlineExclamationCircle } from 'react-icons/hi2';
+import { FaTimes, FaCheck } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
+import toast from 'react-hot-toast';
 
 export default function DashAccountSetting() {
     const [showModal, setShowModal] = useState(false);
@@ -13,9 +15,16 @@ export default function DashAccountSetting() {
     const [newPassword, setNewPassword] = useState('');
     const [confirmNewPassword, setConfirmNewPassword] = useState('');
 
+    const [showPasswordValidation, setShowPasswordValidation] = useState(false);
+    const [arrValid, setArrValid] = useState([false, false, false, false, false]);
+
     const handleSubmit = (e) => {
         e.preventDefault();
         console.log(oldPassword, newPassword, confirmNewPassword);
+        // Thêm kiểm tra coi new password đã đạt yêu cầu chưa mới qua bước tiếp
+        if (arrValid.some((item) => item == false)) {
+            return toast.error('Please enter a password that meets the requirements');
+        }
         setShowModal(true);
     };
 
@@ -23,31 +32,13 @@ export default function DashAccountSetting() {
         setShowModal(false);
     };
 
-    // const handleDeleteAccount = async () => {
-    //     dispatch(deleteUserStart());
-    //     setShowModal(false);
-    //     try {
-    //         ////////////////////////////////////// Coi laji chuaw delete dduwocj
-    //         const res = await fetch(`/api/user/delete-account/${currentUser._id}`, {
-    //             method: 'DELETE',
-    //             headers: { 'Content-Type': 'application/json' },
-    //         });
-    //         const data = await res.json();
-    //         if (res.status === 403) {
-    //             dispatch(signOutSuccess());
-    //             return navigate('/sign-in');
-    //         } else if (res.status === 200) {
-    //             dispatch(deleteUserSuccess());
-    //             return navigate('/sign-in');
-    //         } else if (data.success === false) {
-    //             dispatch(deleteUserFailure(data.message));
-    //             return;
-    //         }
-    //     } catch (error) {
-    //         dispatch(deleteUserFailure(error.message));
-    //         return;
-    //     }
-    // };
+    let validationRegex = [
+        { regex: /.{6,}/ },
+        { regex: /[0-9]/ },
+        { regex: /[a-z]/ },
+        { regex: /[A-Z]/ },
+        { regex: /[^A-Za-z0-9]/ },
+    ];
 
     if (currentUser.emailVerified.method === 'password') {
         return (
@@ -70,15 +61,64 @@ export default function DashAccountSetting() {
                                 />
                             </div>
 
-                            <div className="mb-4">
+                            <div className="mb-4 relative">
                                 <Label value="New Password" />
                                 <TextInput
                                     className="mt-2"
                                     type="password"
                                     placeholder="Enter new password"
                                     onChange={(e) => setNewPassword(e.target.value)}
+                                    onFocus={() => setShowPasswordValidation(true)}
+                                    onBlur={() => setShowPasswordValidation(false)}
+                                    onKeyUp={(e) => {
+                                        const newValidityArray = validationRegex.map((item) =>
+                                            item.regex.test(e.target.value),
+                                        );
+                                        setArrValid(newValidityArray);
+                                    }}
                                     required
                                 />
+                                <div
+                                    className={`transition-opacity duration-300 transform ${
+                                        showPasswordValidation
+                                            ? 'opacity-100 translate-y-0'
+                                            : 'opacity-0 translate-y-96'
+                                    } password-checklist absolute top-20 w-full z-10 py-2 px-4 dark:bg-slate-500 bg-slate-100 rounded-3xl`}
+                                >
+                                    <i className="checklist-title text-lg">Password should be</i>
+                                    <ul className="checklist list-none ml-2">
+                                        <li
+                                            className={`flex items-center gap-2${arrValid[0] ? ' opacity-100' : ' opacity-50'}`}
+                                        >
+                                            {arrValid[0] ? <FaCheck fill="green" /> : <FaTimes fill="red" />}
+                                            <p>At least 6 characters long</p>
+                                        </li>
+                                        <li
+                                            className={`flex items-center gap-2${arrValid[1] ? ' opacity-100' : ' opacity-50'}`}
+                                        >
+                                            {arrValid[1] ? <FaCheck fill="green" /> : <FaTimes fill="red" />}
+                                            <p>At least 1 number</p>
+                                        </li>
+                                        <li
+                                            className={`flex items-center gap-2${arrValid[2] ? ' opacity-100' : ' opacity-50'}`}
+                                        >
+                                            {arrValid[2] ? <FaCheck fill="green" /> : <FaTimes fill="red" />}
+                                            <p>At least 1 lowercase letter</p>
+                                        </li>
+                                        <li
+                                            className={`flex items-center gap-2${arrValid[3] ? ' opacity-100' : ' opacity-50'}`}
+                                        >
+                                            {arrValid[3] ? <FaCheck fill="green" /> : <FaTimes fill="red" />}
+                                            <p>At least 1 uppercase letter</p>
+                                        </li>
+                                        <li
+                                            className={`flex items-center gap-2${arrValid[4] ? ' opacity-100' : ' opacity-50'}`}
+                                        >
+                                            {arrValid[4] ? <FaCheck fill="green" /> : <FaTimes fill="red" />}
+                                            <p>At least 1 special characters</p>
+                                        </li>
+                                    </ul>
+                                </div>
                             </div>
 
                             <div className="mb-6">

@@ -20,16 +20,16 @@ export const getUserProfile = async (req, res, next) => {
         // .skip(page != 1 ? (page - 1) * limit : 0)
         // .limit(limit);
 
-        let totalUserBlogs = blogs.length;
-
         let totalViews = 0;
         blogs.forEach((blog) => {
             totalViews += blog.viewed;
         });
 
+        let allBlogs = blogs;
+
         blogs = blogs.slice(page != 1 ? (page - 1) * limit : 0, page != 1 ? (page - 1) * limit + limit : 0 + limit);
 
-        res.status(200).json({ user, blogs, total: totalUserBlogs, totalViews });
+        res.status(200).json({ user, blogs, allBlogs, totalViews }); // đoạn này có thể tối ưu
     } catch (error) {
         next(error);
     }

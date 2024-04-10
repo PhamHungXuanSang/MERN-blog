@@ -14,7 +14,7 @@ export default function AboutUser({
 }) {
     return (
         <div className={'md:mt-4 ' + className}>
-            <p className="text-xl leading-2 line-clamp-3 break-words">
+            <p className="leading-2 line-clamp-3 break-words">
                 {userDesc.length ? userDesc : 'No description about this account'}
             </p>
             <div className="flex gap-x-7 gap-y-2 flex-wrap my-4 items-center text-gray-300">

@@ -15,6 +15,7 @@ import { useNavigate } from 'react-router-dom';
 import { CircularProgressbar } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
 import { HiInformationCircle } from 'react-icons/hi';
+import toast from 'react-hot-toast';
 
 export default function DashProfileUpdate() {
     const currentUser = useSelector((state) => state.user.currentUser);
@@ -106,6 +107,42 @@ export default function DashProfileUpdate() {
             }
         }
 
+        if (formData.youtube) {
+            if (!formData.youtube.startsWith('https://www.youtube.com/')) {
+                dispatch(updateUserProfileFailure(null));
+                return toast.error(
+                    'Please enter the correct social media link format. Start with https://www.youtube.com/',
+                );
+            }
+        }
+
+        if (formData.facebook) {
+            if (!formData.facebook.startsWith('https://www.facebook.com/')) {
+                dispatch(updateUserProfileFailure(null));
+                return toast.error(
+                    'Please enter the correct social media link format. Start with https://www.facebook.com/',
+                );
+            }
+        }
+
+        if (formData.tiktok) {
+            if (!formData.tiktok.startsWith('https://www.tiktok.com/')) {
+                dispatch(updateUserProfileFailure(null));
+                return toast.error(
+                    'Please enter the correct social media link format. Start with https://www.tiktok.com/',
+                );
+            }
+        }
+
+        if (formData.github) {
+            if (!formData.github.startsWith('https://www.github.com/')) {
+                dispatch(updateUserProfileFailure(null));
+                return toast.error(
+                    'Please enter the correct social media link format. Start with https://www.github.com/',
+                );
+            }
+        }
+
         try {
             const res = await fetch(`/api/user/update-profile/${currentUser._id}`, {
                 method: 'PUT',
@@ -118,8 +155,8 @@ export default function DashProfileUpdate() {
                 return navigate('/sign-in');
             } else if (res.status === 200) {
                 dispatch(updateUserProfileSuccess(dataUpdated));
-            }
-            else if (dataUpdated.success === false) {
+                return toast.success('Profile updated');
+            } else if (dataUpdated.success === false) {
                 dispatch(updateUserProfileFailure(dataUpdated.message));
                 return;
             }
@@ -233,7 +270,7 @@ export default function DashProfileUpdate() {
                                     <TextInput
                                         type="text"
                                         id="youtube"
-                                        placeholder="https://"
+                                        placeholder="https://www.youtube.com/..."
                                         defaultValue={currentUser.youtubeLink}
                                         onChange={handleUpdateUserProfile}
                                     />
@@ -245,7 +282,7 @@ export default function DashProfileUpdate() {
                                     <TextInput
                                         type="text"
                                         id="facebook"
-                                        placeholder="https://"
+                                        placeholder="https://www.facebook.com/..."
                                         defaultValue={currentUser.facebookLink}
                                         onChange={handleUpdateUserProfile}
                                     />
@@ -259,7 +296,7 @@ export default function DashProfileUpdate() {
                                     <TextInput
                                         type="text"
                                         id="tiktok"
-                                        placeholder="https://"
+                                        placeholder="https://www.tiktok.com/..."
                                         defaultValue={currentUser.tiktokLink}
                                         onChange={handleUpdateUserProfile}
                                     />
@@ -271,7 +308,7 @@ export default function DashProfileUpdate() {
                                     <TextInput
                                         type="text"
                                         id="github"
-                                        placeholder="https://"
+                                        placeholder="https://www.github.com/..."
                                         defaultValue={currentUser.githubLink}
                                         onChange={handleUpdateUserProfile}
                                     />

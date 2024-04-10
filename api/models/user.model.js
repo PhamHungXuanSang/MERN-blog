@@ -26,19 +26,15 @@ const userSchema = new mongoose.Schema(
         },
         youtubeLink: {
             type: String,
-            default: '',
         },
         facebookLink: {
             type: String,
-            default: '',
         },
         tiktokLink: {
             type: String,
-            default: '',
         },
         githubLink: {
             type: String,
-            default: '',
         },
         isAdmin: {
             type: Boolean,

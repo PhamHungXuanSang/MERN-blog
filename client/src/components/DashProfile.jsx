@@ -7,6 +7,7 @@ import { signOutSuccess } from '../redux/user/userSlice';
 import Blog from './Blog';
 import OneByOneAppearEffect from './OneByOneAppearEffect';
 import formatDate from '../utils/formatDate.js';
+import { FaStarHalfAlt } from 'react-icons/fa';
 
 export default function DashProfile() {
     const currentUser = useSelector((state) => state.user.currentUser);
@@ -36,10 +37,21 @@ export default function DashProfile() {
         getUserDashProfile();
     }, []);
 
-    let totalViewed = 0;
-    dashProfile?.blogs?.forEach((blog) => {
-        totalViewed += blog.viewed;
+    console.log(dashProfile);
+    let totalLike = 0;
+    dashProfile?.allBlogs?.forEach((blog) => {
+        totalLike += blog.likes.length;
     });
+
+    let allAverageRating = 0;
+    let numberBlogsReviewed = 0;
+    dashProfile?.allBlogs?.forEach((blog) => {
+        if (blog.averageRating > 0) {
+            numberBlogsReviewed++;
+            allAverageRating += blog.averageRating;
+        }
+    });
+    allAverageRating = allAverageRating / numberBlogsReviewed;
 
     return (
         <div className="flex py-12 px-4">
@@ -70,10 +82,25 @@ export default function DashProfile() {
                         className={'rounded-full w-32 h-32 object-cover inline'}
                     />
                     <b className="block my-3">@{currentUser.username}</b>
-                    <span className="block mb-4">{currentUser.email}</span>
-                    <i className="block my-3">{currentUser.userDesc || 'No description about this account'}</i>
-                    <span className="block mt-8">
-                        {dashProfile?.blogs?.length} Blogs - {totalViewed} Views
+                    <span className="block mb-4 leading-2 line-clamp-3 break-words">{currentUser.email}</span>
+                    <i className="block my-3 leading-2 line-clamp-3 break-words">
+                        {currentUser.userDesc || 'No description about this account'}
+                    </i>
+                    <span className="flex flex-wrap gap-2 mt-6">
+                        <i className="border border-gray-500 py-1 px-2 rounded-3xl opacity-70">
+                            {dashProfile?.allBlogs.length} Blogs
+                        </i>
+                        <i className="border border-gray-500 py-1 px-2 rounded-3xl opacity-70">
+                            {dashProfile?.totalViews} Views
+                        </i>
+                        <i className="border border-gray-500 py-1 px-2 rounded-3xl opacity-70">
+                            {dashProfile?.user?.subscribeUsers.length} Subscriber
+                        </i>
+                        <i className="border border-gray-500 py-1 px-2 rounded-3xl opacity-70">{totalLike} Likes</i>
+                        <i className="flex items-center gap-1 border border-gray-500 py-1 px-2 rounded-3xl opacity-70">
+                            {Number(allAverageRating.toFixed(1))} <FaStarHalfAlt />
+                            Average Rating
+                        </i>
                     </span>
                     <i
                         className="block mt-2 mb-4 text-gray-500 text-

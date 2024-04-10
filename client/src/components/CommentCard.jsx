@@ -186,7 +186,7 @@ export default function CommentCard({ index, leftVal, commentData }) {
                     <p className="line-clamp-1">@{username}</p>
                     <p className="min-w-fit">{dateToDateAndTime(updatedAt)}</p>
                 </div>
-                <p className="text-xl">{content}</p>
+                <p className="text-xl break-words">{content}</p>
 
                 <div className="flex gap-4 items-center mt-4">
                     {commentData.isReplyLoaded ? (

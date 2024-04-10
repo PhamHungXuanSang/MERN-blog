@@ -5,6 +5,7 @@ import AboutUser from '../components/AboutUser';
 import NotFound from '../components/NotFound';
 import OneByOneAppearEffect from '../components/OneByOneAppearEffect';
 import Blog from '../components/Blog';
+import { FaStarHalfAlt } from 'react-icons/fa';
 
 export default function UserProfile() {
     const navigate = useNavigate();
@@ -12,8 +13,7 @@ export default function UserProfile() {
     const [blogs, setBlogs] = useState(null);
     let { username } = useParams();
     const [currentPage, setCurrentPage] = useState(1);
-    const [totalBlogs, setTotalBlogs] = useState(1);
-    const [totalViews, setTotalViews] = useState(0);
+    const [dashProfile, setDashProfile] = useState(null);
 
     const handleGetUserProfile = async () => {
         try {
@@ -26,8 +26,7 @@ export default function UserProfile() {
             const userProfile = await res.json();
             setUserProfile(userProfile.user);
             setBlogs(userProfile.blogs);
-            setTotalBlogs(userProfile.total);
-            setTotalViews(userProfile.totalViews);
+            setDashProfile(userProfile);
         } catch (error) {
             console.log(error);
         }
@@ -42,9 +41,25 @@ export default function UserProfile() {
         setCurrentPage(page);
     };
 
+    console.log(dashProfile);
+    let totalLike = 0;
+    dashProfile?.allBlogs?.forEach((blog) => {
+        totalLike += blog.likes.length;
+    });
+
+    let allAverageRating = 0;
+    let numberBlogsReviewed = 0;
+    dashProfile?.allBlogs?.forEach((blog) => {
+        if (blog.averageRating > 0) {
+            numberBlogsReviewed++;
+            allAverageRating += blog.averageRating;
+        }
+    });
+    allAverageRating = allAverageRating / numberBlogsReviewed;
+
     return (
         <section className="container mx-auto py-12 min-h-screen md:flex flex-row-reverse items-start gap-4">
-            <div className="flex flex-col max-md:items-center gap-5 min-w-[250px] md:w-[50%] md:pl-4 md:border-l border-gray-300 md:sticky md:top-[100px] md:py-10">
+            <div className="flex flex-col max-md:items-center gap-2 min-w-[250px] md:w-[50%] md:pl-4 md:border-l border-gray-300 md:sticky md:top-[100px] md:py-10">
                 {userProfile == null ? (
                     <Spinner className="block mt-4" size="lg" />
                 ) : (
@@ -53,11 +68,11 @@ export default function UserProfile() {
                             src={userProfile.userAvatar}
                             className="w-48 h-48 bg-gray-300 rounded-full md:w-32 md:h-32"
                         />
-                        <h1 className="text-2xl font-medium break-words">@{userProfile.username}</h1>
-                        <p className="text-xl break-words">{userProfile.email}</p>
-                        <p>
-                            {totalBlogs.toLocaleString()} Blogs - {totalViews.toLocaleString()} Views
-                        </p>
+                        <h1 className="text-xl font-medium break-words">@{userProfile.username}</h1>
+                        <p className="text-lg break-words">{userProfile.email}</p>
+                        {/* <p>
+                            {totalBlogs} Blogs - {totalViews} Views
+                        </p> */}
                         <AboutUser
                             className="max-md:hidden"
                             userDesc={userProfile.userDesc}
@@ -67,6 +82,22 @@ export default function UserProfile() {
                             githubLink={userProfile.githubLink}
                             createdAt={userProfile.createdAt}
                         />
+                        <span className="flex flex-wrap gap-2 mt-6">
+                            <i className="border border-gray-500 py-1 px-2 rounded-3xl opacity-70">
+                                {dashProfile?.allBlogs.length} Blogs
+                            </i>
+                            <i className="border border-gray-500 py-1 px-2 rounded-3xl opacity-70">
+                                {dashProfile?.totalViews} Views
+                            </i>
+                            <i className="border border-gray-500 py-1 px-2 rounded-3xl opacity-70">
+                                {dashProfile?.user?.subscribeUsers.length} Subscriber
+                            </i>
+                            <i className="border border-gray-500 py-1 px-2 rounded-3xl opacity-70">{totalLike} Likes</i>
+                            <i className="flex items-center gap-1 border border-gray-500 py-1 px-2 rounded-3xl opacity-70">
+                                {Number(allAverageRating.toFixed(1))} <FaStarHalfAlt />
+                                Average Rating
+                            </i>
+                        </span>
                     </>
                 )}
             </div>
@@ -92,7 +123,7 @@ export default function UserProfile() {
                             <Pagination
                                 className="text-center mt-4"
                                 currentPage={currentPage}
-                                totalPages={Math.ceil(totalBlogs / 2)}
+                                totalPages={Math.ceil(dashProfile?.allBlogs.length / 2)}
                                 onPageChange={onPageChange}
                                 showIcons
                             />

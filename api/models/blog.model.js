@@ -79,7 +79,7 @@ blogSchema.virtual('commentCount').get(function () {
 blogSchema.virtual('averageRating').get(function () {
     if (this.rating.length > 0) {
         const sumRatings = this.rating.reduce((accumulator, rating) => accumulator + rating.star, 0);
-        return (sumRatings / this.rating.length).toFixed(1);
+        return Number((sumRatings / this.rating.length).toFixed(1));
     }
     return 0;
 });
