@@ -38,9 +38,17 @@ export const getNotifications = async (req, res, next) => {
         // );
 
         const allNotifications = await Noti.find({ recipient: userId })
-            .populate('blogId')
-            .populate('recipient')
-            .populate('sender')
+            .populate({
+                path: 'blogId',
+            })
+            .populate({
+                path: 'recipient',
+                select: '-password',
+            })
+            .populate({
+                path: 'sender',
+                select: '-password',
+            })
             .populate('commentId')
             .populate('repliedOnComment')
             .sort({ createdAt: -1 });

@@ -9,6 +9,7 @@ import Quote from '@editorjs/quote';
 import Marker from '@editorjs/marker';
 import InlineCode from '@editorjs/inline-code';
 import RawTool from '@editorjs/raw';
+import CodeTool from '@editorjs/code';
 import { getDownloadURL, getStorage, ref, uploadBytesResumable } from 'firebase/storage';
 import { app } from '../firebase';
 import toast from 'react-hot-toast';
@@ -97,7 +98,7 @@ export const tools = {
         inlineToolbar: true,
         tunes: ['textAlignment'],
         config: {
-            placeholder: 'Enter a Header',
+            placeholder: 'Typing a Header ...',
             levels: [1, 2, 3, 4, 5],
             defaultLevel: 1,
         },
@@ -105,9 +106,6 @@ export const tools = {
     list: {
         class: List,
         inlineToolbar: true,
-        config: {
-            defaultStyle: 'unordered',
-        },
     },
     image: {
         class: ImageTool,
@@ -124,12 +122,9 @@ export const tools = {
         },
     },
     raw: RawTool,
-    marker: {
-        class: Marker,
-    },
-    inlineCode: {
-        class: InlineCode,
-    },
+    marker: Marker,
+    code: CodeTool,
+    inlineCode: InlineCode,
     color: {
         class: ColorPlugin,
         config: {

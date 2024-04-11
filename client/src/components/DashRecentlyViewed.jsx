@@ -54,6 +54,7 @@ export default function DashRecentlyViewed() {
             }
             if (res.ok) {
                 setRecentlyBlogs((prev) => [...prev, ...data.viewedBlogsHistory]);
+                console.log(recentlyBlogs.length + data.viewedBlogsHistory.length, data.total);
                 if (recentlyBlogs.length + data.viewedBlogsHistory.length >= data.total) {
                     setShowMore(false);
                 }
@@ -77,11 +78,11 @@ export default function DashRecentlyViewed() {
                     <>
                         {recentlyBlogs.map((blog, i) => (
                             <OneByOneAppearEffect transition={{ duration: 1, delay: i * 0.1 }} key={i}>
-                                <Link to={`/blog/${blog.blog.slug}`}>
+                                <Link to={`/blog/${blog.blog?.slug}`}>
                                     <div className="border-b p-4 flex gap-4 items-center hover:bg-slate-100 dark:hover:bg-gray-600">
-                                        <img src={blog.blog.thumb} className="w-20 aspect-auto rounded" />
+                                        <img src={blog.blog?.thumb} className="w-20 aspect-auto rounded" />
                                         <div className="flex flex-col">
-                                            <p>{blog.blog.title}</p>
+                                            <p>{blog.blog?.title}</p>
                                             <p>Last seen on: {dateToDateAndTime(blog.viewedAt)}</p>
                                         </div>
                                     </div>

@@ -96,13 +96,14 @@ export const createBlog = async (req, res, next) => {
 
         try {
             const savedBlog = await newBlog.save();
-            const author = await User.findById(userId);
+            const author = await User.findById(userId).select('-password');
             author.subscribeUsers.forEach((user) =>
                 createNoti(
                     'new blog',
                     user,
                     author._id,
                     `Author ${author.username} just posted a new blog with the title: ${savedBlog.title}`,
+                    { slug: savedBlog.slug },
                 ),
             );
 
@@ -182,12 +183,18 @@ export const updateLikeBlog = async (req, res, next) => {
     let userId = req.params.userId;
     let blogId = req.body._id;
     try {
-        let blog = await Blog.findById(blogId).populate('authorId', '_id username email userAvatar');
+        let [blog, user] = await Promise.all([
+            Blog.findById(blogId).populate('authorId', '_id username email userAvatar'),
+            User.findById(userId).select('username'),
+        ]);
         let index = blog.likes.indexOf(userId);
         if (index > -1) {
             blog.likes.splice(index, 1);
         } else {
             blog.likes.push(userId);
+            createNoti('like', blog.authorId._id, userId, `User ${user.username} like your blog`, {
+                slug: blog.slug,
+            });
         }
         blog = await blog.save();
         res.status(200).json({ blog });

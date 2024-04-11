@@ -105,7 +105,7 @@ export default function PublishForm() {
 
     return (
         <>
-            <section className="w-fit md:w-[900px] mx-auto min-h-screen grid items-center lg:grid-cols-2">
+            <section className="w-fit container mx-auto min-h-screen grid items-center lg:grid-cols-2">
                 <Toaster />
                 <div className="max-w-[450px] block mx-auto mb-4">
                     <p className="lg:text-5xl font-semibold py-2 px-4">Preview</p>

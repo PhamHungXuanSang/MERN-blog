@@ -1,4 +1,5 @@
-import { CodeBlock, CopyBlock, dracula } from 'react-code-blocks';
+/* eslint-disable react/prop-types */
+import { CopyBlock, dracula } from 'react-code-blocks';
 
 export default function ContentItem({ type, block }) {
     if (type == 'header') {
@@ -50,10 +51,20 @@ export default function ContentItem({ type, block }) {
         );
     }
 
-    if (type == 'list') {
+    if (type == 'list' && block.data.style == 'ordered') {
         return (
             <ul>
                 {block.data.items.map((item, i) => {
+                    item = i + 1 + '. ' + item;
+                    return <li key={i} dangerouslySetInnerHTML={{ __html: item }}></li>;
+                })}
+            </ul>
+        );
+    } else if (type == 'list' && block.data.style != 'ordered') {
+        return (
+            <ul>
+                {block.data.items.map((item, i) => {
+                    item = '• ' + item;
                     return <li key={i} dangerouslySetInnerHTML={{ __html: item }}></li>;
                 })}
             </ul>
@@ -91,6 +102,10 @@ export default function ContentItem({ type, block }) {
     }
 
     if (type == 'raw') {
-        return <CodeBlock text={block.data.html} showLineNumbers={true} theme={dracula} wrapLines />;
+        return <CopyBlock text={block.data.html} showLineNumbers={true} codeBlock />;
+    }
+
+    if (type == 'code') {
+        return <CopyBlock text={block.data.code} showLineNumbers={true} theme={dracula} codeBlock />;
     }
 }

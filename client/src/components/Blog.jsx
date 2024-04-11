@@ -25,7 +25,7 @@ export default function Blog({ content, author }) {
                 <i className="my-2 text-md leading-7 max-sm:hidden md:max-[1100px]:hidden line-clamp-1">
                     {description}
                 </i>
-                <div className="flex gap-5 mt-4">
+                <div className="flex flex-wrap gap-5 mt-4">
                     <span className="px-4 whitespace-nowrap rounded-full capitalize bg-slate-200 dark:bg-slate-500 font-semibold">
                         {category}
                     </span>

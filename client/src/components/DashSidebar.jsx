@@ -35,13 +35,18 @@ export default function DashSidebar() {
         }
     }, [location.search]);
 
+    const toggleHiddenSidebar = () => {
+        document.getElementById('side-bar')?.classList.toggle('hidden');
+    };
+
     return (
-        <Sidebar aria-label="Sidebar with content separator example" className="w-full">
+        <Sidebar aria-label="Sidebar with content separator example" className="w-full hidden md:block" id="side-bar">
             <Sidebar.Items className="pt-8">
                 <Sidebar.ItemGroup>
                     <span className="text-2xl font-semibold pl-2">Profile</span>
                     <Link to="/dash-board?tab=profile">
                         <Sidebar.Item
+                            onClick={() => toggleHiddenSidebar()}
                             active={tab === 'profile'}
                             label={currentUser.isAdmin ? 'Admin' : 'User'}
                             labelColor="dark"
@@ -52,7 +57,13 @@ export default function DashSidebar() {
                         </Sidebar.Item>
                     </Link>
                     <Link to="/dash-board?tab=update-profile">
-                        <Sidebar.Item className="mt-1" active={tab === 'update-profile'} labelColor="dark" as="div">
+                        <Sidebar.Item
+                            onClick={() => toggleHiddenSidebar()}
+                            className="mt-1"
+                            active={tab === 'update-profile'}
+                            labelColor="dark"
+                            as="div"
+                        >
                             Update profile
                         </Sidebar.Item>
                     </Link>
@@ -62,17 +73,28 @@ export default function DashSidebar() {
                     {currentUser.isAdmin || currentUser.createPermission ? (
                         <>
                             <Link to="/dash-board?tab=create-blog">
-                                <Sidebar.Item className="mt-2" active={tab === 'create-blog'} icon={IoCreateSharp}>
+                                <Sidebar.Item
+                                    onClick={() => toggleHiddenSidebar()}
+                                    className="mt-2"
+                                    active={tab === 'create-blog'}
+                                    icon={IoCreateSharp}
+                                >
                                     Create blog
                                 </Sidebar.Item>
                             </Link>
                             <Link to="/dash-board?tab=all-blog">
-                                <Sidebar.Item className="mt-1" active={tab === 'all-blog'} icon={HiDocumentText}>
+                                <Sidebar.Item
+                                    onClick={() => toggleHiddenSidebar()}
+                                    className="mt-1"
+                                    active={tab === 'all-blog'}
+                                    icon={HiDocumentText}
+                                >
                                     All my blog
                                 </Sidebar.Item>
                             </Link>
                             <Link to="/dash-board?tab=recently-viewed">
                                 <Sidebar.Item
+                                    onClick={() => toggleHiddenSidebar()}
                                     className="mt-1"
                                     active={tab === 'recently-viewed'}
                                     icon={HiMiniClipboardDocumentCheck}
@@ -83,7 +105,7 @@ export default function DashSidebar() {
                         </>
                     ) : (
                         <Link to="/offer">
-                            <Sidebar.Item className="mt-2" icon={MdLocalOffer}>
+                            <Sidebar.Item onClick={() => toggleHiddenSidebar()} className="mt-2" icon={MdLocalOffer}>
                                 Create blog offer
                             </Sidebar.Item>
                         </Link>
@@ -94,12 +116,17 @@ export default function DashSidebar() {
                         <span className="text-2xl font-semibold pl-2">Transaction</span>
                         <>
                             <Link to="/offer">
-                                <Sidebar.Item className="mt-2" icon={MdLocalOffer}>
+                                <Sidebar.Item
+                                    onClick={() => toggleHiddenSidebar()}
+                                    className="mt-2"
+                                    icon={MdLocalOffer}
+                                >
                                     Buy package
                                 </Sidebar.Item>
                             </Link>
                             <Link to="/dash-board?tab=transaction">
                                 <Sidebar.Item
+                                    onClick={() => toggleHiddenSidebar()}
                                     className="mt-2"
                                     active={tab === 'transaction'}
                                     icon={AiOutlineTransaction}
@@ -114,7 +141,12 @@ export default function DashSidebar() {
                     <span className="text-2xl font-semibold pl-2">Setting</span>
                     <>
                         <Link to="/dash-board?tab=account-setting">
-                            <Sidebar.Item className="mt-2" active={tab === 'account-setting'} icon={IoSettings}>
+                            <Sidebar.Item
+                                onClick={() => toggleHiddenSidebar()}
+                                className="mt-2"
+                                active={tab === 'account-setting'}
+                                icon={IoSettings}
+                            >
                                 Account setting
                             </Sidebar.Item>
                         </Link>

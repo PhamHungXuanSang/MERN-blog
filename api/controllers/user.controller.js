@@ -7,8 +7,8 @@ import bcryptjs from 'bcryptjs';
 
 export const getUserProfile = async (req, res, next) => {
     const username = req.params.username;
-    const page = req.query.page || 1;
-    const limit = req.query.limit || 2;
+    const page = parseInt(req.query.page || 1);
+    const limit = parseInt(req.query.limit || 2);
     const user = await User.findOne({ username }).select('-password');
     if (!user) {
         return next(errorHandler(404, 'User not found'));
@@ -184,12 +184,15 @@ export const toggleSubscribe = async (req, res, next) => {
         if (!user) {
             return res.status(404).json('User not found');
         }
+        const subscriber = await User.findOne({ _id: userId }).select('username');
         const index = user.subscribeUsers.indexOf(userId);
         if (index > -1) {
             user.subscribeUsers.splice(index, 1);
             const isSaved = await user.save();
             if (isSaved) {
-                createNoti('subscriber', authorId, userId, `User ${user.username} just unsubscribed`);
+                createNoti('subscriber', authorId, userId, `User ${subscriber.username} just unsubscribed`, {
+                    username: subscriber.username,
+                });
                 return res.status(200).json('Unsubscribed');
             }
         } else {
@@ -200,7 +203,10 @@ export const toggleSubscribe = async (req, res, next) => {
                     'subscriber',
                     authorId,
                     userId,
-                    `User ${user.username} just subscribed to receive notifications about your new blog`,
+                    `User ${subscriber.username} just subscribed to receive notifications about your new blog`,
+                    {
+                        username: subscriber.username,
+                    },
                 );
                 return res.status(200).json('Subscribed');
             }

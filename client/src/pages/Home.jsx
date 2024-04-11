@@ -7,6 +7,7 @@ import { BiSolidCategoryAlt } from 'react-icons/bi';
 import NotFound from '../components/NotFound';
 import OneByOneAppearEffect from '../components/OneByOneAppearEffect';
 import OneByOneAppearFromRightEffect from '../components/OneByOneAppearFromRightEffect';
+import InPageNavigation from '../components/InPageNavigation';
 
 export default function Home() {
     const [activeTab, setActiveTab] = useState('all category');
@@ -93,61 +94,103 @@ export default function Home() {
     };
 
     return (
-        <section className="container mx-auto min-h-screen h-fit flex justify-center gap-10">
-            <div className="w-full flex py-12">
-                {/* Latest blog */}
-                <div className="h-full w-[70%]">
-                    <div className="w-full h-fit border-b-2 border-neutral-300">
-                        <p
-                            className={`font-bold border-b-2 border-black dark:bg-[#4b5563] bg-[#f3f4f6] text-lg w-fit py-2 px-4 inline-block`}
-                        >
-                            {activeTab.charAt(0).toUpperCase() + activeTab.slice(1)}
-                        </p>
-                    </div>
-
-                    {blogs != null ? (
-                        blogs.length == 0 ? (
-                            <NotFound object={`Not found blog by ${activeCate} category`} />
-                        ) : (
+        <section className="h-cover flex justify-center gap-4 container mx-auto py-8">
+            <div className="w-full md:max-w-[68%]">
+                <InPageNavigation routes={['home', 'treding blogs']} defaultHidden={['treding blogs']}>
+                    <>
+                        {blogs != null ? (
                             <>
-                                {blogs.map((blog, i) => (
-                                    <OneByOneAppearEffect transition={{ duration: 1, delay: i * 0.12 }} key={i}>
-                                        <Blog key={i} content={blog} author={blog.authorId} />
-                                    </OneByOneAppearEffect>
-                                ))}
-                                <Pagination
-                                    className="text-center mt-4"
-                                    currentPage={currentPage}
-                                    totalPages={Math.ceil(totalPage / limit)}
-                                    onPageChange={onPageChange}
-                                    showIcons
-                                />
+                                <div className="flex flex-col gap-2 my-4 md:hidden">
+                                    <div className="flex items-center">
+                                        <h1 className="font-medium text-xl mr-1">View by Category</h1>
+                                        <BiSolidCategoryAlt />
+                                    </div>
+                                    <div className="flex gap-2 flex-wrap">
+                                        {category.map((cate, i) => {
+                                            return (
+                                                <OneByOneAppearFromRightEffect
+                                                    transition={{ duration: 1, delay: i * 0.03 }}
+                                                    key={i}
+                                                >
+                                                    <Button
+                                                        gradientDuoTone="greenToBlue"
+                                                        key={i}
+                                                        outline={activeCate == cate.toLowerCase() ? false : true}
+                                                        onClick={loadBlogByCategory}
+                                                    >
+                                                        {cate.toUpperCase()}
+                                                    </Button>
+                                                </OneByOneAppearFromRightEffect>
+                                            );
+                                        })}
+                                    </div>
+                                </div>
+                                {blogs.length == 0 ? (
+                                    <NotFound object={`Not found blog by ${activeCate} category`} />
+                                ) : (
+                                    <>
+                                        {blogs.map((blog, i) => (
+                                            <OneByOneAppearEffect transition={{ duration: 1, delay: i * 0.12 }} key={i}>
+                                                <Blog key={i} content={blog} author={blog.authorId} />
+                                            </OneByOneAppearEffect>
+                                        ))}
+                                        <Pagination
+                                            className="text-center mt-4"
+                                            currentPage={currentPage}
+                                            totalPages={Math.ceil(totalPage / limit)}
+                                            onPageChange={onPageChange}
+                                            showIcons
+                                        />
+                                    </>
+                                )}
                             </>
-                        )
-                    ) : (
-                        <Spinner className="block mx-auto mt-4" size="xl" />
-                    )}
-                </div>
-
-                {/* Trending and filter by category */}
-                <div className="border-l-2 h-full pl-4 w-[30%] max-md:hidden">
-                    <div className="flex items-center gap-2 mb-2">
-                        <h1 className="font-medium text-xl mr-1">Trending blogs</h1>
-                        <TbTrendingUp />
-                    </div>
-                    {trendingBlogs != null ? (
-                        trendingBlogs.length == 0 ? (
-                            <NotFound object={'Not found trending blog'} />
                         ) : (
-                            <Carousel className="h-fit py-4 px-1 border-2 border-teal-500 rounded-3xl" pauseOnHover>
-                                {trendingBlogs.map((blog, i) => (
-                                    <BlogMini key={i} index={i} content={blog} author={blog.authorId} />
-                                ))}
-                            </Carousel>
-                        )
-                    ) : (
-                        <Spinner className="block mx-auto mt-4" size="lg" />
-                    )}
+                            <Spinner className="block mx-auto mt-4" size="xl" />
+                        )}
+                    </>
+
+                    <>
+                        {trendingBlogs != null ? (
+                            trendingBlogs.length == 0 ? (
+                                <NotFound object={'Not found trending blog'} />
+                            ) : (
+                                <Carousel
+                                    className="h-fit py-4 mt-8 px-1 border-2 border-teal-500 rounded-3xl"
+                                    pauseOnHover
+                                >
+                                    {trendingBlogs.map((blog, i) => (
+                                        <BlogMini key={i} index={i} content={blog} author={blog.authorId} />
+                                    ))}
+                                </Carousel>
+                            )
+                        ) : (
+                            <Spinner className="block mx-auto mt-4" size="lg" />
+                        )}
+                    </>
+                </InPageNavigation>
+            </div>
+
+            <div className="max-w-[30%] border-l border-gray-300 pl-4 pt-3 max-md:hidden">
+                <div className="flex flex-col">
+                    <>
+                        <div className="flex items-center gap-2 mb-2">
+                            <h1 className="font-medium text-xl mr-1">Trending blogs</h1>
+                            <TbTrendingUp />
+                        </div>
+                        {trendingBlogs != null ? (
+                            trendingBlogs.length == 0 ? (
+                                <NotFound object={'Not found trending blog'} />
+                            ) : (
+                                <Carousel className="h-fit py-4 px-1 border-2 border-teal-500 rounded-3xl" pauseOnHover>
+                                    {trendingBlogs.map((blog, i) => (
+                                        <BlogMini key={i} index={i} content={blog} author={blog.authorId} />
+                                    ))}
+                                </Carousel>
+                            )
+                        ) : (
+                            <Spinner className="block mx-auto mt-4" size="lg" />
+                        )}
+                    </>
                     <div className="flex flex-col gap-2 my-4">
                         <div className="flex items-center">
                             <h1 className="font-medium text-xl mr-1">View by Category</h1>
@@ -171,6 +214,8 @@ export default function Home() {
                         </div>
                     </div>
                 </div>
+
+                <div></div>
             </div>
         </section>
     );

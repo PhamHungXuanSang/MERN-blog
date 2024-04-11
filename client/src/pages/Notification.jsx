@@ -44,7 +44,7 @@ export default function Notification() {
     return (
         <div className="container mx-auto py-12">
             <h1 className="max-md:hidden">Recent Notification</h1>
-            <div className="my-8 flex gap-4">
+            <div className="my-8 flex flex-wrap gap-4">
                 {filters.map((filterName, i) => {
                     return (
                         <div key={i} className="relative">

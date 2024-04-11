@@ -21,7 +21,6 @@ export default function DashAccountSetting() {
     const handleSubmit = (e) => {
         e.preventDefault();
         console.log(oldPassword, newPassword, confirmNewPassword);
-        // Thêm kiểm tra coi new password đã đạt yêu cầu chưa mới qua bước tiếp
         if (arrValid.some((item) => item == false)) {
             return toast.error('Please enter a password that meets the requirements');
         }
