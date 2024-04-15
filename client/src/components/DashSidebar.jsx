@@ -1,5 +1,5 @@
 import { Sidebar } from 'flowbite-react';
-import { MdLocalOffer } from 'react-icons/md';
+import { MdLocalOffer, MdFolderSpecial } from 'react-icons/md';
 import { IoCreateSharp, IoSettings } from 'react-icons/io5';
 import { HiDocumentText } from 'react-icons/hi';
 import { HiMiniClipboardDocumentCheck } from 'react-icons/hi2';
@@ -41,7 +41,11 @@ export default function DashSidebar() {
     };
 
     return (
-        <Sidebar aria-label="Sidebar with content separator example" className="w-full hidden md:block" id="side-bar">
+        <Sidebar
+            aria-label="Sidebar with content separator example"
+            className="w-full hidden md:block md:max-h-full"
+            id="side-bar"
+        >
             <Sidebar.Items className="pt-8">
                 <Sidebar.ItemGroup>
                     <span className="text-2xl font-semibold pl-2">Profile</span>
@@ -93,16 +97,6 @@ export default function DashSidebar() {
                                     All my blog
                                 </Sidebar.Item>
                             </Link>
-                            <Link to="/dash-board?tab=recently-viewed">
-                                <Sidebar.Item
-                                    onClick={() => toggleHiddenSidebar()}
-                                    className="mt-1"
-                                    active={tab === 'recently-viewed'}
-                                    icon={HiMiniClipboardDocumentCheck}
-                                >
-                                    Recently viewed
-                                </Sidebar.Item>
-                            </Link>
                         </>
                     ) : (
                         <Link to="/offer">
@@ -111,6 +105,31 @@ export default function DashSidebar() {
                             </Sidebar.Item>
                         </Link>
                     )}
+                </Sidebar.ItemGroup>
+                <Sidebar.ItemGroup>
+                    <span className="text-2xl font-semibold pl-2">History</span>
+                    <>
+                        <Link to="/dash-board?tab=recently-viewed">
+                            <Sidebar.Item
+                                onClick={() => toggleHiddenSidebar()}
+                                className="mt-1"
+                                active={tab === 'recently-viewed'}
+                                icon={HiMiniClipboardDocumentCheck}
+                            >
+                                Recently viewed
+                            </Sidebar.Item>
+                        </Link>
+                        <Link to="/dash-board?tab=saved-blogs">
+                            <Sidebar.Item
+                                onClick={() => toggleHiddenSidebar()}
+                                className="mt-1"
+                                active={tab === 'saved-blogs'}
+                                icon={MdFolderSpecial}
+                            >
+                                Saved blogs
+                            </Sidebar.Item>
+                        </Link>
+                    </>
                 </Sidebar.ItemGroup>
                 {!currentUser.isAdmin && (
                     <Sidebar.ItemGroup>

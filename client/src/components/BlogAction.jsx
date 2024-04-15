@@ -15,14 +15,7 @@ import toast from 'react-hot-toast';
 export default function BlogAction() {
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    let {
-        blog,
-        setBlog,
-        setCommentsWrapper,
-        // blog: {
-        //     comments: { results: commentsArr },
-        // },
-    } = useContext(BlogContext);
+    let { blog, setBlog, setCommentsWrapper } = useContext(BlogContext);
     const [loading, setLoading] = useState(true);
     const [liked, setLiked] = useState(false);
     const currentUser = useSelector((state) => state.user.currentUser);
@@ -50,7 +43,6 @@ export default function BlogAction() {
             return navigate('/sign-in');
         }
         setLiked(!liked);
-        // gọi hàm cập nhật lại đã like hoặc dislike và setBlog bằng dữ liệu mới
         try {
             const res = await fetch(`/api/blog/update-like-blog/${currentUser._id}`, {
                 method: 'POST',
@@ -64,7 +56,6 @@ export default function BlogAction() {
             } else if (res.status === 200) {
                 let comments = await fetchComments({
                     blogId: result.blog._id,
-                    //setParentCommentCountFun: setTotalParentCommentsLoaded,
                 });
                 result.blog.comments = comments;
                 setBlog(result.blog);
@@ -186,7 +177,15 @@ export default function BlogAction() {
             </div>
             <hr className="border-gray-300 my-2" />
             {showModal && (
-                <Modal show={showModal} onClose={() => setShowModal(false)} popup size="md">
+                <Modal
+                    show={showModal}
+                    onClose={() => {
+                        setShowModal(false);
+                        setFolder('');
+                    }}
+                    popup
+                    size="md"
+                >
                     <Modal.Header />
                     <Modal.Body>
                         <div className="text-center">
@@ -225,6 +224,7 @@ export default function BlogAction() {
                             </div>
                             <Button
                                 className="mx-auto"
+                                disabled={folder != '' ? false : true}
                                 gradientDuoTone={'greenToBlue'}
                                 outline
                                 onClick={handleSaveBlog}

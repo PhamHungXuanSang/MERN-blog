@@ -43,7 +43,11 @@ export default function Notification() {
 
     return (
         <div className="container mx-auto py-12">
-            <h1 className="max-md:hidden">Recent Notification</h1>
+            <div className="w-full h-fit border-b-2 border-neutral-300">
+                <p className="font-bold border-b-2 border-black dark:bg-[#4b5563] bg-[#f3f4f6] text-lg w-fit py-2 px-4 inline-block">
+                    Recent Notification
+                </p>
+            </div>
             <div className="my-8 flex flex-wrap gap-4">
                 {filters.map((filterName, i) => {
                     return (
