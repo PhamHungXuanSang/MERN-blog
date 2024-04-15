@@ -14,6 +14,7 @@ import packageRoutes from './routes/package.route.js';
 import statisticalRoutes from './routes/statistical.route.js';
 import emailRoutes from './routes/email.route.js';
 import notificationRoutes from './routes/noti.route.js';
+import usersFolderRoutes from './routes/usersFolder.route.js';
 import cookieParser from 'cookie-parser';
 
 dotenv.config();
@@ -90,6 +91,7 @@ app.use('/api/package', packageRoutes);
 app.use('/api/statistical', statisticalRoutes);
 app.use('/api/email', emailRoutes);
 app.use('/api/notification', notificationRoutes);
+app.use('/api/usersFolder', usersFolderRoutes);
 
 app.use((err, req, res, next) => {
     const statusCode = err.statusCode || 500;

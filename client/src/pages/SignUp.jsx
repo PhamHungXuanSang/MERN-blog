@@ -1,18 +1,22 @@
 import { Alert, Button, Label, Spinner, TextInput } from 'flowbite-react';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { HiInformationCircle } from 'react-icons/hi';
 import { FaTimes, FaCheck } from 'react-icons/fa';
 import OAuth from '../components/OAuth';
 import MoveFromTopEffect from '../components/MoveFromTopEffect';
 import toast from 'react-hot-toast';
+import ReCAPTCHA from 'react-google-recaptcha';
+import { useSelector } from 'react-redux';
 
 export default function SignUp() {
-    const [formData, setFormData] = useState({});
+    let [formData, setFormData] = useState({});
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
     const [showPasswordValidation, setShowPasswordValidation] = useState(false);
     const [arrValid, setArrValid] = useState([false, false, false, false, false]);
+    const { darkMode } = useSelector((state) => state.darkMode);
+    const reRef = useRef();
 
     const navigate = useNavigate();
 
@@ -42,6 +46,11 @@ export default function SignUp() {
         }
         try {
             setLoading(true);
+
+            const token = await reRef.current.getValue();
+            reRef.current.reset();
+            formData = { ...formData, token };
+
             const res = await fetch('api/auth/signup', {
                 // Cần cấu hình proxy trong vite
                 method: 'POST',
@@ -55,8 +64,8 @@ export default function SignUp() {
                 return;
             }
             if (res.ok) {
-                toast('Sign up success.\nPlease log in to gmail to verify your email.', {
-                    duration: 6000,
+                toast('Sign up success.\nPlease check email to verify your email address 📩', {
+                    duration: 8000,
                 });
                 return navigate('/sign-in');
             }
@@ -76,19 +85,21 @@ export default function SignUp() {
     ];
 
     return (
-        <div className="min-h-screen mt-20">
-            <div className="flex flex-col md:flex-row p-3 max-w-3xl mx-auto md-items-center">
+        <div className="min-h-screen mt-4">
+            <div className="flex flex-col md:flex-row p-3 max-w-3xl mx-auto md:items-center">
                 {/*Left */}
                 <div className="flex-1 sm:pr-8">
-                    <Link to="/" className="font-bold sm:text-xl dark:text-white">
-                        <span className="text-xl md:text-3xl px-3 py-1 rounded-lg bg-gradient-to-tr from-green-500 to-blue-500 text-white">
-                            MERN Blog
-                        </span>
-                    </Link>
-                    <i className="text-sm sm:text-base lg:text-lg mt-5 sm:mt-10 block text-gray-500">
-                        Welcome to the blog website - a place to share passion and knowledge. Explore the creative
-                        community, read unique articles, and engage in diverse, informative conversations.
-                    </i>
+                    <MoveFromTopEffect>
+                        <Link to="/" className="font-bold sm:text-xl dark:text-white">
+                            <span className="text-xl md:text-3xl px-3 py-1 rounded-lg bg-gradient-to-tr from-green-500 to-blue-500 text-white">
+                                MERN Blog
+                            </span>
+                        </Link>
+                        <i className="text-sm sm:text-base lg:text-lg mt-5 sm:mt-10 block text-gray-500">
+                            Welcome to the blog website - a place to share passion and knowledge. Explore the creative
+                            community, read unique articles, and engage in diverse, informative conversations.
+                        </i>
+                    </MoveFromTopEffect>
                 </div>
                 {/*Right */}
                 <div className="flex-1">
@@ -169,6 +180,11 @@ export default function SignUp() {
                                 onChange={handleChange}
                             />
                         </div>
+                        <ReCAPTCHA
+                            sitekey={import.meta.env.VITE_REACT_GG_RECAPTCHA_SITE_KEY}
+                            ref={reRef}
+                            theme={darkMode}
+                        />
                         <Button gradientDuoTone="greenToBlue" type="submit">
                             {loading ? (
                                 <>

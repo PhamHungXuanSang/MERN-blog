@@ -6,12 +6,31 @@ import RefreshToken from '../models/refreshToken.model.js';
 import { userOnline } from '../index.js';
 import Transaction from '../models/transaction.model.js';
 import { sendEmailServices } from '../services/emailService.js';
+import UsersFolder from '../models/usersFolder.model.js';
+
+const validateHuman = async (token) => {
+    const secret = process.env.GG_RECAPTCHA_SECRET_KEY;
+    const response = await fetch(`https://www.google.com/recaptcha/api/siteverify?secret=${secret}&response=${token}`, {
+        method: 'POST',
+    });
+    const data = await response.json();
+    return data.success; // Neeus muoosn tesst hoatj dodongj thiuf return false
+};
 
 export const signup = async (req, res, next) => {
-    const { username, email, password } = req.body;
+    const { username, email, password, token } = req.body;
 
     if (!username || !email || !password || username === '' || email === '' || password === '') {
         return next(errorHandler(400, 'Please enter all fields'));
+    }
+
+    if (!token || token === '') {
+        return next(errorHandler(400, 'Please verify you are not a bot'));
+    }
+
+    const human = await validateHuman(token);
+    if (!human) {
+        return next(errorHandler(400, 'Detect bot actions'));
     }
 
     const hashedPassword = bcryptjs.hashSync(password, 10);
@@ -27,7 +46,10 @@ export const signup = async (req, res, next) => {
         const transaction = new Transaction({
             userId: user._id,
         });
-        const userTransaction = await transaction.save();
+        const userF = new UsersFolder({
+            userId: user._id,
+        });
+        const [userTransaction, userFolder] = await Promise.all([transaction.save(), userF.save()]);
         await User.findOneAndUpdate({ _id: user._id }, { $push: { transaction: userTransaction._id } }, { new: true });
         // Mã hóa email để send đến email acc người dùng
         const hashedEmail = bcryptjs.hashSync(user.email, 10);
@@ -43,10 +65,19 @@ export const signup = async (req, res, next) => {
 };
 
 export const signin = async (req, res, next) => {
-    const { email, password } = req.body;
+    const { email, password, token } = req.body;
 
     if (!email || !password || email === '' || password === '') {
         return next(errorHandler(400, 'Please enter all fields'));
+    }
+
+    if (!token || token === '') {
+        return next(errorHandler(400, 'Please verify you are not a bot'));
+    }
+
+    const human = await validateHuman(token);
+    if (!human) {
+        return next(errorHandler(400, 'Detect bot actions'));
     }
 
     try {
@@ -147,7 +178,11 @@ export const google = async (req, res, next) => {
                 const transaction = new Transaction({
                     userId: user._id,
                 });
-                const userTransaction = await transaction.save();
+                // Thêm code danh sách bài viết đã lưu của người dùng
+                const userF = new UsersFolder({
+                    userId: user._id,
+                });
+                const [userTransaction, userFolder] = await Promise.all([transaction.save(), userF.save()]);
                 newUser = await User.findOneAndUpdate(
                     { _id: user._id },
                     { $push: { transaction: userTransaction._id } },

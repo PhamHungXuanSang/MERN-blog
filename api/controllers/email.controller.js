@@ -21,7 +21,6 @@ export const verifyEmail = async (req, res, next) => {
     try {
         const validEmail = await bcryptjs.compare(req.query.email, req.query.token);
         if (validEmail) {
-            // Lưu lại thời gian verify
             await User.findOneAndUpdate(
                 { email: req.query.email },
                 { $set: { 'emailVerified.verifiedAt': new Date() } },
@@ -30,7 +29,6 @@ export const verifyEmail = async (req, res, next) => {
 
             res.redirect('http://localhost:5173/sign-in');
         } else {
-            // Thông báo lỗi
             return res.status(400).json('Email verification failed.');
         }
     } catch (error) {
@@ -43,7 +41,6 @@ export const sendEmailOTP = async (req, res, next) => {
         const { email } = req.body;
         const user = await User.findOne({ email });
         if (user) {
-            // Kiểm tra và xóa tất cả OTP của người dùng có email
             await UserOTP.deleteMany({ email });
             const OTP = `${Math.floor(1000 + Math.random() * 9000)}`;
 

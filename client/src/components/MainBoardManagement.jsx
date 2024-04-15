@@ -222,6 +222,7 @@ export default function MainBoardManagement() {
                             <Table.HeadCell className="text-center p-2">Blog Thumbnail</Table.HeadCell>
                             <Table.HeadCell className="text-center p-2">Blog title</Table.HeadCell>
                             <Table.HeadCell className="text-center p-2">Author</Table.HeadCell>
+                            <Table.HeadCell className="text-center p-2">Created at</Table.HeadCell>
                         </Table.Head>
                         {blogs ? (
                             blogs.map((blog, i) => {
@@ -235,8 +236,13 @@ export default function MainBoardManagement() {
                                                     className="max-w-20 rounded-sm bg-gray-500 mx-auto"
                                                 />
                                             </Table.Cell>
-                                            <Table.Cell className="p-2">{blog.title}</Table.Cell>
+                                            <Table.Cell className="p-1 max-w-[360px] break-words line-clamp-2">
+                                                {blog.title}
+                                            </Table.Cell>
                                             <Table.Cell className="p-2">{blog.authorId.username}</Table.Cell>
+                                            <Table.Cell className="p-2">
+                                                {new Date(blog.createdAt).toLocaleDateString()}
+                                            </Table.Cell>
                                         </Table.Row>
                                     </Table.Body>
                                 );
@@ -257,6 +263,7 @@ export default function MainBoardManagement() {
                             <Table.HeadCell className="text-center p-2">Username</Table.HeadCell>
                             <Table.HeadCell className="text-center p-2">Content</Table.HeadCell>
                             <Table.HeadCell className="text-center p-2">Type</Table.HeadCell>
+                            <Table.HeadCell className="text-center p-2">Commented at</Table.HeadCell>
                         </Table.Head>
                         {comments ? (
                             comments.map((comment, i) => {
@@ -271,9 +278,14 @@ export default function MainBoardManagement() {
                                                 />
                                             </Table.Cell>
                                             <Table.Cell className="p-2">{comment.commentedBy.username}</Table.Cell>
-                                            <Table.Cell className="p-2">{comment.content}</Table.Cell>
+                                            <Table.Cell className="p-2 max-w-[360px] break-words line-clamp-2">
+                                                {comment.content}
+                                            </Table.Cell>
                                             <Table.Cell className="p-2">
                                                 {comment.isReply ? 'Reply' : 'Comment'}
+                                            </Table.Cell>
+                                            <Table.Cell className="p-2">
+                                                {new Date(comment.createdAt).toLocaleDateString()}
                                             </Table.Cell>
                                         </Table.Row>
                                     </Table.Body>

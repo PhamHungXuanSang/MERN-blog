@@ -1,15 +1,14 @@
 import Package from '../models/package.model.js';
 import PaymentHistory from '../models/paymentHistory.model.js';
-import Transaction from '../models/transaction.model.js';
 
 export const getStatistical = async (req, res, next) => {
     if (!req.user.isAdmin) {
         return next(errorHandler(400, 'You are not allowed to get statistical'));
     }
     const now = new Date();
-    let day = req.body.day;
-    let month = req.body.month;
-    let year = req.body.year;
+    let day = req.body.day || 1;
+    let month = req.body.month || 1;
+    let year = req.body.year || now.getFullYear();
 
     try {
         const packages = await Package.find();
@@ -19,8 +18,8 @@ export const getStatistical = async (req, res, next) => {
             let countData = userCounts.find((c) => c._id.equals(pack._id)) || { count: 0 };
             return { packageName: pack.packageName, count: countData.count };
         });
-        console.log('Tổng số lượt choose paln của mỗi gói: ');
-        console.log(userCountForEachPackage); // Lấy được tổng số lượt mua của mỗi gói (kể cả gói không có lượt mua nào)
+        // console.log('Tổng số lượt choose paln của mỗi gói: ');
+        // console.log(userCountForEachPackage); // Lấy được tổng số lượt mua của mỗi gói (kể cả gói không có lượt mua nào)
 
         const firstDayOfCurrentMonth = new Date(now.getFullYear(), now.getMonth(), 1);
         const firstDayOfNextMonth = new Date(now.getFullYear(), now.getMonth() + 1, 1);
@@ -46,13 +45,12 @@ export const getStatistical = async (req, res, next) => {
 
             return { packageName: pack.packageName, count: countData.count };
         });
-        console.log('Tổng số lượt choose plan của mỗi gói trong tháng hiện tại: ');
-        console.log(userCountForEachPackageInThisMonth); // Lấy số người đăng ký mới/gia hạn gói của mỗi gói trong tháng hiện tại
+        // console.log('Tổng số lượt choose plan của mỗi gói trong tháng hiện tại: ');
+        // console.log(userCountForEachPackageInThisMonth); // Lấy số người đăng ký mới/gia hạn gói của mỗi gói trong tháng hiện tại
 
         let startDate;
         startDate = new Date(year, month - 1, day); // Nếu không nhập day, month, year thì lấy doanh thu toàn bộ thời gian
         var matchCondition = {};
-        console.log(startDate);
         if (startDate) {
             matchCondition = {
                 paymentDate: {
@@ -88,8 +86,8 @@ export const getStatistical = async (req, res, next) => {
                 $sort: { originalDate: 1 },
             },
         ]);
-        console.log('Doanh thu của mỗi gói theo khoảng thời gian/ tất cả thời gian: ');
-        console.log(revenueByPackage); // Doanh thu của mỗi gói theo thời gian từ startDate đến hiện tại / doanh thu của mỗi gói trong toàn bộ thời gian
+        // console.log('Doanh thu của mỗi gói theo khoảng thời gian/ tất cả thời gian: ');
+        // console.log(revenueByPackage); // Doanh thu của mỗi gói theo thời gian từ startDate đến hiện tại / doanh thu của mỗi gói trong toàn bộ thời gian
 
         const revenue = await PaymentHistory.aggregate([
             { $match: matchCondition },
@@ -111,11 +109,11 @@ export const getStatistical = async (req, res, next) => {
             },
             { $sort: { originalDate: 1, '_id.packageName': 1 } },
         ]);
-        console.log('Doanh thu trong khoảng thời gian/ tất cả thời gian: ');
-        console.log(revenue);
+        // console.log('Doanh thu trong khoảng thời gian/ tất cả thời gian: ');
+        // console.log(revenue);
         return res
             .status(200)
-            .json({ userCountForEachPackage, userCountForEachPackageInThisMonth, revenueByPackage, revenue });
+            .json({ userCountForEachPackage, userCountForEachPackageInThisMonth, revenueByPackage, revenue, packages });
     } catch (error) {
         next(error);
     }

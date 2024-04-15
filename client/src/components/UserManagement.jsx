@@ -102,8 +102,6 @@ export default function UserManagement() {
         }
     };
 
-    console.log(users);
-
     return (
         <div className="py-12 px-4 table-auto overflow-x-scroll md:mx-auto p-3 scrollbar">
             {users != null ? (
@@ -115,6 +113,7 @@ export default function UserManagement() {
                                 <Table.HeadCell>Username</Table.HeadCell>
                                 <Table.HeadCell>Email</Table.HeadCell>
                                 <Table.HeadCell>Avatar</Table.HeadCell>
+                                <Table.HeadCell>Create Permission</Table.HeadCell>
                                 <Table.HeadCell>User Role</Table.HeadCell>
                             </Table.Head>
                             <Table.Body className="divide-y">
@@ -122,19 +121,20 @@ export default function UserManagement() {
                                     return (
                                         <Table.Row key={i} className="bg-white dark:border-gray-700 dark:bg-gray-800">
                                             <Table.Cell>{new Date(user.createdAt).toLocaleDateString()}</Table.Cell>
-                                            <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
+                                            <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white px-1">
                                                 <Link to={`/user/${user.username}`}>{user.username}</Link>
                                             </Table.Cell>
-                                            <Table.Cell>{user.email}</Table.Cell>
+                                            <Table.Cell className='px-1'>{user.email}</Table.Cell>
                                             <Table.Cell>
                                                 <Link to={`/user/${user.username}`}>
                                                     <img
                                                         src={user.userAvatar}
                                                         alt="Avatar"
-                                                        className="rounded-full max-w-14 object-cover bg-gray-400 aspect-auto"
+                                                        className="rounded-full max-w-10 object-cover bg-gray-400 aspect-auto"
                                                     />
                                                 </Link>
                                             </Table.Cell>
+                                            <Table.Cell>{user.createPermission ? "Allow" : "Not allow"}</Table.Cell>
                                             <Table.Cell>
                                                 <Select
                                                     id="roles"

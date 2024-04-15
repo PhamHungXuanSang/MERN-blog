@@ -1,16 +1,20 @@
 import { Alert, Button, Label, Spinner, TextInput } from 'flowbite-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { HiInformationCircle } from 'react-icons/hi';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { signInStart, signInSuccess, signInFailure } from '../redux/user/userSlice.js';
 import { useDispatch, useSelector } from 'react-redux';
 import OAuth from '../components/OAuth.jsx';
 import MoveFromTopEffect from '../components/MoveFromTopEffect.jsx';
 import { socket } from '../utils/socket.js';
 
+import ReCAPTCHA from 'react-google-recaptcha';
+
 export default function SignIn() {
-    const [formData, setFormData] = useState({});
+    let [formData, setFormData] = useState({});
     const { loading, error } = useSelector((state) => state.user);
+    const { darkMode } = useSelector((state) => state.darkMode);
+    const reRef = useRef();
 
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -28,6 +32,11 @@ export default function SignIn() {
 
         try {
             dispatch(signInStart());
+
+            const token = await reRef.current.getValue();
+            reRef.current.reset();
+            formData = { ...formData, token };
+
             const res = await fetch('/api/auth/signin', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -52,8 +61,8 @@ export default function SignIn() {
     };
 
     return (
-        <div className="min-h-screen mt-20">
-            <div className="flex flex-col md:flex-row p-3 max-w-3xl mx-auto md-items-center">
+        <div className="min-h-screen mt-4">
+            <div className="flex flex-col md:flex-row p-3 max-w-3xl mx-auto md:items-center">
                 {/*Left */}
                 <div className="flex-1 sm:pr-8">
                     <MoveFromTopEffect>
@@ -87,6 +96,11 @@ export default function SignIn() {
                                 onChange={handleChange}
                             />
                         </div>
+                        <ReCAPTCHA
+                            sitekey={import.meta.env.VITE_REACT_GG_RECAPTCHA_SITE_KEY}
+                            ref={reRef}
+                            theme={darkMode}
+                        />
                         <Button gradientDuoTone="greenToBlue" type="submit">
                             {loading ? (
                                 <>

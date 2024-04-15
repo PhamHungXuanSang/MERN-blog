@@ -9,6 +9,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import checkCreatePermission from '../utils/checkCreatePermission.js';
 import { setCurrentUser } from '../redux/user/userSlice.js';
 import { AiOutlineTransaction } from 'react-icons/ai';
+import { FaInfoCircle } from 'react-icons/fa';
 
 export default function DashSidebar() {
     const location = useLocation();
@@ -122,6 +123,16 @@ export default function DashSidebar() {
                                     icon={MdLocalOffer}
                                 >
                                     Buy package
+                                </Sidebar.Item>
+                            </Link>
+                            <Link to="/dash-board?tab=usage">
+                                <Sidebar.Item
+                                    onClick={() => toggleHiddenSidebar()}
+                                    className="mt-2"
+                                    active={tab === 'usage'}
+                                    icon={FaInfoCircle}
+                                >
+                                    Account usage
                                 </Sidebar.Item>
                             </Link>
                             <Link to="/dash-board?tab=transaction">

@@ -81,7 +81,8 @@ export default function BlogManagement() {
     };
 
     return (
-        <div className="py-12 px-4 table-auto overflow-x-scroll md:mx-auto p-3 scrollbar">
+        // <div className="py-12 px-4 table-auto overflow-x-scroll md:mx-auto p-3 scrollbar">
+        <div className="py-12 px-4">
             {blogs != null ? (
                 blogs?.length > 0 ? (
                     <>
@@ -91,7 +92,6 @@ export default function BlogManagement() {
                                 <Table.HeadCell>Title</Table.HeadCell>
                                 <Table.HeadCell>Thumbnail</Table.HeadCell>
                                 <Table.HeadCell>Date Created</Table.HeadCell>
-                                <Table.HeadCell>Category</Table.HeadCell>
                                 <Table.HeadCell>Delete</Table.HeadCell>
                                 <Table.HeadCell>
                                     <span className="sr-only">Edit</span>
@@ -101,20 +101,20 @@ export default function BlogManagement() {
                                 {blogs.map((blog, i) => {
                                     return (
                                         <Table.Row key={i} className="bg-white dark:border-gray-700 dark:bg-gray-800">
-                                            <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
+                                            <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white max-w-[180px] py-0 px-4">
                                                 <Link to={`/user/${blog.authorId.username}`}>
                                                     {blog.authorId.username}
                                                 </Link>
                                             </Table.Cell>
-                                            <Table.Cell>
+                                            <Table.Cell className="max-w-[200px] p-0">
                                                 <Link
                                                     to={`/blog/${blog.slug}`}
-                                                    className="font-medium text-gray-900 dark:text-white"
+                                                    className="font-medium text-gray-900 dark:text-white line-clamp-2 break-words"
                                                 >
                                                     {blog.title}
                                                 </Link>
                                             </Table.Cell>
-                                            <Table.Cell>
+                                            <Table.Cell className="">
                                                 <Link to={`/blog/${blog.slug}`}>
                                                     <img
                                                         src={blog.thumb}
@@ -124,7 +124,6 @@ export default function BlogManagement() {
                                                 </Link>
                                             </Table.Cell>
                                             <Table.Cell>{new Date(blog.updatedAt).toLocaleDateString()}</Table.Cell>
-                                            <Table.Cell>{blog.category}</Table.Cell>
                                             <Table.Cell>
                                                 <span
                                                     onClick={() => {

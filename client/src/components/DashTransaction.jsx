@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { Spinner, Table } from 'flowbite-react';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -8,7 +9,7 @@ import dateToDateAndTime from '../utils/dateToDateAndTime.js';
 
 export default function DashTransaction() {
     const [userTransactions, setUserTransactions] = useState(null);
-    const [userTransactionInfo, setUserTransactionInfo] = useState(null);
+    //const [userTransactionInfo, setUserTransactionInfo] = useState(null);
     const [showMore, setShowMore] = useState(true);
     const currentUser = useSelector((state) => state.user.currentUser);
 
@@ -28,10 +29,13 @@ export default function DashTransaction() {
                     return navigate('/sign-in');
                 }
                 if (res.ok) {
-                    console.log(data.userTransactionInfo);
                     setUserTransactions(data.userTransactionHistorys);
-                    setUserTransactionInfo(data.userTransactionInfo);
-                    if (data.userTransactionHistorys.length < 2) {
+                    //setUserTransactionInfo(data.userTransactionInfo);
+                    if (
+                        userTransactions != null &&
+                        data.userTransactionHistorys.length + userTransactions.length >=
+                            data.allUserTransactionHistorys.length
+                    ) {
                         setShowMore(false);
                     }
                 } else {
@@ -62,7 +66,11 @@ export default function DashTransaction() {
             }
             if (res.ok) {
                 setUserTransactions((prev) => [...prev, ...data.userTransactionHistorys]);
-                if (data.userTransactionHistorys.length < 2) {
+                if (
+                    userTransactions != null &&
+                    data.userTransactionHistorys.length + userTransactions.length >=
+                        data.allUserTransactionHistorys.length
+                ) {
                     setShowMore(false);
                 }
             } else {
@@ -73,15 +81,15 @@ export default function DashTransaction() {
         }
     };
 
-    function totalAmount(userTransactions) {
-        let totalAmount = 0;
-        userTransactions.forEach((tran) => (totalAmount += tran.packagePrice));
-        return totalAmount;
-    }
+    // function totalAmount(userTransactions) {
+    //     let totalAmount = 0;
+    //     userTransactions.forEach((tran) => (totalAmount += tran.packagePrice));
+    //     return totalAmount;
+    // }
 
     return (
         <div className="py-12 px-4">
-            {userTransactionInfo != null ? (
+            {/* {userTransactionInfo != null ? (
                 <>
                     <div className="w-full h-fit border-b-2 border-neutral-300">
                         <p className="border-b-2 text-lg w-fit py-2 px-4">All transaction</p>
@@ -103,7 +111,10 @@ export default function DashTransaction() {
                         <p className="flex-1">Total amount: {totalAmount(userTransactions)} $</p>
                     </div>
                 </>
-            ) : null}
+            ) : null} */}
+            <div className="w-full h-fit border-b-2 border-neutral-300 mb-4">
+                <p className="border-b-2 text-lg w-fit py-2 px-4">All transaction</p>
+            </div>
             {userTransactions != null ? (
                 userTransactions?.length > 0 ? (
                     <>

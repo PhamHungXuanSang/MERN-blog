@@ -37,7 +37,6 @@ export default function DashProfile() {
         getUserDashProfile();
     }, []);
 
-    console.log(dashProfile);
     let totalLike = 0;
     dashProfile?.allBlogs?.forEach((blog) => {
         totalLike += blog.likes.length;

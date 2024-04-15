@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import AdminSideBar from '../components/AdminSideBar';
 import NewPackage from '../components/NewPackage';
 import BlogManagement from '../components/BlogManagement';
 import MainBoardManagement from '../components/MainBoardManagement';
@@ -8,6 +7,7 @@ import UserManagement from '../components/UserManagement';
 import RevenueManagement from '../components/RevenueManagement';
 import RevenueEachPackage from '../components/RevenueEachPackage';
 import RevenuePackage from '../components/RevenuePackage';
+import AdminSideBar from '../components/AdminSidebar';
 
 export default function Admin() {
     const [tab, setTab] = useState('');

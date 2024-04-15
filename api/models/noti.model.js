@@ -6,9 +6,6 @@ const notiSchema = new mongoose.Schema(
             type: Schema.Types.ObjectId,
             ref: 'Blog',
         },
-        title: {
-            type: String,
-        },
         slug: {
             type: String,
         },

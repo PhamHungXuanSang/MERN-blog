@@ -55,8 +55,15 @@ export const getFreeTrial = async (req, res, next) => {
 export const checkCreatePermission = async (req, res, next) => {
     const { userId } = req.params;
     try {
-        let user = await User.findOne({ _id: userId }).select('-password');
-        if (!user) return next(errorHandler(404, 'User not found'));
+        let [user, userTransaction] = await Promise.all([
+            User.findOne({ _id: userId }).select('-password'),
+            Transaction.findOne({ userId }),
+        ]);
+        if (!user) {
+            return next(errorHandler(404, 'User not found'));
+        } else if (!userTransaction) {
+            return next(errorHandler(404, 'User Transaction not found'));
+        }
         if (user.isAdmin) {
             if (user.createPermission == false)
                 await User.findOneAndUpdate(
@@ -66,9 +73,6 @@ export const checkCreatePermission = async (req, res, next) => {
                 ).select('-password');
             return res.status(200).json({ ...user.toObject(), createPermission: true });
         }
-
-        const userTransaction = await Transaction.findOne({ userId });
-        if (!userTransaction) return next(errorHandler(404, 'User Transaction not found'));
 
         if (
             (!user.isAdmin && !userTransaction.expirationDate) ||
@@ -207,11 +211,19 @@ export const getTransactionHistory = async (req, res, next) => {
                 return next(errorHandler(400, 'You are not allowed to get this user transaction'));
             }
         }
-        const [userTransactionHistorys, userTransactionInfo] = await Promise.all([
-            PaymentHistory.find({ userId }).skip(startIndex).limit(limit),
-            Transaction.findOne({ userId }).populate("userId", 'username userAvatar email createdAt'),
+        // const [allUserTransactionHistorys, userTransactionHistorys, userTransactionInfo] = await Promise.all([
+        //     PaymentHistory.find({ userId }),
+        //     PaymentHistory.find({ userId }).skip(startIndex).limit(limit),
+        //     Transaction.findOne({ userId }).populate('userId', 'username userAvatar email createdAt'),
+        // ]);
+        // return res.status(200).json({ allUserTransactionHistorys, userTransactionHistorys, userTransactionInfo });
+
+        const [allUserTransactionHistorys, userTransactionInfo] = await Promise.all([
+            PaymentHistory.find({ userId }).sort({ paymentDate: -1 }), // Giả sử bạn muốn sắp xếp theo ngày tạo giảm dần
+            Transaction.findOne({ userId }).populate('userId', 'username userAvatar email createdAt'),
         ]);
-        return res.status(200).json({ userTransactionHistorys, userTransactionInfo });
+        const userTransactionHistorys = allUserTransactionHistorys.slice(startIndex, startIndex + limit);
+        return res.status(200).json({ allUserTransactionHistorys, userTransactionHistorys, userTransactionInfo });
     } catch (error) {
         next(error);
     }
