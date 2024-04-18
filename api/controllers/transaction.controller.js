@@ -186,10 +186,22 @@ export const choosePlan = async (req, res, next) => {
         const updatedUser = await User.findByIdAndUpdate(userId, { $set: { createPermission: true } }, { new: true })
             .select('-password')
             .exec();
-        // Thêm code gửi email đến người dùng
         sendEmailServices(
             updatedUser.email,
-            `<b>Hello, ${updatedUser.username}</b><p>You have successfully registered for the Create Blog feature on our platform.</p><p>We're thrilled to have you onboard and can't wait to see the amazing content you'll create. Get started by clicking the button below!</p><div><a href="http://localhost:5173/dash-board?tab=create-blog">Create your blog here</a></div><p>If you have any questions, feel free to <a href="mailto:support@yourwebsite.com">contact our support team</a>. We're here to help!</p><p>&copy; MERN Blog. All rights reserved.</p>`,
+            `Hello, ${updatedUser.username},
+
+You have successfully registered for the Create Blog feature on our platform. We're thrilled to have you onboard and can't wait to see the amazing content you'll create.
+
+Get started by clicking the link below!
+Create your blog here: http://localhost:5173/dash-board?tab=create-blog
+
+If you have any questions, feel free to contact our support team: 20t1020536@husc.edu.vn. We're here to help!
+
+Best regards,
+The MERN Blog Team
+
+© MERN Blog. All rights reserved.
+`,
         );
         return res.status(200).json(updatedUser);
     } catch (error) {

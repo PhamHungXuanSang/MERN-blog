@@ -91,38 +91,45 @@ export default function BlogAction() {
     };
 
     const handleShowFolders = async () => {
-        // Call api lấy danh sách folders của tài khoản
-        const res = await fetch(`/api/usersFolder/get-user-folders/${currentUser._id}`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-        });
-        const data = await res.json();
-        setFolders(data.folderNameArr);
-        setShowModal(true);
+        try {
+            // Call api lấy danh sách folders của tài khoản
+            const res = await fetch(`/api/usersFolder/get-user-folders/${currentUser._id}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+            });
+            const data = await res.json();
+            setFolders(data.folderNameArr);
+            setShowModal(true);
+        } catch (error) {
+            console.log(error);
+        }
     };
 
     const handleSaveBlog = async () => {
         if (folder == '') {
             return toast.error('Please choose folder to save blog');
         }
+        try {
+            const res = await fetch(`/api/usersFolder/save-blog-to-folder/${currentUser._id}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ folderName: folder, blogId: blog._id }),
+            });
 
-        const res = await fetch(`/api/usersFolder/save-blog-to-folder/${currentUser._id}`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ folderName: folder, blogId: blog._id }),
-        });
-
-        const data = await res.json();
-        if (res.status === 403) {
-            dispatch(signOutSuccess());
-            return navigate('/sign-in');
-        }
-        if (res.status === 200) {
-            toast.success(`Blog has been added to ${folder}`);
-            setShowModal(false);
-            setFolder('');
-        } else {
-            return toast.error(data.message);
+            const data = await res.json();
+            if (res.status === 403) {
+                dispatch(signOutSuccess());
+                return navigate('/sign-in');
+            }
+            if (res.status === 200) {
+                toast.success(`Blog has been added to ${folder}`);
+                setShowModal(false);
+                setFolder('');
+            } else {
+                return toast.error(data.message);
+            }
+        } catch (error) {
+            console.log(error);
         }
     };
 

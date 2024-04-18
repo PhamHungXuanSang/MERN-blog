@@ -19,26 +19,30 @@ export default function DashSavedBlogs() {
 
     useEffect(() => {
         const handleShowBlogsByFolder = async () => {
-            const res = await fetch(`/api/usersFolder/get-blogs-by-folder/${currentUser._id}`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ folder }),
-            });
-            const data = await res.json();
-            if (res.status === 403) {
-                dispatch(signOutSuccess());
-                return navigate('/sign-in');
-            }
-            if (res.ok) {
-                if (data.folderNameArr.length > 0) {
-                    setFolders(['all', ...data.folderNameArr]);
-                    setBlogs(data.blogs);
-                } else {
-                    setFolders([]);
-                    setBlogs(data.blogs);
+            try {
+                const res = await fetch(`/api/usersFolder/get-blogs-by-folder/${currentUser._id}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ folder }),
+                });
+                const data = await res.json();
+                if (res.status === 403) {
+                    dispatch(signOutSuccess());
+                    return navigate('/sign-in');
                 }
-            } else {
-                console.log(data.message);
+                if (res.ok) {
+                    if (data.folderNameArr.length > 0) {
+                        setFolders(['all', ...data.folderNameArr]);
+                        setBlogs(data.blogs);
+                    } else {
+                        setFolders([]);
+                        setBlogs(data.blogs);
+                    }
+                } else {
+                    console.log(data.message);
+                }
+            } catch (error) {
+                console.log(error);
             }
         };
 
@@ -54,44 +58,50 @@ export default function DashSavedBlogs() {
     };
 
     const handleDeleteFolder = async (folderName) => {
-        // Gọi api xóa folder
-        const res = await fetch(`/api/usersFolder/delete-folder/${currentUser._id}`, {
-            method: 'DELETE',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ folderName }),
-        });
-        const data = await res.json();
-        if (res.status === 403) {
-            dispatch(signOutSuccess());
-            return navigate('/sign-in');
-        }
-        if (res.ok) {
-            setFolders(['all', ...data.folderNameArr]);
-            setBlogs(data.blogs);
-            setFolder('all');
-            return toast.success(`Folder ${folderName} has been removed`);
-        } else {
-            return toast.error(data.message);
+        try {
+            const res = await fetch(`/api/usersFolder/delete-folder/${currentUser._id}`, {
+                method: 'DELETE',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ folderName }),
+            });
+            const data = await res.json();
+            if (res.status === 403) {
+                dispatch(signOutSuccess());
+                return navigate('/sign-in');
+            }
+            if (res.ok) {
+                setFolders(['all', ...data.folderNameArr]);
+                setBlogs(data.blogs);
+                setFolder('all');
+                return toast.success(`Folder ${folderName} has been removed`);
+            } else {
+                return toast.error(data.message);
+            }
+        } catch (error) {
+            console.log(error);
         }
     };
 
     const handleDeleteSavedBlog = async (blogId, folderName) => {
-        // Gọi api xóa blog
-        const res = await fetch(`/api/usersFolder/delete-blog-in-folder/${currentUser._id}`, {
-            method: 'DELETE',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ blogId, folderName }),
-        });
-        const data = await res.json();
-        if (res.status === 403) {
-            dispatch(signOutSuccess());
-            return navigate('/sign-in');
-        }
-        if (res.ok) {
-            setBlogs(data.blogs);
-            return toast.success(`Blog has been removed from ${folderName}`);
-        } else {
-            return toast.error(data.message);
+        try {
+            const res = await fetch(`/api/usersFolder/delete-blog-in-folder/${currentUser._id}`, {
+                method: 'DELETE',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ blogId, folderName }),
+            });
+            const data = await res.json();
+            if (res.status === 403) {
+                dispatch(signOutSuccess());
+                return navigate('/sign-in');
+            }
+            if (res.ok) {
+                setBlogs(data.blogs);
+                return toast.success(`Blog has been removed from ${folderName}`);
+            } else {
+                return toast.error(data.message);
+            }
+        } catch (error) {
+            console.log(error);
         }
     };
 
@@ -155,7 +165,7 @@ export default function DashSavedBlogs() {
                 ) : blogs == null ? (
                     <Spinner className="block mx-auto mt-4" size="xl" />
                 ) : (
-                    <NotFound object={'Not found any blogs'} />
+                    <NotFound object={'Not found any blogs, choose another folder'} />
                 )
             ) : (
                 ''

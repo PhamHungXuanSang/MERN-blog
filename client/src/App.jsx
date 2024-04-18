@@ -16,7 +16,7 @@ import ReadBlog from './pages/ReadBlog';
 import Editor from './pages/Editor';
 import ScrollToTop from './components/ScrollToTop.jsx';
 import { useEffect } from 'react';
-import { socket } from './utils/socket.js';
+//import { socket } from './utils/socket.js';
 import { useSelector } from 'react-redux';
 import Offer from './pages/Offer.jsx';
 import AdminPrivateRoute from './components/AdminPrivateRoute.jsx';
@@ -24,6 +24,8 @@ import Admin from './pages/Admin.jsx';
 import Checkout from './pages/Checkout.jsx';
 import ForgotPassword from './pages/ForgotPassword.jsx';
 import Notification from './pages/Notification.jsx';
+import { io } from 'socket.io-client';
+export const socket = io('localhost:3000');
 
 export default function App() {
     const initialOptions = {
@@ -33,7 +35,15 @@ export default function App() {
     };
     const currentUser = useSelector((state) => state.user.currentUser);
 
+    function connectSocket() {
+        // Xóa cái này đi nếu không làm được socket theo freeCodeCamp
+        socket.on('connection', (socket) => {
+            console.log(socket);
+        });
+    }
+
     useEffect(() => {
+        connectSocket();
         if (currentUser) {
             socket.emit('refreshBrower', currentUser._id);
             // socket.on('newNotification', (data) => {

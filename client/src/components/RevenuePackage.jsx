@@ -31,20 +31,24 @@ export default function RevenuePackage() {
             const year = startDate.getFullYear();
             const month = startDate.getMonth() + 1;
             const day = startDate.getDate();
-            const res = await fetch(`/api/statistical/get-statistical`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ year, month, day }),
-            });
-            const data = await res.json();
-            if (res.status === 403) {
-                dispatch(signOutSuccess());
-                return navigate('/sign-in');
-            }
-            if (res.status === 200) {
-                setRevenue(data.revenue);
-            } else {
-                console.log(data.message);
+            try {
+                const res = await fetch(`/api/statistical/get-statistical`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ year, month, day }),
+                });
+                const data = await res.json();
+                if (res.status === 403) {
+                    dispatch(signOutSuccess());
+                    return navigate('/sign-in');
+                }
+                if (res.status === 200) {
+                    setRevenue(data.revenue);
+                } else {
+                    console.log(data.message);
+                }
+            } catch (error) {
+                console.log(error);
             }
         };
         getStatistical();

@@ -137,19 +137,20 @@ export default function Offer() {
             <ModalConfirm
                 showModal={showModal}
                 setShowModal={setShowModal}
-                title={`To use the Create Blog functionality on our platform, users must agree to abide by the following terms:
-- Account Eligibility: User must have a registered account in good standing on our platform to access the Create Blog feature.
-- Content Ownership: User asserts that they have ownership or the necessary licenses, rights, consents, and permissions to all content published.
-- Prohibited Content: User agrees not to post content that is unlawful, threatening, abusive, libelous, defamatory, obscene, vulgar, pornographic, profane, or indecent.
-- No Spam Policy: User agrees not to publish redundant messages or spam in their blog posts.
-- Intellectual Property: User agrees not to infringe upon any intellectual property rights, including copyright, trademark, patents, or trade secrets.
-- User Conduct: User agrees to conduct themselves in a professional and respectful manner when interacting with other community members in the blog section.
-- Fact-Checking: User agrees to ensure that any facts or statements made in blog posts are accurate and provide sources where applicable.
-- Commercial Activity: Any commercial activity such as advertising or promoting products and services must be approved in advance by our platform administrators.
-- Platform Rights: The platform reserves the right to remove any content that violates these terms and to suspend or terminate the user’s access to the Create Blog functionality.
-- Changes to Terms: The platform reserves the right to make changes to these terms at any time without prior notice to users.
-- Liability Limitation: The platform is not liable for any direct, indirect, incidental, special, consequential, or exemplary damages resulting from the user's use of the Create Blog function.
-By using the Create Blog function, users confirm their agreement to these terms and the overall Terms of Service of the platform.`}
+                title={`To use the Create Blog feature, users must comply with these key terms:
+- Account Eligibility: Must have a valid registered account.
+- Content Ownership: Must own or have rights to all published content.
+- Prohibited Content: No posting of unlawful or offensive content.
+- No Spam Policy: No spamming or redundant messages.
+- Intellectual Property: Must not violate intellectual property rights.
+- User Conduct: Maintain professionalism and respect within the community.
+- Fact-Checking: Ensure accuracy of any stated facts or claims.
+- Commercial Activity: Commercial endeavors require prior approval.
+- Platform Rights: We reserve the right to remove content, or suspend or terminate access for violations.
+- Terms Modification: Terms can change at any time, without notice.
+- Liability: The platform isn't liable for damages from using the Create Blog feature.
+
+Usage of the Create Blog function signifies agreement to these condensed terms and the platform's Terms of Service.`}
                 onConfirm={handlePay}
                 onNoConfirm={() => {
                     setShowModal(false);

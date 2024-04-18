@@ -136,7 +136,12 @@ export default function ReadBlog() {
                                                         Subscribe
                                                     </Button>
                                                 ) : (
-                                                    <Button gradientMonochrome="lime" onClick={handleToggleSubscribe}>
+                                                    <Button
+                                                        gradientMonochrome="failure"
+                                                        outline
+                                                        onClick={handleToggleSubscribe}
+                                                        className="opacity-50"
+                                                    >
                                                         <FaUserMinus className="mr-2 h-5 w-5" />
                                                         Unsubscribe
                                                     </Button>
@@ -173,7 +178,7 @@ export default function ReadBlog() {
                             <div className="flex flex-wrap gap-2">
                                 {blog.tags.map((tag, i) => (
                                     <div key={i}>
-                                        <div className="relative py-2 px-4 dark:bg-slate-500 bg-gray-200 rounded-full inline-block hover:bg-opacity-50">
+                                        <div className="relative py-2 px-4 opacity-50 scale-90 hover:opacity-100 hover:scale-100 duration-200 dark:bg-slate-500 bg-gray-200 rounded-full inline-block hover:bg-opacity-50">
                                             <p className="outline-none"># {tag}</p>
                                         </div>
                                     </div>

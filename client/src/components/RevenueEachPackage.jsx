@@ -32,21 +32,25 @@ export default function RevenueEachPackage() {
             const year = startDate.getFullYear();
             const month = startDate.getMonth() + 1;
             const day = startDate.getDate();
-            const res = await fetch(`/api/statistical/get-statistical`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ year, month, day }),
-            });
-            const data = await res.json();
-            if (res.status === 403) {
-                dispatch(signOutSuccess());
-                return navigate('/sign-in');
-            }
-            if (res.status === 200) {
-                setRevenueByPackage(data.revenueByPackage);
-                setPackages(data.packages);
-            } else {
-                console.log(data.message);
+            try {
+                const res = await fetch(`/api/statistical/get-statistical`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ year, month, day }),
+                });
+                const data = await res.json();
+                if (res.status === 403) {
+                    dispatch(signOutSuccess());
+                    return navigate('/sign-in');
+                }
+                if (res.status === 200) {
+                    setRevenueByPackage(data.revenueByPackage);
+                    setPackages(data.packages);
+                } else {
+                    console.log(data.message);
+                }
+            } catch (error) {
+                console.log(error);
             }
         };
         getStatistical();
@@ -115,7 +119,6 @@ export default function RevenueEachPackage() {
         // lấy mảng chứa các tháng-năm từ startDate đến hiện tại
         const months = getMonthYearArray(new Date(startDate));
         let excelData = [];
-        // call api Lấy tất cả package, tên các package. Lặp qua mảng revenueByPackage và xử lý lặp tiếp
         months.forEach((month) => {
             // Với mỗi tháng lặp qua packages
             packages.forEach((pkg) => {

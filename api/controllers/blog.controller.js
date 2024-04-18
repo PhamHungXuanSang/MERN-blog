@@ -192,9 +192,11 @@ export const updateLikeBlog = async (req, res, next) => {
             blog.likes.splice(index, 1);
         } else {
             blog.likes.push(userId);
-            createNoti('like', blog.authorId._id, userId, `User ${user.username} like your blog`, {
-                slug: blog.slug,
-            });
+            if (blog.authorId._id != userId) {
+                createNoti('like', blog.authorId._id, userId, `User ${user.username} like your blog`, {
+                    slug: blog.slug,
+                });
+            }
         }
         blog = await blog.save();
         res.status(200).json({ blog });
@@ -207,20 +209,30 @@ export const ratingBlog = async (req, res, next) => {
     let blogId = req.params.blogId;
     let userId = req.params.userId;
     let ratingStar = req.body.rating;
-
     try {
-        const blog = await Blog.findByIdAndUpdate(
-            blogId,
-            {
-                $push: { rating: { userId, star: ratingStar } },
-            },
-            { new: true },
-        ).populate('authorId', '_id username email userAvatar');
+        const [blog, user] = await Promise.all([
+            Blog.findByIdAndUpdate(
+                blogId,
+                {
+                    $push: { rating: { userId, star: ratingStar } },
+                },
+                { new: true },
+            ).populate('authorId', '_id username email userAvatar'),
+            User.findOne({ _id: userId }).select('_id username'),
+        ]);
+        if (blog.authorId._id != userId) {
+            createNoti(
+                'rate',
+                blog.authorId._id,
+                user._id,
+                `User ${user.username} rating ${ratingStar} stars for your blog: ${blog.title}`,
+            );
+        }
 
         if (!blog) {
             return next(errorHandler(404, 'Blog not found'));
         }
-        res.status(200).json({ blog });
+        return res.status(200).json({ blog });
     } catch (error) {
         next(error);
     }

@@ -21,22 +21,26 @@ export default function RevenueManagement() {
 
     useEffect(() => {
         const getStatistical = async () => {
-            const res = await fetch(`/api/statistical/get-statistical`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-            });
-            const data = await res.json();
-            if (res.status === 403) {
-                dispatch(signOutSuccess());
-                return navigate('/sign-in');
-            }
-            if (res.status === 200) {
-                setUserCountForEachPackage(data.userCountForEachPackage);
-                setUserCountForEachPackageInThisMonth(data.userCountForEachPackageInThisMonth);
-                setRevenueByPackage(data.revenueByPackage);
-                setRevenue(data.revenue);
-            } else {
-                console.log(data.message);
+            try {
+                const res = await fetch(`/api/statistical/get-statistical`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                });
+                const data = await res.json();
+                if (res.status === 403) {
+                    dispatch(signOutSuccess());
+                    return navigate('/sign-in');
+                }
+                if (res.status === 200) {
+                    setUserCountForEachPackage(data.userCountForEachPackage);
+                    setUserCountForEachPackageInThisMonth(data.userCountForEachPackageInThisMonth);
+                    setRevenueByPackage(data.revenueByPackage);
+                    setRevenue(data.revenue);
+                } else {
+                    console.log(data.message);
+                }
+            } catch (error) {
+                console.log(error);
             }
         };
         getStatistical();
