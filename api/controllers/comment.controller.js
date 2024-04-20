@@ -4,6 +4,7 @@ import Comment from '../models/comment.model.js';
 import Blog from '../models/blog.model.js';
 import Noti from '../models/noti.model.js';
 import { io, userOnline } from '../index.js';
+import pushNewNoti from '../utils/pushNewNoti.js';
 
 export const addComment = async (req, res, next) => {
     try {
@@ -31,28 +32,6 @@ export const addComment = async (req, res, next) => {
         newComment = await new Comment(newComment).save();
 
         let blog = await Blog.findOneAndUpdate({ _id }, { $push: { comments: newComment._id } });
-
-        // if (!replyingTo && commentedBy == blogAuthor) {
-        //     console.log('Tác giả cmt vào bài viết của tác giả => Không tạo thông báo');
-        // } else if (!replyingTo && commentedBy != blogAuthor) {
-        //     console.log('Nguời dùng cmt vào bài viết => Thông báo cho tác giả');
-        // } else if (replyingTo && commentedBy != blogAuthor) {
-        //     const parentComment = await Comment.findOne({ _id: replyingTo });
-        //     if (parentComment.commentedBy == blogAuthor) {
-        //         console.log('Người dùng reply cmt của tác giả => Thông báo đến tác giả');
-        //     } else if (parentComment.commentedBy == commentedBy) {
-        //         console.log('Người dùng reply cmt của chính mình => Thông báo đến tác giả');
-        //     } else {
-        //         console.log('Người dùng reply cmt của người dùng khác => Thông báo đến người dùng và tác giả');
-        //     }
-        // } else if (replyingTo && commentedBy == blogAuthor) {
-        //     const parentComment = await Comment.findOne({ _id: replyingTo });
-        //     if (parentComment.commentedBy == blogAuthor) {
-        //         console.log('Tác giả reply cmt của tác giả => Không tạo thông báo');
-        //     } else {
-        //         console.log('Tác giả reply cmt của người dùng => Tạo thông báo đến người dùng');
-        //     }
-        // }
 
         let parentComment;
         let newNotification = { blogId: blog._id, commentId: newComment._id };
@@ -84,20 +63,17 @@ export const addComment = async (req, res, next) => {
                 });
         }
 
-        function pushNewNoti(socketId, message) {
-            io.to(socketId).emit('newNotification', {
-                thumb: blog.thumb,
-                title: blog.title,
-                message,
-            });
-        }
+        // function pushNewNoti(socketId, message) {
+        //     io.to(socketId).emit('newNotification', {
+        //         thumb: blog.thumb,
+        //         title: blog.title,
+        //         message,
+        //     });
+        // }
 
         if (commentedBy == blogAuthor) {
             // Tác giả bình luận hoặc phản hồi.
-            if (!replyingTo) {
-                console.log('Tác giả cmt vào bài viết của tác giả => Không tạo thông báo'); //
-            } else if (replyingTo && parentComment && parentComment.commentedBy != blogAuthor) {
-                console.log('Tác giả reply cmt của người dùng => Tạo thông báo đến người dùng'); //
+            if (replyingTo && parentComment && parentComment.commentedBy != blogAuthor) {
                 createNoti(
                     'reply',
                     parentComment.commentedBy,
@@ -106,15 +82,16 @@ export const addComment = async (req, res, next) => {
                 );
                 pushNewNoti(
                     userOnline.get(parentComment.commentedBy.toString()),
+                    blog.thumb,
+                    blog.title,
+                    '',
+                    '',
                     `The author has responded your comment: ${comment}`,
                 );
-            } else {
-                console.log('Tác giả reply cmt của tác giả => Không tạo thông báo'); //
             }
         } else {
             // Người dùng bình luận hoặc phản hồi.
             if (!replyingTo) {
-                console.log('Người dùng cmt vào bài viết => Thông báo đến tác giả'); //
                 createNoti(
                     'comment',
                     blogAuthor,
@@ -123,11 +100,14 @@ export const addComment = async (req, res, next) => {
                 );
                 pushNewNoti(
                     userOnline.get(blogAuthor.toString()),
+                    blog.thumb,
+                    blog.title,
+                    '',
+                    '',
                     `User ${commentedByUserName} comment in your post: ${comment}`,
                 );
             } else if (replyingTo && parentComment) {
                 if (parentComment.commentedBy == blogAuthor) {
-                    console.log('Người dùng reply cmt của tác giả => Thông báo đến tác giả'); //
                     createNoti(
                         'reply',
                         blogAuthor,
@@ -136,12 +116,14 @@ export const addComment = async (req, res, next) => {
                     );
                     pushNewNoti(
                         userOnline.get(blogAuthor.toString()),
+                        blog.thumb,
+                        blog.title,
+                        '',
+                        '',
                         `User ${commentedByUserName} reply to your comment: ${comment}`,
                     );
                 } else if (parentComment.commentedBy == commentedBy) {
-                    console.log('Người dùng reply cmt của chính mình => Không tạo thông báo'); //
                 } else {
-                    console.log('Người dùng reply cmt của người dùng khác => Thông báo đến người dùng đó'); //
                     createNoti(
                         'reply',
                         parentComment.commentedBy,
@@ -150,6 +132,10 @@ export const addComment = async (req, res, next) => {
                     );
                     pushNewNoti(
                         userOnline.get(parentComment.commentedBy.toString()),
+                        blog.thumb,
+                        blog.title,
+                        '',
+                        '',
                         `User ${commentedByUserName} reply to your comment: ${comment}`,
                     );
                 }

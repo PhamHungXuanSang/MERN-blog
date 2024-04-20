@@ -87,6 +87,7 @@ export default function Notification() {
                                         data={notification}
                                         index={i}
                                         notificationState={{ notifications, setNotifications }}
+                                        unReadCount={data}
                                     />
                                 </OneByOneAppearEffect>
                             );

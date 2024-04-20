@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { GoogleAuthProvider, signInWithPopup, getAuth } from 'firebase/auth';
 import { app } from '../firebase.js';
-import { socket } from '../utils/socket.js';
+import { socket } from '../App.jsx';
 
 export default function OAuth() {
     const dispatch = useDispatch();

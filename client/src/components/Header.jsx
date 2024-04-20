@@ -4,10 +4,10 @@ import { Avatar, Dropdown } from 'flowbite-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { LuSearch } from 'react-icons/lu';
 import { FaMoon, FaSun } from 'react-icons/fa';
-import { signOutSuccess, setCurrentUser } from '../redux/user/userSlice.js';
+import { signOutSuccess } from '../redux/user/userSlice.js';
 import { darkModeToogle } from '../redux/theme/themeSlice.js';
 import { useDispatch, useSelector } from 'react-redux';
-import { socket } from '../utils/socket.js';
+import { socket } from '../App.jsx';
 import { useEffect, useRef, useState } from 'react';
 import BlogFastSearch from './BlogFastSearch.jsx';
 import UserFastSearch from './UserFastSearch.jsx';
@@ -22,22 +22,22 @@ export default function Header() {
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
-    const checkNewNoti = async () => {
-        try {
-            const res = await fetch(`/api/notification/newNotification/${currentUser._id}`, {
-                method: 'GET',
-                headers: { 'Content-Type': 'application/json' },
-            });
-            const data = await res.json();
-            if (res.status === 403) {
-                dispatch(signOutSuccess());
-                return navigate('/sign-in');
-            }
-            dispatch(setCurrentUser({ ...currentUser, newNotification: data.length > 0 }));
-        } catch (error) {
-            console.log(error);
-        }
-    };
+    // const checkNewNoti = async () => {
+    //     try {
+    //         const res = await fetch(`/api/notification/newNotification/${currentUser._id}`, {
+    //             method: 'GET',
+    //             headers: { 'Content-Type': 'application/json' },
+    //         });
+    //         const data = await res.json();
+    //         if (res.status === 403) {
+    //             dispatch(signOutSuccess());
+    //             return navigate('/sign-in');
+    //         }
+    //         dispatch(setCurrentUser({ ...currentUser, newNotification: data.length > 0 }));
+    //     } catch (error) {
+    //         console.log(error);
+    //     }
+    // };
 
     const handleSignOut = async () => {
         try {
@@ -184,7 +184,7 @@ export default function Header() {
                         <Dropdown
                             label={
                                 <Avatar
-                                    onClick={checkNewNoti}
+                                    //onClick={checkNewNoti}
                                     alt="User settings"
                                     img={currentUser.userAvatar}
                                     rounded

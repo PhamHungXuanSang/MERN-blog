@@ -4,6 +4,8 @@ import Comment from '../models/comment.model.js';
 import Noti from '../models/noti.model.js';
 import User from '../models/user.model.js';
 import createNoti from '../utils/createNoti.js';
+import pushNewNoti from '../utils/pushNewNoti.js';
+import { userOnline } from '../index.js';
 
 export const latestBlogs = async (req, res, next) => {
     try {
@@ -97,15 +99,23 @@ export const createBlog = async (req, res, next) => {
         try {
             const savedBlog = await newBlog.save();
             const author = await User.findById(userId).select('-password');
-            author.subscribeUsers.forEach((user) =>
+            author.subscribeUsers.forEach((user) => {
                 createNoti(
                     'new blog',
                     user,
                     author._id,
                     `Author ${author.username} just posted a new blog with the title: ${savedBlog.title}`,
                     { slug: savedBlog.slug },
-                ),
-            );
+                );
+                pushNewNoti(
+                    userOnline.get(user.toString()),
+                    savedBlog.thumb,
+                    savedBlog.title,
+                    '',
+                    '',
+                    `Author ${author.username} just posted a new blog with the title: ${savedBlog.title}`,
+                );
+            });
 
             res.status(200).json(savedBlog);
         } catch (error) {
@@ -196,6 +206,14 @@ export const updateLikeBlog = async (req, res, next) => {
                 createNoti('like', blog.authorId._id, userId, `User ${user.username} like your blog`, {
                     slug: blog.slug,
                 });
+                pushNewNoti(
+                    userOnline.get(blog.authorId._id.toString()),
+                    blog.thumb,
+                    blog.title,
+                    '',
+                    '',
+                    `User ${user.username} like your blog`,
+                );
             }
         }
         blog = await blog.save();
@@ -225,6 +243,14 @@ export const ratingBlog = async (req, res, next) => {
                 'rate',
                 blog.authorId._id,
                 user._id,
+                `User ${user.username} rating ${ratingStar} stars for your blog: ${blog.title}`,
+            );
+            pushNewNoti(
+                userOnline.get(blog.authorId._id.toString()),
+                blog.thumb,
+                blog.title,
+                '',
+                '',
                 `User ${user.username} rating ${ratingStar} stars for your blog: ${blog.title}`,
             );
         }

@@ -7,6 +7,7 @@ import { userOnline } from '../index.js';
 import Transaction from '../models/transaction.model.js';
 import { sendEmailServices } from '../services/emailService.js';
 import UsersFolder from '../models/usersFolder.model.js';
+import Noti from '../models/noti.model.js';
 
 const validateHuman = async (token) => {
     const secret = process.env.GG_RECAPTCHA_SECRET_KEY;
@@ -81,7 +82,7 @@ export const signin = async (req, res, next) => {
     }
 
     try {
-        const validUser = await User.findOne({ email });
+        let validUser = await User.findOne({ email });
         if (!validUser) {
             return next(errorHandler(404, 'Not found email'));
         }
@@ -89,6 +90,10 @@ export const signin = async (req, res, next) => {
         const validPassword = await bcryptjs.compare(password, validUser.password);
         if (!validPassword) {
             return next(errorHandler(400, 'Wrong password'));
+        }
+
+        if (validUser.isBlocked) {
+            return res.status(400).json({ message: 'Account has been blocked by Admin' });
         }
 
         if (userOnline.get(validUser._id.toString())) {
@@ -117,6 +122,10 @@ export const signin = async (req, res, next) => {
         });
         try {
             await refreshToken.save();
+            const newNoti = await Noti.find({ recipient: validUser._id, read: false });
+            if (newNoti.length > 0) {
+                validUser._doc.newNotification = true;
+            }
         } catch (error) {
             next(error);
         }
@@ -135,8 +144,12 @@ export const google = async (req, res, next) => {
     // neu chua thif tajo tk mois luu o user va dangw nhaap vao cos jwt
     const { email, username, googleAvatar } = req.body;
     try {
-        const user = await User.findOne({ email });
+        let user = await User.findOne({ email });
         if (user) {
+            if (user.isBlocked) {
+                return res.status(400).json({ message: 'Account has been blocked by Admin' });
+            }
+
             if (userOnline.get(user._id.toString())) {
                 return res.status(400).json({ message: 'Account is in use' });
             }
@@ -154,6 +167,10 @@ export const google = async (req, res, next) => {
             });
             try {
                 await refreshToken.save();
+                const newNoti = await Noti.find({ recipient: user._id, read: false });
+                if (newNoti.length > 0) {
+                    user._doc.newNotification = true;
+                }
             } catch (error) {
                 next(error);
             }

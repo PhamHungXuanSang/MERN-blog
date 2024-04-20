@@ -56,7 +56,7 @@ export const io = new Server(httpServer, {
 });
 
 io.on('connection', (socket) => {
-    console.log(socket);
+    socket.emit('helloGuy', 'hiha');
     socket.on('newUserLogin', (userId) => {
         addOnlineUser(userId, socket.id);
         console.log(userOnline);

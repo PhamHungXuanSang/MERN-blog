@@ -6,7 +6,7 @@ import { signInStart, signInSuccess, signInFailure } from '../redux/user/userSli
 import { useDispatch, useSelector } from 'react-redux';
 import OAuth from '../components/OAuth.jsx';
 import MoveFromTopEffect from '../components/MoveFromTopEffect.jsx';
-import { socket } from '../utils/socket.js';
+import { socket } from '../App.jsx';
 
 import ReCAPTCHA from 'react-google-recaptcha';
 

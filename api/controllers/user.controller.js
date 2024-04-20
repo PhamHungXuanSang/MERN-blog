@@ -2,8 +2,10 @@ import Blog from '../models/blog.model.js';
 import RefreshToken from '../models/refreshToken.model.js';
 import User from '../models/user.model.js';
 import createNoti from '../utils/createNoti.js';
+import { io, userOnline } from '../index.js';
 import { errorHandler } from '../utils/error.js';
 import bcryptjs from 'bcryptjs';
+import pushNewNoti from '../utils/pushNewNoti.js';
 
 export const getUserProfile = async (req, res, next) => {
     const username = req.params.username;
@@ -149,6 +151,17 @@ export const updateUserRole = async (req, res, next) => {
         if (!updatedUser) {
             throw new Error('User not found');
         }
+        const socketId = userOnline.get(userId.toString());
+        if (role == 'blocked-user') {
+            createNoti('system', userId, null, `Your account has been set to ${role} role`);
+            if (socketId) {
+                io.to(socketId).emit('forcedLogout', 'Forced Logout');
+                userOnline.delete(userId.toString());
+            }
+        } else {
+            createNoti('system', userId, null, `Your account has been set to ${role} role`);
+            if (socketId) pushNewNoti(socketId, '', '', '', '', `Your account has been set to ${role} role`);
+        }
 
         const users = await User.find().sort({ createdAt: -1 }).limit(usersLength).select('-password').exec();
         return res.status(200).json({ users });
@@ -193,6 +206,14 @@ export const toggleSubscribe = async (req, res, next) => {
                 createNoti('subscriber', authorId, userId, `User ${subscriber.username} just unsubscribed`, {
                     username: subscriber.username,
                 });
+                pushNewNoti(
+                    userOnline.get(authorId.toString()),
+                    '',
+                    '',
+                    user.userAvatar,
+                    '',
+                    `User ${subscriber.username} just unsubscribed`,
+                );
                 return res.status(200).json('Unsubscribed');
             }
         } else {
@@ -207,6 +228,14 @@ export const toggleSubscribe = async (req, res, next) => {
                     {
                         username: subscriber.username,
                     },
+                );
+                pushNewNoti(
+                    userOnline.get(authorId.toString()),
+                    '',
+                    '',
+                    user.userAvatar,
+                    '',
+                    `User ${subscriber.username} just subscribed`,
                 );
                 return res.status(200).json('Subscribed');
             }

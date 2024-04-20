@@ -136,7 +136,7 @@ export default function UserProfile() {
         // </section>
         <section className="h-cover flex justify-center gap-4 container mx-auto py-8">
             <div className="w-full md:max-w-[70%]">
-                <InPageNavigation routes={[`${username} blogs`, 'user profile']} defaultHidden={['user profile']}>
+                <InPageNavigation routes={[`${username} blogs`, 'user profile']} defaultHidden={[`user profile`]}>
                     <>
                         {blogs != null ? (
                             blogs.length == 0 ? (

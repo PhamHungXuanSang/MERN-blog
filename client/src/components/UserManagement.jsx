@@ -6,6 +6,7 @@ import { Select, Spinner, Table } from 'flowbite-react';
 import NotFound from './NotFound.jsx';
 import ModalConfirm from './ModalConfirm.jsx';
 import checkCreatePermission from '../utils/checkCreatePermission.js';
+import toast from 'react-hot-toast';
 
 export default function UserManagement() {
     const [users, setUsers] = useState(null);
@@ -87,7 +88,7 @@ export default function UserManagement() {
                 return navigate('sign-in');
             }
             if (!res.ok) {
-                console.log(data.message);
+                toast.error(data.message);
             } else {
                 setUsers(data.users);
                 // Gọi hàm kiểm tra createPermission
@@ -96,6 +97,7 @@ export default function UserManagement() {
                     // Nếu về data thì gọi hàm set lại currentUser trong redux
                     dispatch(setCurrentUser(rs));
                 }
+                toast.success(`User account has been set to ${role}`);
             }
         } catch (error) {
             console.log(error);
@@ -124,7 +126,7 @@ export default function UserManagement() {
                                             <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white px-1">
                                                 <Link to={`/user/${user.username}`}>{user.username}</Link>
                                             </Table.Cell>
-                                            <Table.Cell className='px-1'>{user.email}</Table.Cell>
+                                            <Table.Cell className="px-1">{user.email}</Table.Cell>
                                             <Table.Cell>
                                                 <Link to={`/user/${user.username}`}>
                                                     <img
@@ -134,11 +136,12 @@ export default function UserManagement() {
                                                     />
                                                 </Link>
                                             </Table.Cell>
-                                            <Table.Cell>{user.createPermission ? "Allow" : "Not allow"}</Table.Cell>
+                                            <Table.Cell>{user.createPermission ? 'Allow' : 'Not allow'}</Table.Cell>
                                             <Table.Cell>
                                                 <Select
                                                     id="roles"
                                                     required
+                                                    value={user.role} // Giả sử 'role' trả về là trạng thái mới nhất sau khi được cập nhật và truyền lại vào component.
                                                     onChange={(e) => {
                                                         setTitleModal(
                                                             `You definitely want to change this user to ${e.target.value} role?`,
@@ -149,31 +152,19 @@ export default function UserManagement() {
                                                     }}
                                                 >
                                                     <option
-                                                        value={
-                                                            user.isBlocked
-                                                                ? 'blocked-user'
-                                                                : user.isAdmin
-                                                                  ? 'admin'
-                                                                  : 'user'
-                                                        }
+                                                        value="user"
+                                                        selected={user.isAdmin ? false : user.isBlocked ? false : true}
                                                     >
-                                                        {user.isBlocked
-                                                            ? 'Blocked User'
-                                                            : user.isAdmin
-                                                              ? 'Admin'
-                                                              : 'User'}
+                                                        User
+                                                    </option>
+                                                    <option value="admin" selected={user.isAdmin ? true : false}>
+                                                        Admin
                                                     </option>
                                                     <option
-                                                        value={
-                                                            (user.isBlocked && 'admin') || user.isAdmin
-                                                                ? 'user'
-                                                                : 'admin'
-                                                        }
+                                                        value="blocked-user"
+                                                        selected={user.isBlocked ? true : false}
                                                     >
-                                                        {(user.isBlocked && 'Admin') || user.isAdmin ? 'User' : 'Admin'}
-                                                    </option>
-                                                    <option value={(user.isBlocked && 'admin') || 'blocked-user'}>
-                                                        {(user.isBlocked && 'Admin') || 'Blocked User'}
+                                                        Blocked User
                                                     </option>
                                                 </Select>
                                             </Table.Cell>
