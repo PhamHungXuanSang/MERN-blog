@@ -1,4 +1,4 @@
-import { Button, Select, Spinner, TextInput, Textarea } from 'flowbite-react';
+import { Button, Modal, Select, Spinner, TextInput, Textarea } from 'flowbite-react';
 import { useContext, useState } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
 import { EditorContext } from '../pages/Editor';
@@ -10,6 +10,7 @@ import { useNavigate } from 'react-router-dom';
 export default function PublishForm() {
     const currentUser = useSelector((state) => state.user.currentUser);
     const [loading, setLoading] = useState(false);
+    const [showModal, setShowModal] = useState(false);
 
     const navigate = useNavigate();
     const dispatch = useDispatch();
@@ -167,6 +168,12 @@ export default function PublishForm() {
                         <i className="block text-gray-500 text-sm text-right">{10 - tags.length} Tags left</i>
                     </div>
                     <div className="flex gap-4 float-right my-4">
+                        <Button outline gradientDuoTone="greenToBlue" onClick={handleClosePreview}>
+                            Back
+                        </Button>
+                        <Button gradientMonochrome="purple" onClick={() => setShowModal(true)}>
+                            Schedule Publish
+                        </Button>
                         <Button disabled={loading} onClick={handlePublishBlog} gradientDuoTone="greenToBlue">
                             {loading ? (
                                 <>
@@ -177,12 +184,24 @@ export default function PublishForm() {
                                 'Publish'
                             )}
                         </Button>
-                        <Button outline gradientDuoTone="greenToBlue" onClick={handleClosePreview}>
-                            Close Preview
-                        </Button>
                     </div>
                 </div>
             </section>
+            {showModal && (
+                <Modal
+                    show={showModal}
+                    onClose={() => {
+                        setShowModal(false);
+                    }}
+                    popup
+                    size="md"
+                >
+                    <Modal.Header />
+                    <Modal.Body>
+                        <p>Hello</p>
+                    </Modal.Body>
+                </Modal>
+            )}
         </>
     );
 }

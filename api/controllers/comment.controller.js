@@ -226,9 +226,6 @@ export const deleteComment = async (req, res, next) => {
 };
 
 export const getAllComment = async (req, res, next) => {
-    // if (!req.user.isAdmin) {
-    //     return next(errorHandler(400, 'You are not allowed to see all comments'));
-    // }
     try {
         const startIndex = parseInt(req.query.startIndex) || 0;
         const limit = parseInt(req.query.limit) || 9;

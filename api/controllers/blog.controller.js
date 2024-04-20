@@ -13,25 +13,15 @@ export const latestBlogs = async (req, res, next) => {
         const startIndex = req.query.startIndex;
         const limit = req.query.limit;
 
-        const now = new Date();
-        const oneMonthAgo = new Date(now.getFullYear(), now.getMonth() - 1, now.getDate());
-
-        const [latestBlogs, lastMonthBlogs, totalBlogs] = await Promise.all([
-            Blog.find()
+        const [latestBlogs, totalBlogs] = await Promise.all([
+            Blog.find({ 'isBlocked.status': false })
                 .populate('authorId', '_id username email userAvatar')
                 .sort({ createdAt: -1 })
                 .skip(startIndex ? startIndex : page != 1 ? (page - 1) * limit : 0)
                 .limit(limit),
-            Blog.countDocuments({ createdAt: { $gte: oneMonthAgo } }).exec(),
-            Blog.countDocuments(),
+            Blog.countDocuments({ 'isBlocked.status': false }),
         ]);
-        // const totalBlogs = await Blog.countDocuments({});
-        // const latestBlogs = await Blog.find()
-        //     .populate('authorId', '_id username email userAvatar')
-        //     .sort({ createdAt: -1 })
-        //     .skip(startIndex ? startIndex : page != 1 ? (page - 1) * limit : 0)
-        //     .limit(limit);
-        res.status(200).json({ blogs: latestBlogs, lastMonthBlogs, total: totalBlogs });
+        res.status(200).json({ blogs: latestBlogs, total: totalBlogs });
     } catch (error) {
         next(error);
     }
@@ -39,7 +29,7 @@ export const latestBlogs = async (req, res, next) => {
 
 export const trendingBlogs = async (req, res, next) => {
     try {
-        const trendingBlogs = await Blog.find()
+        const trendingBlogs = await Blog.find({ 'isBlocked.status': false })
             .populate('authorId', '_id username email userAvatar')
             .sort({ viewed: -1, likeCount: -1 })
             .limit(5);
@@ -53,13 +43,21 @@ export const categoryBlogs = async (req, res, next) => {
     try {
         const page = req.query.page;
         const limit = req.query.limit;
-        const totalBlogs = await Blog.find({ category: req.params.cate });
-        const categoryBlogs = await Blog.find({ category: req.params.cate })
-            .populate('authorId', '_id username email userAvatar')
-            .sort({ createdAt: -1 })
-            .skip(page != 1 ? (page - 1) * limit : 0)
-            .limit(limit);
-        res.status(200).json({ blogs: categoryBlogs, total: totalBlogs.length });
+        const [totalBlogs, categoryBlogs] = await Promise.all([
+            Blog.countDocuments({
+                category: req.params.cate,
+                'isBlocked.status': false,
+            }),
+            Blog.find({
+                category: req.params.cate,
+                'isBlocked.status': false,
+            })
+                .populate('authorId', '_id username email userAvatar')
+                .sort({ createdAt: -1 })
+                .skip(page != 1 ? (page - 1) * limit : 0)
+                .limit(limit),
+        ]);
+        res.status(200).json({ blogs: categoryBlogs, total: totalBlogs });
     } catch (error) {
         next(error);
     }
@@ -157,6 +155,7 @@ export const readBlog = async (req, res, next) => {
         const similarAuthorBlogs = await Blog.find({
             authorId: blog.authorId._id,
             _id: { $ne: blog._id },
+            'isBlocked.status': false,
         }).limit(5);
 
         if (userId != 'undefined') {
@@ -341,6 +340,67 @@ export const manageBlogs = async (req, res, next) => {
         ]);
 
         return res.status(200).json({ blogs, total: totalBlogs });
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const blockBlog = async (req, res, next) => {
+    const userId = req.params.userId;
+    if (req.user._id.toString() !== userId.toString()) {
+        return next(errorHandler(403, 'Unauthorized'));
+    }
+    const blogId = req.body.blogId;
+    try {
+        const blog = await Blog.findById(blogId, 'authorId isBlocked').exec();
+        if (!blog) {
+            return next(errorHandler(400, 'Blog not found'));
+        }
+        // Nếu bài viết chưa bị khóa thì khóa
+        if (blog.isBlocked.status == false) {
+            if (!req.user.isAdmin && blog.authorId.toString() !== userId) {
+                return next(errorHandler(403, 'You are not allowed to block this blog'));
+            }
+            let role = req.user.isAdmin && blog.authorId.toString() !== userId.toString() ? 'admin' : 'user';
+            await Blog.findByIdAndUpdate(blogId, {
+                $set: { 'isBlocked.status': true, 'isBlocked.blockedBy': role },
+            });
+            return res.status(200).json({ message: `Blog has been blocked by ${role}` });
+        } else {
+            // Nếu bài viết đã bị khóa thì kiểm tra xem ai đã khóa và xem có quyền mở khóa không
+            if (blog.isBlocked.blockedBy === 'admin' && !req.user.isAdmin) {
+                return next(errorHandler(400, 'Only an admin can unblock this blog'));
+            } else {
+                await Blog.findByIdAndUpdate(blogId, {
+                    $set: { 'isBlocked.status': false, 'isBlocked.blockedBy': null },
+                });
+                return res.status(200).json({ message: 'Blog has been unblocked successfully' });
+            }
+        }
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const adminBlogManagement = async (req, res, next) => {
+    try {
+        const page = req.query.page;
+        const startIndex = req.query.startIndex;
+        const limit = req.query.limit;
+
+        const now = new Date();
+        const oneMonthAgo = new Date(now.getFullYear(), now.getMonth() - 1, now.getDate());
+
+        const [latestBlogs, lastMonthBlogs, totalBlogs] = await Promise.all([
+            Blog.find()
+                .populate('authorId', '_id username email userAvatar')
+                .sort({ createdAt: -1 })
+                .skip(startIndex ? startIndex : page != 1 ? (page - 1) * limit : 0)
+                .limit(limit),
+            Blog.countDocuments({ createdAt: { $gte: oneMonthAgo } }).exec(),
+            Blog.countDocuments(),
+        ]);
+        res.status(200).json({ blogs: latestBlogs, lastMonthBlogs, total: totalBlogs });
     } catch (error) {
         next(error);
     }

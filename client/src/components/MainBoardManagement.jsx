@@ -29,7 +29,6 @@ export default function MainBoardManagement() {
             try {
                 const res = await fetch(`/api/user/get-all-user?limit=5`, {
                     method: 'GET',
-                    headers: { 'Content-Type': 'application/json' },
                 });
                 const data = await res.json();
                 if (res.status === 403) {
@@ -49,8 +48,10 @@ export default function MainBoardManagement() {
         };
         const fetchBlogs = async () => {
             try {
-                const res = await fetch(`/api/blog/latest-blogs?page=1&&startIndex=0&&limit=5`, {
-                    method: 'GET',
+                const res = await fetch(`/api/blog/admin-blog-management?page=1&&startIndex=0&&limit=5`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ userId: currentUser._id }),
                 });
                 const data = await res.json();
                 if (res.ok) {
@@ -71,10 +72,6 @@ export default function MainBoardManagement() {
                     headers: { 'Content-Type': 'application/json' },
                 });
                 const data = await res.json();
-                // if (res.status === 403) {
-                //     dispatch(signOutSuccess());
-                //     return navigate('/sign-in');
-                // }
                 if (res.ok) {
                     setComments(data.comments);
                     setLastMonthComments(data.lastMonthComments);

@@ -10,7 +10,7 @@ export const search = async (req, res, next) => {
         let sort = req.query.sort === 'desc' ? -1 : 1;
         let category = req.query.category;
 
-        let baseQuery = {};
+        let baseQuery = { 'isBlocked.status': false };
         if (category && category != 'all category') {
             baseQuery.category = category;
         }

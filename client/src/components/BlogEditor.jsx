@@ -30,11 +30,12 @@ export default function BlogEditor() {
         textEditor, // Cái này là cái promise được sinh ra khi dùng new EditorJS (nếu có nó chứng tỏ đã có viết blog trước đó rồi)
         setTextEditor,
     } = useContext(EditorContext);
+    console.log(blog);
 
     useEffect(() => {
         if (blog.slug || textEditor.isReady) {
             // Nếu người vào trang edit khác so với tác giả thì không cho edit
-            if (blog?.authorId != currentUser._id) {
+            if (blog?.authorId != '' && blog?.authorId != currentUser._id) {
                 return navigate('/');
             }
             setTextEditor(
@@ -306,7 +307,7 @@ export default function BlogEditor() {
                         <div className="flex gap-4 mt-16 w-full">
                             <TextInput
                                 type="text"
-                                placeholder="Describe ideas for creating images"
+                                placeholder="Describe your ideas"
                                 className="flex-1"
                                 onChange={handleChangeImageInput}
                             ></TextInput>
@@ -322,10 +323,12 @@ export default function BlogEditor() {
                             />
                         </div>
                         <section id="images-section" className="w-full flex flex-wrap justify-between p-2"></section>
-                        <section className="border shadow-lg rounded-lg p-6 w-full mt-8">
-                            <label className="block text-sm font-medium">AI Output</label>
-                            <div className="mt-1 block w-full rounded-md border-gray-300 p-4">{output}</div>
-                        </section>
+                        <Textarea
+                            placeholder="AI Output"
+                            className="mt-1 block w-full rounded-md border-gray-300 p-4 border shadow-lg"
+                        >
+                            {output}
+                        </Textarea>
                     </p>
                 </div>
             </div>

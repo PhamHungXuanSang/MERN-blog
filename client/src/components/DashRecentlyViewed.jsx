@@ -54,7 +54,6 @@ export default function DashRecentlyViewed() {
             }
             if (res.ok) {
                 setRecentlyBlogs((prev) => [...prev, ...data.viewedBlogsHistory]);
-                console.log(recentlyBlogs.length + data.viewedBlogsHistory.length, data.total);
                 if (recentlyBlogs.length + data.viewedBlogsHistory.length >= data.total) {
                     setShowMore(false);
                 }

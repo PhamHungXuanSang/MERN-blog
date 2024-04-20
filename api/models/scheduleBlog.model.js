@@ -1,6 +1,6 @@
 import mongoose, { Schema } from 'mongoose';
 
-const blogSchema = new mongoose.Schema(
+const scheduleBlogSchema = new mongoose.Schema(
     {
         authorId: {
             type: Schema.Types.ObjectId,
@@ -74,19 +74,23 @@ const blogSchema = new mongoose.Schema(
                 enum: ['user', 'admin'],
             },
         },
+        postingTime: {
+            type: Date,
+            required: true,
+        },
     },
     { timestamps: true },
 );
 
-blogSchema.virtual('likeCount').get(function () {
+scheduleBlogSchema.virtual('likeCount').get(function () {
     return this.likes.length;
 });
 
-blogSchema.virtual('commentCount').get(function () {
+scheduleBlogSchema.virtual('commentCount').get(function () {
     return this.comments.length;
 });
 
-blogSchema.virtual('averageRating').get(function () {
+scheduleBlogSchema.virtual('averageRating').get(function () {
     if (this.rating.length > 0) {
         const sumRatings = this.rating.reduce((accumulator, rating) => accumulator + rating.star, 0);
         return Number((sumRatings / this.rating.length).toFixed(1));
@@ -94,9 +98,9 @@ blogSchema.virtual('averageRating').get(function () {
     return 0;
 });
 
-blogSchema.set('toJSON', { virtuals: true });
-blogSchema.set('toObject', { virtuals: true });
+scheduleBlogSchema.set('toJSON', { virtuals: true });
+scheduleBlogSchema.set('toObject', { virtuals: true });
 
-const Blog = mongoose.model('Blog', blogSchema);
+const ScheduleBlog = mongoose.model('ScheduleBlog', scheduleBlogSchema);
 
-export default Blog;
+export default ScheduleBlog;

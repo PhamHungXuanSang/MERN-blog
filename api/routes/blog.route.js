@@ -11,6 +11,8 @@ import {
     ratingBlog,
     deleteBlog,
     manageBlogs,
+    blockBlog,
+    adminBlogManagement,
 } from '../controllers/blog.controller.js';
 
 const router = express.Router();
@@ -25,5 +27,7 @@ router.post('/update-like-blog/:userId', authenToken, updateLikeBlog);
 router.post('/rating-blog/:blogId/:userId', authenToken, ratingBlog);
 router.delete('/delete-blog/:blogId', authenToken, deleteBlog);
 router.post('/manage-blogs/:userId', manageBlogs);
+router.post('/block-blog/:userId', authenToken, blockBlog);
+router.post('/admin-blog-management', authenToken, adminBlogManagement);
 
 export default router;

@@ -16,7 +16,7 @@ export const getUserProfile = async (req, res, next) => {
         return next(errorHandler(404, 'User not found'));
     }
     try {
-        let blogs = await Blog.find({ authorId: user._id })
+        let blogs = await Blog.find({ authorId: user._id, 'isBlocked.status': false })
             .populate('authorId', '_id username email userAvatar createdAt')
             .sort({ createdAt: -1 });
         // .skip(page != 1 ? (page - 1) * limit : 0)
@@ -110,10 +110,6 @@ export const deleteAccount = async (req, res, next) => {
 };
 
 export const getAllUser = async (req, res, next) => {
-    if (!req.user.isAdmin) {
-        return next(errorHandler(400, 'You are not allowed to see all users'));
-    }
-
     const startIndex = parseInt(req.query.startIndex || 0);
     const limit = parseInt(req.query.limit || 2);
     const sortDirection = req.query.sort === 'asc' ? 1 : -1;
@@ -255,16 +251,19 @@ export const getViewedBlogsHistory = async (req, res, next) => {
 
     try {
         const userWithBlogs = await User.findById(userId).populate('viewedBlogsHistory.blog').exec();
-
         if (!userWithBlogs) {
             return next(errorHandler(404, 'User not found'));
         }
-        userWithBlogs.viewedBlogsHistory.sort((a, b) => b.viewedAt - a.viewedAt);
-        const slicedViewedBlogsHistory = userWithBlogs.viewedBlogsHistory.slice(startIndex, startIndex + limit);
+        const filteredAndSortedViewedBlogs = userWithBlogs.viewedBlogsHistory
+            .filter((bl) => bl.blog && bl.blog.isBlocked.status === false)
+            .sort((a, b) => b.viewedAt - a.viewedAt);
 
-        return res
-            .status(200)
-            .json({ viewedBlogsHistory: slicedViewedBlogsHistory, total: userWithBlogs.viewedBlogsHistory.length });
+        const slicedViewedBlogsHistory = filteredAndSortedViewedBlogs.slice(startIndex, startIndex + limit);
+
+        return res.status(200).json({
+            viewedBlogsHistory: slicedViewedBlogsHistory,
+            total: filteredAndSortedViewedBlogs.length,
+        });
     } catch (error) {
         next(error);
     }

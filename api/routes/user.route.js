@@ -16,7 +16,7 @@ const router = express.Router();
 router.get('/profile/:username', getUserProfile);
 router.put('/update-profile/:userId', authenToken, updateUserProfile);
 router.delete('/delete-account/:userId', authenToken, deleteAccount);
-router.get('/get-all-user', authenToken, getAllUser);
+router.get('/get-all-user', getAllUser);
 router.put('/update-user-role/:userId', authenToken, updateUserRole);
 router.put('/resetPassword/:email', resetPassword);
 router.get(`/get-viewed-blogs-history/:userId`, authenToken, getViewedBlogsHistory);

@@ -3,8 +3,9 @@ import { Link, useNavigate } from 'react-router-dom';
 import dateToDateAndTime from '../utils/dateToDateAndTime';
 import { useState } from 'react';
 import ModalConfirm from './ModalConfirm';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { signOutSuccess } from '../redux/user/userSlice.js';
+import toast from 'react-hot-toast';
 
 const BlogStat = ({ likes, comments, viewed }) => {
     return (
@@ -32,7 +33,10 @@ export default function MyBlogCard({ blog, setBlogs }) {
     const dispatch = useDispatch();
     const [showStat, setShowStat] = useState(false);
     const [showModal, setShowModal] = useState(false);
+    const [showBlockModal, setShowBlockModal] = useState(false);
     const [blogIdToDelete, setBlogIdToDelete] = useState('');
+    const [blogIdToBlock, setBlogIdToBlock] = useState('');
+    const currentUser = useSelector((state) => state.user.currentUser);
 
     const handleDeleteBlog = async () => {
         setShowModal(false);
@@ -47,9 +51,33 @@ export default function MyBlogCard({ blog, setBlogs }) {
                 return navigate('/sign-in');
             }
             if (!res.ok) {
-                console.log(data.message);
+                toast.error(data.message);
             } else {
+                toast.success('Blog has been deleted');
                 setBlogs((prev) => prev.filter((blog) => blog._id !== blogIdToDelete));
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    const handleBlockBlog = async () => {
+        setShowBlockModal(false);
+        try {
+            const res = await fetch(`/api/blog/block-blog/${currentUser._id}`, {
+                method: 'post',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ blogId: blogIdToBlock }),
+            });
+            const data = await res.json();
+            if (res.status === 403) {
+                dispatch(signOutSuccess());
+                return navigate('/sign-in');
+            }
+            if (!res.ok) {
+                toast.error(data.message);
+            } else {
+                toast.success(data.message);
             }
         } catch (error) {
             console.log(error);
@@ -93,6 +121,15 @@ export default function MyBlogCard({ blog, setBlogs }) {
                         >
                             Delete
                         </button>
+                        <button
+                            onClick={() => {
+                                setShowBlockModal(true);
+                                setBlogIdToBlock(blog._id);
+                            }}
+                            className="pr-4 py-2 underline text-teal-600"
+                        >
+                            {blog.isBlocked.status ? 'Unlock' : 'Block'}
+                        </button>
                     </div>
                 </div>
                 <div className="max-lg:hidden">
@@ -112,6 +149,19 @@ export default function MyBlogCard({ blog, setBlogs }) {
                 title={`You definitely want to delete this blog ?`}
                 onConfirm={handleDeleteBlog}
                 onNoConfirm={() => setShowModal(false)}
+                confirm="Yes I am sure"
+                noConfirm="No, I'm not sure"
+            />
+            <ModalConfirm
+                showModal={showBlockModal}
+                setShowModal={setShowBlockModal}
+                title={
+                    blog.isBlocked.status
+                        ? `You definitely want to unblock this blog ?`
+                        : `You definitely want to block this blog ?`
+                }
+                onConfirm={handleBlockBlog}
+                onNoConfirm={() => setShowBlockModal(false)}
                 confirm="Yes I am sure"
                 noConfirm="No, I'm not sure"
             />
