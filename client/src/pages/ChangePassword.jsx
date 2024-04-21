@@ -6,7 +6,7 @@ import { FaTimes, FaCheck } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 import toast from 'react-hot-toast';
 
-export default function DashAccountSetting() {
+export default function ChangePassword() {
     const [showModal, setShowModal] = useState(false);
     const currentUser = useSelector((state) => state.user.currentUser);
     const error = useSelector((state) => state.user.error);
@@ -43,9 +43,6 @@ export default function DashAccountSetting() {
         return (
             <div className="container mx-auto py-12 px-4">
                 <div className="h-full">
-                    <div className="w-full h-fit border-b-2 border-neutral-300">
-                        <p className="border-b-2 text-lg w-fit py-2 px-4">Account Setting</p>
-                    </div>
                     <div className="flex flex-col items-center justify-center">
                         <i className="text-xl font-bold my-4">Change Password</i>
                         <form onSubmit={handleSubmit} className="w-full max-w-xs">

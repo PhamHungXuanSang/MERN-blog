@@ -6,6 +6,7 @@ import User from '../models/user.model.js';
 import createNoti from '../utils/createNoti.js';
 import pushNewNoti from '../utils/pushNewNoti.js';
 import { userOnline } from '../index.js';
+import ScheduleBlog from '../models/scheduleBlog.model.js';
 
 export const latestBlogs = async (req, res, next) => {
     try {
@@ -80,8 +81,11 @@ export const createBlog = async (req, res, next) => {
     req.body.tags = req.body.tags.map((tag) => tag.toLowerCase());
 
     if (!req.body.slug) {
-        const title = await Blog.findOne({ title: req.body.title });
-        if (title) {
+        const [title, scheduleTitle] = await Promise.all([
+            Blog.findOne({ title: req.body.title }),
+            ScheduleBlog.findOne({ title: req.body.title }),
+        ]);
+        if (title || scheduleTitle) {
             return next(errorHandler(400, 'Title already exists, please give another title'));
         }
         const slug = req.body.title
@@ -120,6 +124,13 @@ export const createBlog = async (req, res, next) => {
             next(error);
         }
     } else {
+        const [title, scheduleTitle] = await Promise.all([
+            Blog.findOne({ title: req.body.title }),
+            ScheduleBlog.findOne({ title: req.body.title }),
+        ]);
+        if (title || scheduleTitle) {
+            return next(errorHandler(400, 'Title already exists, please give another title'));
+        }
         const newSlug = req.body.title
             .split(' ')
             .join('-'.toLowerCase().replace(/[^a-zA-Z0-9-]/g, '-'))

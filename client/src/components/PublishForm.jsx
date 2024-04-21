@@ -6,6 +6,9 @@ import Tag from './Tag';
 import { useDispatch, useSelector } from 'react-redux';
 import { signOutSuccess } from '../redux/user/userSlice.js';
 import { useNavigate } from 'react-router-dom';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
+import dateToDateAndTime from '../utils/dateToDateAndTime.js';
 
 export default function PublishForm() {
     const currentUser = useSelector((state) => state.user.currentUser);
@@ -14,6 +17,8 @@ export default function PublishForm() {
 
     const navigate = useNavigate();
     const dispatch = useDispatch();
+
+    const [postingTime, setPostingTime] = useState(new Date());
 
     let {
         blog,
@@ -101,6 +106,62 @@ export default function PublishForm() {
             toast.dismiss(loadingToast);
             setLoading(false);
             return toast.error(error.message);
+        }
+    };
+
+    const handleChoosePostingTime = (date) => {
+        if (date >= new Date()) {
+            setPostingTime(date);
+            let pt = dateToDateAndTime(date);
+            return toast.success(`Posting time set to ${pt}`);
+        } else {
+            return toast.error('Please choose a posting time after the current time');
+        }
+    };
+
+    const handlePushToWaiting = async () => {
+        if (postingTime >= new Date()) {
+            if (!title.length) {
+                return toast.error('Please type your blog title before publishing');
+            }
+
+            if (!description.length || description.length > 200) {
+                return toast.error('Please type your blog description before publishing');
+            }
+
+            if (!tags.length) {
+                return toast.error('Please enter at least 1 tag');
+            }
+
+            let loadingToast = toast.loading('Publishing ...');
+            try {
+                const res = await fetch(`/api/scheduleBlog/add-to-schedule/${currentUser._id}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ blog, postingTime }),
+                });
+                const rs = await res.json();
+                if (res.status === 403) {
+                    toast.dismiss(loadingToast);
+                    dispatch(signOutSuccess());
+                    return navigate('/sign-in');
+                } else if (res.status === 200) {
+                    toast.dismiss(loadingToast);
+                    toast.success('Added to schedule 👍');
+                    setTimeout(() => {
+                        navigate(`/`); // Thêm code navigate qua trang liệt kê danh sách bài viết trong hàng đợi
+                    }, 500);
+                } else if (rs.success === false) {
+                    toast.dismiss(loadingToast);
+                    setLoading(false);
+                    return toast.error(rs.message);
+                }
+            } catch (error) {
+                toast.dismiss(loadingToast);
+                return toast.error(error.message);
+            }
+        } else {
+            return toast.error('Please choose a posting time after the current time');
         }
     };
 
@@ -196,9 +257,24 @@ export default function PublishForm() {
                     popup
                     size="md"
                 >
-                    <Modal.Header />
-                    <Modal.Body>
-                        <p>Hello</p>
+                    <Modal.Body className="text-center">
+                        <i className="block pt-6">Choose time to publish your new blog</i>
+                        <DatePicker
+                            className="rounded-md dark:bg-[#1f2937] my-4"
+                            selected={postingTime}
+                            onChange={(date) => handleChoosePostingTime(date)}
+                            showTimeSelect
+                            dateFormat={'dd/MM/yyyy'}
+                            minDate={new Date()}
+                        />
+                        <div className="flex justify-center gap-4">
+                            <Button gradientMonochrome="purple" onClick={handlePushToWaiting}>
+                                Add to waiting list posting
+                            </Button>
+                            <Button color="gray" onClick={() => setShowModal(false)}>
+                                Close
+                            </Button>
+                        </div>
                     </Modal.Body>
                 </Modal>
             )}

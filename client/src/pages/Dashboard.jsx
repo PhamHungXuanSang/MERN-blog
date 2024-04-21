@@ -3,13 +3,13 @@ import { useLocation } from 'react-router-dom';
 import DashSidebar from '../components/DashSidebar';
 import DashProfile from '../components/DashProfile';
 import DashProfileUpdate from '../components/DashProfileUpdate';
-import DashAccountSetting from '../components/DashAccountSetting';
 import Editor from './Editor';
 import DashAllMyBlog from '../components/DashAllMyBlog';
 import DashRecentlyViewed from '../components/DashRecentlyViewed';
 import DashTransaction from '../components/DashTransaction';
 import DashUsage from '../components/DashUsage';
 import DashSavedBlogs from '../components/DashSavedBlogs';
+import DashScheduleBlogs from '../components/DashScheduleBlogs';
 
 export default function Dashboard() {
     const [tab, setTab] = useState('');
@@ -32,12 +32,12 @@ export default function Dashboard() {
                 {tab === 'profile' && <DashProfile />}
                 {tab === 'update-profile' && <DashProfileUpdate />}
                 {tab === 'create-blog' && <Editor />}
+                {tab === 'schedule-list' && <DashScheduleBlogs />}
                 {tab === 'all-blog' && <DashAllMyBlog />}
                 {tab === 'recently-viewed' && <DashRecentlyViewed />}
                 {tab === 'saved-blogs' && <DashSavedBlogs />}
                 {tab === 'usage' && <DashUsage />}
                 {tab === 'transaction' && <DashTransaction />}
-                {tab === 'account-setting' && <DashAccountSetting />}
             </div>
         </div>
     );

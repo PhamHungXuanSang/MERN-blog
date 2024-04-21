@@ -1,6 +1,6 @@
 import { Sidebar } from 'flowbite-react';
 import { MdLocalOffer, MdFolderSpecial } from 'react-icons/md';
-import { IoCreateSharp, IoSettings } from 'react-icons/io5';
+import { IoCreateSharp } from 'react-icons/io5';
 import { HiDocumentText } from 'react-icons/hi';
 import { HiMiniClipboardDocumentCheck } from 'react-icons/hi2';
 import { useEffect, useState } from 'react';
@@ -8,7 +8,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import checkCreatePermission from '../utils/checkCreatePermission.js';
 import { setCurrentUser } from '../redux/user/userSlice.js';
-import { AiOutlineTransaction } from 'react-icons/ai';
+import { AiOutlineTransaction, AiFillSchedule } from 'react-icons/ai';
 import { FaInfoCircle } from 'react-icons/fa';
 
 export default function DashSidebar() {
@@ -85,6 +85,16 @@ export default function DashSidebar() {
                                     icon={IoCreateSharp}
                                 >
                                     Create blog
+                                </Sidebar.Item>
+                            </Link>
+                            <Link to="/dash-board?tab=schedule-list">
+                                <Sidebar.Item
+                                    onClick={() => toggleHiddenSidebar()}
+                                    className="mt-1"
+                                    active={tab === 'schedule-list'}
+                                    icon={AiFillSchedule}
+                                >
+                                    Schedule list
                                 </Sidebar.Item>
                             </Link>
                             <Link to="/dash-board?tab=all-blog">
@@ -167,7 +177,7 @@ export default function DashSidebar() {
                         </>
                     </Sidebar.ItemGroup>
                 )}
-                <Sidebar.ItemGroup>
+                {/* <Sidebar.ItemGroup>
                     <span className="text-2xl font-semibold pl-2">Setting</span>
                     <>
                         <Link to="/dash-board?tab=account-setting">
@@ -181,7 +191,7 @@ export default function DashSidebar() {
                             </Sidebar.Item>
                         </Link>
                     </>
-                </Sidebar.ItemGroup>
+                </Sidebar.ItemGroup> */}
             </Sidebar.Items>
         </Sidebar>
     );

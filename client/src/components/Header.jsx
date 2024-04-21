@@ -218,6 +218,10 @@ export default function Header() {
                                 </>
                             )}
                             <Dropdown.Divider />
+                            <Link to={'/change-password'}>
+                                <Dropdown.Item>Setting</Dropdown.Item>
+                            </Link>
+                            <Dropdown.Divider />
                             <Dropdown.Item onClick={handleSignOut}>Sign out</Dropdown.Item>
                         </Dropdown>
                     </div>

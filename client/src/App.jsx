@@ -26,6 +26,7 @@ import ForgotPassword from './pages/ForgotPassword.jsx';
 import Notification from './pages/Notification.jsx';
 import { setCurrentUser, signOutSuccess } from './redux/user/userSlice.js';
 import { io } from 'socket.io-client';
+import ChangePassword from './pages/ChangePassword.jsx';
 export const socket = io('http://localhost:3000');
 
 export default function App() {
@@ -100,6 +101,7 @@ export default function App() {
                     <Route element={<PrivateRoute />}>
                         <Route path="/notification" element={<Notification />} />
                         <Route path="/dash-board" element={<Dashboard />} />
+                        <Route path="/change-password" element={<ChangePassword />} />
                         <Route path="/editor/:slug" element={<Editor />} />
                         <Route path="/offer" element={<Offer />} />
                         <Route path="/checkout" element={<Checkout />} />
