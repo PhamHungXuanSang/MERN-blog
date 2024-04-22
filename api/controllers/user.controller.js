@@ -18,7 +18,7 @@ export const getUserProfile = async (req, res, next) => {
     try {
         let blogs = await Blog.find({ authorId: user._id, 'isBlocked.status': false })
             .populate('authorId', '_id username email userAvatar createdAt')
-            .sort({ createdAt: -1 });
+            .sort({ createdAt: -1, title: 1 });
         // .skip(page != 1 ? (page - 1) * limit : 0)
         // .limit(limit);
 

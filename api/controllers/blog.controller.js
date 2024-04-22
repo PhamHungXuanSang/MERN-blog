@@ -17,12 +17,12 @@ export const latestBlogs = async (req, res, next) => {
         const [latestBlogs, totalBlogs] = await Promise.all([
             Blog.find({ 'isBlocked.status': false })
                 .populate('authorId', '_id username email userAvatar')
-                .sort({ createdAt: -1 })
+                .sort({ createdAt: -1, title: 1 })
                 .skip(startIndex ? startIndex : page != 1 ? (page - 1) * limit : 0)
                 .limit(limit),
             Blog.countDocuments({ 'isBlocked.status': false }),
         ]);
-        res.status(200).json({ blogs: latestBlogs, total: totalBlogs });
+        return res.status(200).json({ blogs: latestBlogs, total: totalBlogs });
     } catch (error) {
         next(error);
     }
@@ -54,11 +54,11 @@ export const categoryBlogs = async (req, res, next) => {
                 'isBlocked.status': false,
             })
                 .populate('authorId', '_id username email userAvatar')
-                .sort({ createdAt: -1 })
+                .sort({ createdAt: -1, title: 1 })
                 .skip(page != 1 ? (page - 1) * limit : 0)
                 .limit(limit),
         ]);
-        res.status(200).json({ blogs: categoryBlogs, total: totalBlogs });
+        return res.status(200).json({ blogs: categoryBlogs, total: totalBlogs });
     } catch (error) {
         next(error);
     }
@@ -125,10 +125,10 @@ export const createBlog = async (req, res, next) => {
         }
     } else {
         const [title, scheduleTitle] = await Promise.all([
-            Blog.findOne({ title: req.body.title }),
+            Blog.find({ title: req.body.title }),
             ScheduleBlog.findOne({ title: req.body.title }),
         ]);
-        if (title || scheduleTitle) {
+        if (title.length > 1 || scheduleTitle) {
             return next(errorHandler(400, 'Title already exists, please give another title'));
         }
         const newSlug = req.body.title
@@ -286,7 +286,7 @@ export const editBlog = async (req, res, next) => {
         if (!blog) {
             return next(errorHandler(404, 'Blog not found'));
         }
-        res.status(200).json({ blog });
+        return res.status(200).json({ blog });
     } catch (error) {
         next(errorHandler(400, 'Blog not found'));
     }
@@ -295,10 +295,13 @@ export const editBlog = async (req, res, next) => {
 export const deleteBlog = async (req, res, next) => {
     const blogId = req.params.blogId;
     const userId = req.user._id;
+    if (req.user._id != userId) {
+        return next(errorHandler(403, 'Unauthorized'));
+    }
 
     try {
         if (!req.user.isAdmin) {
-            const blog = await Blog.findById(blogId, 'authorId').exec(); // Chỉ lấy trường cần thiết
+            const blog = await Blog.findById(blogId, 'authorId').exec();
             if (!blog) {
                 return next(errorHandler(400, 'Blog not found'));
             }
@@ -405,13 +408,13 @@ export const adminBlogManagement = async (req, res, next) => {
         const [latestBlogs, lastMonthBlogs, totalBlogs] = await Promise.all([
             Blog.find()
                 .populate('authorId', '_id username email userAvatar')
-                .sort({ createdAt: -1 })
+                .sort({ createdAt: -1, title: 1 })
                 .skip(startIndex ? startIndex : page != 1 ? (page - 1) * limit : 0)
                 .limit(limit),
             Blog.countDocuments({ createdAt: { $gte: oneMonthAgo } }).exec(),
             Blog.countDocuments(),
         ]);
-        res.status(200).json({ blogs: latestBlogs, lastMonthBlogs, total: totalBlogs });
+        return res.status(200).json({ blogs: latestBlogs, lastMonthBlogs, total: totalBlogs });
     } catch (error) {
         next(error);
     }

@@ -1,15 +1,44 @@
 import { Button, Label, Pagination, Select, Spinner, TextInput } from 'flowbite-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import OneByOneAppearEffect from './OneByOneAppearEffect';
 import NotFound from './NotFound';
+import { useLocation } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import ScheduleBlog from './ScheduleBlog';
 
 export default function DashScheduleBlogs() {
+    const currentUser = useSelector((state) => state.user.currentUser);
     const [query, setQuery] = useState('');
-    const [blogs, setBlogs] = useState(null);
+    const [scheduleBlogs, setScheduleBlogs] = useState(null);
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPage, setTotalPage] = useState(1);
+    const [filterData, setFilterData] = useState({
+        query: query,
+        sort: 'desc',
+        category: 'all category',
+    });
     const limit = 2;
-    const handleChange = () => {};
+
+    const location = useLocation();
+
+    useEffect(() => {
+        const urlParams = new URLSearchParams(location.search);
+        const sortFromUrl = urlParams.get('sort');
+        const categoryFromUrl = urlParams.get('category');
+        if (sortFromUrl || categoryFromUrl) {
+            setFilterData({
+                ...filterData,
+                sort: sortFromUrl,
+                category: categoryFromUrl,
+            });
+        }
+        getScheduleBlogs();
+    }, [location.search]);
+
+    const handleChange = (e) => {
+        setFilterData({ ...filterData, query: e.target.value });
+    };
+
     const handleSearch = (e) => {
         if (e.keyCode == 13) {
             e.preventDefault();
@@ -17,27 +46,43 @@ export default function DashScheduleBlogs() {
             let searchQuery = e.target.value;
             setQuery(searchQuery);
             if (e.keyCode === 13 && searchQuery.length) {
-                setBlogs(null);
+                setScheduleBlogs(null);
             }
         }
     };
-    const [filterData, setFilterData] = useState({
-        query: query,
-        sort: 'desc',
-        category: 'all category',
-    });
 
-    const getBlogs = () => {};
+    const getScheduleBlogs = async () => {
+        setScheduleBlogs(null);
+        try {
+            const res = await fetch(
+                `/api/scheduleBlog/schedule-blog-management/${currentUser._id}?&&page=${currentPage}&&limit=${limit}&&sort=${filterData.sort}`,
+                {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(filterData),
+                },
+            );
+            const data = await res.json();
+            if (res.status === 200) {
+                setScheduleBlogs(data.scheduleBlogs);
+                setTotalPage(data.total);
+            } else {
+                console.log(data.message);
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    };
 
     const onPageChange = (page) => {
-        setBlogs(null);
+        setScheduleBlogs(null);
         setCurrentPage(page);
     };
 
     return (
         <div className="py-12 px-4">
             <div className="w-full h-fit border-b-2 border-neutral-300">
-                <p className="border-b-2 text-lg w-fit py-2 px-4">Manage Blogs</p>
+                <p className="border-b-2 text-lg w-fit py-2 px-4">Manage Schedule Blogs</p>
             </div>
             <div>
                 <div className="w-full flex flex-wrap gap-16 my-4">
@@ -85,18 +130,18 @@ export default function DashScheduleBlogs() {
                             <option>entertainment</option>
                         </Select>
                     </div>
-                    <Button onClick={getBlogs} gradientMonochrome="teal">
+                    <Button onClick={getScheduleBlogs} gradientMonochrome="teal">
                         Apply Filters
                     </Button>
                 </div>
-                {blogs != null ? (
-                    blogs.length == 0 ? (
+                {scheduleBlogs != null ? (
+                    scheduleBlogs.length == 0 ? (
                         <NotFound object={`You don't have any blog`} />
                     ) : (
                         <>
-                            {blogs.map((blog, i) => (
+                            {scheduleBlogs.map((blog, i) => (
                                 <OneByOneAppearEffect transition={{ duration: 1, delay: i * 0.12 }} key={i}>
-                                    {/* Thêm code xem thông tin của bài viết chờ đăng */}
+                                    <ScheduleBlog key={i} blog={blog} setScheduleBlogs={setScheduleBlogs} />
                                 </OneByOneAppearEffect>
                             ))}
                             <Pagination

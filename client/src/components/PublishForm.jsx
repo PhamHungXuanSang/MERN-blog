@@ -149,7 +149,7 @@ export default function PublishForm() {
                     toast.dismiss(loadingToast);
                     toast.success('Added to schedule 👍');
                     setTimeout(() => {
-                        navigate(`/`); // Thêm code navigate qua trang liệt kê danh sách bài viết trong hàng đợi
+                        return navigate(`/dash-board?tab=schedule-list`);
                     }, 500);
                 } else if (rs.success === false) {
                     toast.dismiss(loadingToast);

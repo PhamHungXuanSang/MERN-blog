@@ -34,6 +34,7 @@ export default function BlogManagement() {
             if (res.ok) {
                 const firstFiveBlogs = data.blogs.slice(0, 5);
                 setBlogs(firstFiveBlogs);
+                console.log(data.blogs.length);
                 if (data.blogs.length <= 5) {
                     setShowMore(false);
                 }
@@ -58,7 +59,8 @@ export default function BlogManagement() {
             const data = await res.json();
             if (res.ok) {
                 setBlogs((prev) => [...prev, ...data.blogs]);
-                if (blogs.length + data.blogs.length <= allBlogs) {
+                console.log(blogs.length + data.blogs.length, allBlogs);
+                if (blogs.length + data.blogs.length >= allBlogs) {
                     setShowMore(false);
                 }
             }

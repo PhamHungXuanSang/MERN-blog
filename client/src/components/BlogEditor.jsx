@@ -30,7 +30,6 @@ export default function BlogEditor() {
         textEditor, // Cái này là cái promise được sinh ra khi dùng new EditorJS (nếu có nó chứng tỏ đã có viết blog trước đó rồi)
         setTextEditor,
     } = useContext(EditorContext);
-    console.log(blog);
 
     useEffect(() => {
         if (blog.slug || textEditor.isReady) {

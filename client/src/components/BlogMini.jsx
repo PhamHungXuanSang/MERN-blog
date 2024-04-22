@@ -6,7 +6,7 @@ export default function BlogMini({ content, author, index }) {
     const { userAvatar, username } = author;
 
     return (
-        <div className="py-4 px-1 dark:hover:bg-slate-700 hover:bg-gray-100 rounded">
+        <div className="p-4 dark:hover:bg-slate-700 hover:bg-gray-100 border-2 border-teal-500 rounded-3xl">
             <h1 className="text-center sm:text-xl font-bold text-gray-300 leading-none">
                 Top {index < 10 ? '0' + (index + 1) : index + 1}
             </h1>

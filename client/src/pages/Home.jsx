@@ -154,10 +154,7 @@ export default function Home() {
                             trendingBlogs.length == 0 ? (
                                 <NotFound object={'Not found trending blog'} />
                             ) : (
-                                <Carousel
-                                    className="h-fit py-4 mt-8 px-1 border-2 border-teal-500 rounded-3xl"
-                                    pauseOnHover
-                                >
+                                <Carousel pauseOnHover>
                                     {trendingBlogs.map((blog, i) => (
                                         <BlogMini key={i} index={i} content={blog} author={blog.authorId} />
                                     ))}
@@ -181,7 +178,7 @@ export default function Home() {
                             trendingBlogs.length == 0 ? (
                                 <NotFound object={'Not found trending blog'} />
                             ) : (
-                                <Carousel className="h-fit py-4 px-1 border-2 border-teal-500 rounded-3xl" pauseOnHover>
+                                <Carousel pauseOnHover>
                                     {trendingBlogs.map((blog, i) => (
                                         <BlogMini key={i} index={i} content={blog} author={blog.authorId} />
                                     ))}

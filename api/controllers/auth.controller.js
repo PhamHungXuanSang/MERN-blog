@@ -15,7 +15,7 @@ const validateHuman = async (token) => {
         method: 'POST',
     });
     const data = await response.json();
-    return data.success; // Neeus muoosn tesst hoatj dodongj thiuf return false
+    return data.success;
 };
 
 export const signup = async (req, res, next) => {
@@ -195,7 +195,6 @@ export const google = async (req, res, next) => {
                 const transaction = new Transaction({
                     userId: user._id,
                 });
-                // Thêm code danh sách bài viết đã lưu của người dùng
                 const userF = new UsersFolder({
                     userId: user._id,
                 });

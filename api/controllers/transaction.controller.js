@@ -215,7 +215,7 @@ export const getTransactionHistory = async (req, res, next) => {
     const limit = parseInt(req.query.limit || 2);
     try {
         if (!req.user.isAdmin) {
-            const user = await User.findById(userId, '_id').exec(); // Chỉ lấy trường cần thiết
+            const user = await User.findById(userId, '_id').exec();
             if (!user) {
                 return next(errorHandler(400, 'User not found'));
             }
@@ -223,13 +223,6 @@ export const getTransactionHistory = async (req, res, next) => {
                 return next(errorHandler(400, 'You are not allowed to get this user transaction'));
             }
         }
-        // const [allUserTransactionHistorys, userTransactionHistorys, userTransactionInfo] = await Promise.all([
-        //     PaymentHistory.find({ userId }),
-        //     PaymentHistory.find({ userId }).skip(startIndex).limit(limit),
-        //     Transaction.findOne({ userId }).populate('userId', 'username userAvatar email createdAt'),
-        // ]);
-        // return res.status(200).json({ allUserTransactionHistorys, userTransactionHistorys, userTransactionInfo });
-
         const [allUserTransactionHistorys, userTransactionInfo] = await Promise.all([
             PaymentHistory.find({ userId }).sort({ paymentDate: -1 }), // Giả sử bạn muốn sắp xếp theo ngày tạo giảm dần
             Transaction.findOne({ userId }).populate('userId', 'username userAvatar email createdAt'),
