@@ -7,7 +7,6 @@ export default function Checkout() {
     const selectedPackage = useSelector((state) => state.selectedPackage.selectedPackage);
     const navigate = useNavigate();
     useEffect(() => {
-        console.log(selectedPackage);
         if (selectedPackage == null) {
             return navigate('*');
         }
@@ -16,8 +15,7 @@ export default function Checkout() {
     return (
         <div className="py-8 px-4 text-center">
             <div className="paypal">
-                <p className="checkout-title p-4">Pay with Paypal</p>
-                <div className="paypal-button-container max-w-[240px] mx-auto">
+                <div className="max-w-[240px] mx-auto">
                     <PaypalCheckoutButton pack={selectedPackage} />
                 </div>
             </div>

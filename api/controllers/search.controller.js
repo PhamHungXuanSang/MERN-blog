@@ -32,7 +32,7 @@ export const search = async (req, res, next) => {
         const [searchResults, users, totalBlogs] = await Promise.all([
             Blog.find(baseQuery)
                 .populate('authorId', '_id username email userAvatar')
-                .sort({ createdAt: sort })
+                .sort({ createdAt: sort, title: 1 })
                 .skip((page - 1) * limit)
                 .limit(limit)
                 .exec(),

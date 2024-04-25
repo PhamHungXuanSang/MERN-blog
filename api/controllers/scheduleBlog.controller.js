@@ -116,7 +116,7 @@ export const scheduleBlogManagement = async (req, res, next) => {
         const [scheduleBlogs, totalScheduleBlogs] = await Promise.all([
             ScheduleBlog.find(filters)
                 .populate('authorId', '_id username email userAvatar')
-                .sort({ createdAt: sort })
+                .sort({ createdAt: sort, title: 1 })
                 .skip((page - 1) * limit)
                 .limit(limit),
             ScheduleBlog.countDocuments(filters).exec(),

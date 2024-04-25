@@ -5,7 +5,7 @@ import CommentField from './CommentField';
 import NotFound from './NotFound';
 import CommentCard from './CommentCard';
 
-export const fetchComments = async ({ skip = 0, blogId, setParentCommentCountFun, commentArr = null }) => {
+export const fetchComments = async ({ skip = 0, blogId, commentArr = null }) => {
     let res;
     const rs = await fetch('/api/comment/get-blog-comments', {
         method: 'POST',
@@ -16,7 +16,7 @@ export const fetchComments = async ({ skip = 0, blogId, setParentCommentCountFun
     data.map((comment) => {
         comment.childrenLevel = 0;
     });
-    //setParentCommentCountFun((preValue) => preValue + data.length);
+    //setParentCommentCountFun((preValue) => preValue + data.length); // Mới xóa setParentCommentCountFun trong props
     if (commentArr == null) {
         res = { results: data };
     } else {

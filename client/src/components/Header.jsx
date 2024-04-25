@@ -4,7 +4,7 @@ import { Avatar, Dropdown } from 'flowbite-react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { LuSearch } from 'react-icons/lu';
 import { FaMoon, FaSun } from 'react-icons/fa';
-import { signOutSuccess } from '../redux/user/userSlice.js';
+import { setCurrentUser, signOutSuccess } from '../redux/user/userSlice.js';
 import { darkModeToogle } from '../redux/theme/themeSlice.js';
 import { useDispatch, useSelector } from 'react-redux';
 import { socket } from '../App.jsx';
@@ -29,22 +29,22 @@ export default function Header() {
     // Kiểm tra xem đường dẫn hiện tại có phải '/dash-board' hay không
     const isDashboard = location.pathname === '/dash-board';
 
-    // const checkNewNoti = async () => {
-    //     try {
-    //         const res = await fetch(`/api/notification/newNotification/${currentUser._id}`, {
-    //             method: 'GET',
-    //             headers: { 'Content-Type': 'application/json' },
-    //         });
-    //         const data = await res.json();
-    //         if (res.status === 403) {
-    //             dispatch(signOutSuccess());
-    //             return navigate('/sign-in');
-    //         }
-    //         dispatch(setCurrentUser({ ...currentUser, newNotification: data.length > 0 }));
-    //     } catch (error) {
-    //         console.log(error);
-    //     }
-    // };
+    const checkNewNoti = async () => {
+        try {
+            const res = await fetch(`/api/notification/newNotification/${currentUser._id}`, {
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json' },
+            });
+            const data = await res.json();
+            if (res.status === 403) {
+                dispatch(signOutSuccess());
+                return navigate('/sign-in');
+            }
+            dispatch(setCurrentUser({ ...currentUser, newNotification: data.length > 0 }));
+        } catch (error) {
+            console.log(error);
+        }
+    };
 
     const handleSignOut = async () => {
         try {
@@ -199,7 +199,7 @@ export default function Header() {
                             <Dropdown
                                 label={
                                     <Avatar
-                                        //onClick={checkNewNoti}
+                                        onClick={checkNewNoti}
                                         alt="User settings"
                                         img={currentUser.userAvatar}
                                         rounded

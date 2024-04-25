@@ -18,12 +18,14 @@ import usersFolderRoutes from './routes/usersFolder.route.js';
 import scheduleBlogRoutes from './routes/scheduleBlog.route.js';
 import cookieParser from 'cookie-parser';
 import { jobAtStartOfHour, jobAtHalfPastHour } from './services/nodeCron.js';
+import path from 'path';
 
 dotenv.config();
 mongoose
     .connect(process.env.DATABASE)
     .then(() => {})
     .catch(() => console.log('Mongodb has not been connected'));
+const __dirname = path.resolve();
 const app = express();
 app.use(
     cors({
@@ -96,6 +98,12 @@ app.use('/api/email', emailRoutes);
 app.use('/api/notification', notificationRoutes);
 app.use('/api/usersFolder', usersFolderRoutes);
 app.use('/api/scheduleBlog', scheduleBlogRoutes);
+
+app.use(express.static(path.join(__dirname, '/client/dist')));
+
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'client', 'dist', 'index.html'));
+});
 
 app.use((err, req, res, next) => {
     const statusCode = err.statusCode || 500;
