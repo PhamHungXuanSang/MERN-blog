@@ -46,13 +46,13 @@ export default function DashUsage() {
     }
 
     return (
-        <div className="py-12 px-4">
+        <div className="py-8 px-4">
             {userTransactionInfo != null ? (
                 <>
                     <div className="w-full h-fit border-b-2 border-neutral-300">
                         <p className="border-b-2 text-lg w-fit py-2 px-4">Account usage</p>
                     </div>
-                    <div className="flex flex-wrap gap-16 items-center border border-teal-500 p-4 my-4 rounded-lg">
+                    <div className="flex flex-col md:flex-row flex-wrap gap-4 md:gap-16 items-center border border-teal-500 p-4 my-4 rounded-lg">
                         <p className="flex-1">
                             Free trial: {userTransactionInfo.isTrialed ? 'Tried' : "Haven't tried"}
                         </p>

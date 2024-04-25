@@ -80,12 +80,12 @@ export default function DashScheduleBlogs() {
     };
 
     return (
-        <div className="py-12 px-4">
+        <div className="py-8 px-4">
             <div className="w-full h-fit border-b-2 border-neutral-300">
                 <p className="border-b-2 text-lg w-fit py-2 px-4">Manage Schedule Blogs</p>
             </div>
             <div>
-                <div className="w-full flex flex-wrap gap-16 my-4">
+                <div className="w-full flex flex-wrap gap-4 md:gap-16 my-4">
                     <TextInput
                         onChange={handleChange}
                         onKeyDown={handleSearch}
@@ -149,6 +149,8 @@ export default function DashScheduleBlogs() {
                                 currentPage={currentPage}
                                 totalPages={Math.ceil(totalPage / limit)}
                                 onPageChange={onPageChange}
+                                previousLabel=""
+                                nextLabel=""
                                 showIcons
                             />
                         </>

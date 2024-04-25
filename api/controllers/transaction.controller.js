@@ -188,20 +188,70 @@ export const choosePlan = async (req, res, next) => {
             .exec();
         sendEmailServices(
             updatedUser.email,
-            `Hello, ${updatedUser.username},
-
-You have successfully registered for the Create Blog feature on our platform. We're thrilled to have you onboard and can't wait to see the amazing content you'll create.
-
-Get started by clicking the link below!
-Create your blog here: http://localhost:5173/dash-board?tab=create-blog
-
-If you have any questions, feel free to contact our support team: 20t1020536@husc.edu.vn. We're here to help!
-
-Best regards,
-The MERN Blog Team
-
-© MERN Blog. All rights reserved.
-`,
+            'MERN Blog thanks for joining us on Create Blog',
+            `<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Email Confirmation</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<style type="text/css">
+    /* Add your styling here */
+    .email-content {
+        font-family: 'Arial', sans-serif;
+        color: #333;
+        margin: 0;
+        padding: 20px;
+    }
+    .header, .footer {
+        font-size: 16px;
+    }
+    .footer {
+        margin-top: 20px;
+        border-top: 1px solid #CCC;
+        padding-top: 5px;
+    }
+    .main-content {
+        margin-top: 20px;
+    }
+    .button {
+        display: inline-block;
+        margin-top: 20px;
+        padding: 10px 20px;
+        color: #ffffff !important;
+        background-color: #007BFF;
+        border-radius: 5px;
+        text-decoration: none;
+    }
+    .link, .support-email {
+        color: #007BFF;
+        text-decoration: none;
+    }
+</style>
+</head>
+<body>
+    <div class="email-content">
+        <p class="header">
+            Hello, ${updatedUser.username},
+        </p>
+        <p class="main-content">
+            You have successfully registered for the Create Blog feature on our platform. We're thrilled to have you onboard and can't wait to see the amazing content you'll create.
+        </p>
+        <a href="http://localhost:5173/dash-board?tab=create-blog" class="button">Create your blog here</a>
+        <p class="main-content">
+            If you have any questions, feel free to contact our support team at <a href="mailto:20t1020536@husc.edu.vn" class="support-email">20t1020536@husc.edu.vn</a>. We're here to help!
+        </p>
+        <div class="footer">
+            Best regards,<br/>
+            The MERN Blog Team
+        </div>
+        <div class="footer">
+            © MERN Blog. All rights reserved.
+        </div>
+    </div>
+</body>
+</html>`,
         );
         return res.status(200).json(updatedUser);
     } catch (error) {

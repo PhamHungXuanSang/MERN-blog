@@ -114,7 +114,7 @@ export default function ReadBlog() {
                         <img src={blog.thumb} className="aspect-video object-cover rounded mx-auto" />
                         <div className="mt-12">
                             <h1 className="text-3xl text-center font-medium line-clamp-2 break-words">{blog.title}</h1>
-                            <div className="flex max-sm:flex-col justify-between items-center my-8">
+                            <div className="flex max-sm:flex-col-reverse justify-between items-center my-8">
                                 <div className="flex flex-col gap-4 items-center border border-teal-500 p-2 rounded-lg">
                                     <Link
                                         to={`/user/${blog.authorId.username}`}
@@ -228,12 +228,12 @@ export default function ReadBlog() {
                                     suggest.length &&
                                     similarAuthorBlogs != null &&
                                     similarAuthorBlogs.length
-                                        ? 'flex justify-between items-center'
+                                        ? 'flex flex-col md:flex-row justify-between items-center'
                                         : ''
                                 }
                             >
                                 {suggest != null && suggest.length ? (
-                                    <div className="max-w-[430px] mx-auto">
+                                    <div className="max-w-[330px] md:max-w-[430px] mx-auto">
                                         <h1 className="text-2xl mt-32 mb-10 font-medium text-center">
                                             Similar content
                                         </h1>
@@ -254,7 +254,7 @@ export default function ReadBlog() {
                                     ''
                                 )}
                                 {similarAuthorBlogs != null && similarAuthorBlogs.length ? (
-                                    <div className="max-w-[430px] mx-auto">
+                                    <div className="max-w-[330px] md:max-w-[430px] mx-auto">
                                         <h1 className="text-2xl mt-32 mb-10 font-medium text-center">
                                             Written by @{blog.authorId.username}
                                         </h1>

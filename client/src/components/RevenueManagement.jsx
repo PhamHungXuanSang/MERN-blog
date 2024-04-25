@@ -111,7 +111,7 @@ export default function RevenueManagement() {
     }
 
     return (
-        <div className="py-12 px-4 md:mx-auto">
+        <div className="py-8 px-4 md:mx-auto">
             <div className="flex-wrap flex gap-4 justify-center">
                 {userCountForEachPackage != null ? (
                     userCountForEachPackage.map((pack, i) => {

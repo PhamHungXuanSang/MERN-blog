@@ -118,7 +118,7 @@ export default function RevenuePackage() {
     };
 
     return (
-        <div className="py-12 px-4 md:mx-auto">
+        <div className="py-8 px-4 md:mx-auto">
             <div className="flex gap-4 items-center">
                 <Label>Choose start time: </Label>
                 <DatePicker

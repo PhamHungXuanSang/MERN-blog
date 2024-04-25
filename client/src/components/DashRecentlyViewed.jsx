@@ -13,6 +13,7 @@ export default function DashRecentlyViewed() {
     const [recentlyBlogs, setRecentlyBlogs] = useState(null);
     const currentUser = useSelector((state) => state.user.currentUser);
     const [showMore, setShowMore] = useState(true);
+    //const [offset, setOffset] = useState(0);
 
     useEffect(() => {
         const getViewedBlogsHistory = async () => {
@@ -40,6 +41,18 @@ export default function DashRecentlyViewed() {
         getViewedBlogsHistory();
     }, []);
 
+    // useEffect(() => {
+    //     const handleScroll = (e) => {
+    //         const scrollHeight = e.target.documentElement.scrollHeight;
+    //         const currentHeight = e.target.documentElement.scrollTop + window.innerHeight;
+    //         if (currentHeight + 1 >= scrollHeight) {
+    //             setOffset(offset + 2);
+    //         }
+    //     };
+    //     window.addEventListener('scroll', handleScroll);
+    //     return () => window.removeEventListener('scroll', handleScroll);
+    // }, []);
+
     const handleShowMore = async () => {
         const startIndex = recentlyBlogs.length;
         try {
@@ -66,7 +79,7 @@ export default function DashRecentlyViewed() {
     };
 
     return (
-        <div className="py-12 px-4">
+        <div className="py-8 px-4">
             <div className="w-full h-fit border-b-2 border-neutral-300">
                 <p className="border-b-2 text-lg w-fit py-2 px-4">Recently Viewed Blogs</p>
             </div>

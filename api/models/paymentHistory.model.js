@@ -4,10 +4,12 @@ const paymentHistorySchema = new mongoose.Schema({
     userId: {
         type: Schema.Types.ObjectId,
         ref: 'User',
+        required: true,
     },
     packageId: {
         type: Schema.Types.ObjectId,
         ref: 'Package',
+        required: true,
     },
     packageName: {
         type: String,

@@ -17,7 +17,7 @@ export default function Home() {
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPage, setTotalPage] = useState(1);
 
-    ///////////// Phải đổi lại lấy từ csdl ra chứ kp cố định là 1 array
+    // Thêm code đổi lại lấy từ csdl ra chứ kp cố định là 1 array
     const category = ['programing', 'travel', 'food', 'technology', 'health', 'sport', 'entertainment'];
     const limit = 2;
 
@@ -139,6 +139,8 @@ export default function Home() {
                                             currentPage={currentPage}
                                             totalPages={Math.ceil(totalPage / limit)}
                                             onPageChange={onPageChange}
+                                            previousLabel=""
+                                            nextLabel=""
                                             showIcons
                                         />
                                     </>

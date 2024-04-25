@@ -3,7 +3,7 @@ import { errorHandler } from '../utils/error.js';
 import Comment from '../models/comment.model.js';
 import Blog from '../models/blog.model.js';
 import Noti from '../models/noti.model.js';
-import { io, userOnline } from '../index.js';
+import { userOnline } from '../index.js';
 import pushNewNoti from '../utils/pushNewNoti.js';
 
 export const addComment = async (req, res, next) => {
@@ -21,8 +21,8 @@ export const addComment = async (req, res, next) => {
             blogAuthor,
             content: comment,
             isReply: false,
-            likes: [],
-            numberOfLikes: 0,
+            // likes: [],
+            // numberOfLikes: 0,
             commentedBy,
         };
         if (replyingTo) {

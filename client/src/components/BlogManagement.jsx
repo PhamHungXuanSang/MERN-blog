@@ -116,8 +116,8 @@ export default function BlogManagement() {
     };
 
     return (
-        // <div className="py-12 px-4 table-auto overflow-x-scroll md:mx-auto p-3 scrollbar">
-        <div className="py-12 px-4">
+        // <div className="py-8 px-4 table-auto overflow-x-scroll md:mx-auto p-3 scrollbar">
+        <div className="py-8 px-4">
             {blogs != null ? (
                 blogs?.length > 0 ? (
                     <>

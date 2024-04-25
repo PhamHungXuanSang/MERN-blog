@@ -4,8 +4,8 @@ const blogSchema = new mongoose.Schema(
     {
         authorId: {
             type: Schema.Types.ObjectId,
-            required: true,
             ref: 'User',
+            required: true,
         },
         title: {
             type: String,
@@ -16,6 +16,7 @@ const blogSchema = new mongoose.Schema(
         description: {
             type: String,
             required: true,
+            maxlength: 200,
         },
         content: {
             type: [],

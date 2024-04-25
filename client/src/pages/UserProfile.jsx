@@ -135,7 +135,7 @@ export default function UserProfile() {
         //     </div>
         // </section>
         <section className="h-cover flex justify-center gap-4 container mx-auto py-8">
-            <div className="w-full md:max-w-[70%]">
+            <div className="w-full md:max-w-[68%]">
                 <InPageNavigation routes={[`${username} blogs`, 'user profile']} defaultHidden={[`user profile`]}>
                     <>
                         {blogs != null ? (
@@ -153,6 +153,8 @@ export default function UserProfile() {
                                         currentPage={currentPage}
                                         totalPages={Math.ceil(dashProfile?.allBlogs.length / 2)}
                                         onPageChange={onPageChange}
+                                        previousLabel=""
+                                        nextLabel=""
                                         showIcons
                                     />
                                 </>
@@ -162,17 +164,20 @@ export default function UserProfile() {
                         )}
                     </>
 
-                    <>
+                    <div className="text-center">
                         {userProfile == null ? (
                             <Spinner className="block mt-4" size="lg" />
                         ) : (
                             <>
                                 <img
                                     src={userProfile.userAvatar}
-                                    className="w-48 h-48 bg-gray-300 rounded-full md:w-32 md:h-32"
+                                    alt="Ảnh profile"
+                                    className="rounded-full w-32 h-32 object-cover block mx-auto"
                                 />
-                                <h1 className="text-xl font-medium break-words">@{userProfile.username}</h1>
-                                <p className="text-lg break-words">{userProfile.email}</p>
+                                <b className="text-xl font-medium break-words">@{userProfile.username}</b>
+                                <span className="block mb-4 leading-2 line-clamp-3 break-words">
+                                    {userProfile.email}
+                                </span>
                                 <AboutUser
                                     className="max-md:text-center"
                                     userDesc={userProfile.userDesc}
@@ -182,7 +187,7 @@ export default function UserProfile() {
                                     githubLink={userProfile.githubLink}
                                     createdAt={userProfile.createdAt}
                                 />
-                                <span className="flex flex-wrap gap-2 mt-6">
+                                <div className="flex flex-wrap gap-2 mt-6">
                                     <i className="border border-gray-500 py-1 px-2 rounded-3xl opacity-70">
                                         {dashProfile?.allBlogs.length} Blogs
                                     </i>
@@ -199,51 +204,56 @@ export default function UserProfile() {
                                         {Number(allAverageRating.toFixed(1))} <FaStarHalfAlt />
                                         Average Rating
                                     </i>
-                                </span>
+                                </div>
                             </>
                         )}
-                    </>
+                    </div>
                 </InPageNavigation>
             </div>
 
             <div className="max-w-[30%] border-l border-gray-300 pl-4 pt-3 max-md:hidden">
-                {userProfile == null ? (
-                    <Spinner className="block mt-4" size="lg" />
-                ) : (
-                    <>
-                        <img
-                            src={userProfile.userAvatar}
-                            className="w-48 h-48 bg-gray-300 rounded-full md:w-32 md:h-32"
-                        />
-                        <h1 className="text-xl font-medium break-words">@{userProfile.username}</h1>
-                        <p className="text-lg break-words">{userProfile.email}</p>
-                        <AboutUser
-                            className="max-md:hidden"
-                            userDesc={userProfile.userDesc}
-                            youtubeLink={userProfile.youtubeLink}
-                            facebookLink={userProfile.facebookLink}
-                            tiktokLink={userProfile.tiktokLink}
-                            githubLink={userProfile.githubLink}
-                            createdAt={userProfile.createdAt}
-                        />
-                        <span className="flex flex-wrap gap-2 mt-6">
-                            <i className="border border-gray-500 py-1 px-2 rounded-3xl opacity-70">
-                                {dashProfile?.allBlogs.length} Blogs
-                            </i>
-                            <i className="border border-gray-500 py-1 px-2 rounded-3xl opacity-70">
-                                {dashProfile?.totalViews} Views
-                            </i>
-                            <i className="border border-gray-500 py-1 px-2 rounded-3xl opacity-70">
-                                {dashProfile?.user?.subscribeUsers.length} Subscriber
-                            </i>
-                            <i className="border border-gray-500 py-1 px-2 rounded-3xl opacity-70">{totalLike} Likes</i>
-                            <i className="flex items-center gap-1 border border-gray-500 py-1 px-2 rounded-3xl opacity-70">
-                                {Number(allAverageRating.toFixed(1))} <FaStarHalfAlt />
-                                Average Rating
-                            </i>
-                        </span>
-                    </>
-                )}
+                <div className="text-center">
+                    {userProfile == null ? (
+                        <Spinner className="block mt-4" size="lg" />
+                    ) : (
+                        <>
+                            <img
+                                src={userProfile.userAvatar}
+                                alt="Ảnh profile"
+                                className="rounded-full w-32 h-32 object-cover block mx-auto"
+                            />
+                            <b className="text-xl font-medium break-words">@{userProfile.username}</b>
+                            <span className="block mb-4 leading-2 line-clamp-3 break-words">{userProfile.email}</span>
+                            <AboutUser
+                                className="max-md:hidden"
+                                userDesc={userProfile.userDesc}
+                                youtubeLink={userProfile.youtubeLink}
+                                facebookLink={userProfile.facebookLink}
+                                tiktokLink={userProfile.tiktokLink}
+                                githubLink={userProfile.githubLink}
+                                createdAt={userProfile.createdAt}
+                            />
+                            <div className="flex flex-wrap gap-2 mt-6">
+                                <i className="border border-gray-500 py-1 px-2 rounded-3xl opacity-70">
+                                    {dashProfile?.allBlogs.length} Blogs
+                                </i>
+                                <i className="border border-gray-500 py-1 px-2 rounded-3xl opacity-70">
+                                    {dashProfile?.totalViews} Views
+                                </i>
+                                <i className="border border-gray-500 py-1 px-2 rounded-3xl opacity-70">
+                                    {dashProfile?.user?.subscribeUsers.length} Subscriber
+                                </i>
+                                <i className="border border-gray-500 py-1 px-2 rounded-3xl opacity-70">
+                                    {totalLike} Likes
+                                </i>
+                                <i className="flex items-center gap-1 border border-gray-500 py-1 px-2 rounded-3xl opacity-70">
+                                    {Number(allAverageRating.toFixed(1))} <FaStarHalfAlt />
+                                    Average Rating
+                                </i>
+                            </div>
+                        </>
+                    )}
+                </div>
             </div>
         </section>
     );

@@ -41,8 +41,8 @@ export default function ChangePassword() {
 
     if (currentUser.emailVerified.method === 'password') {
         return (
-            <div className="container mx-auto py-12 px-4">
-                <div className="h-full">
+            <div className="container mx-auto py-8 px-4">
+                <div className="h-full min-h-screen">
                     <div className="flex flex-col items-center justify-center">
                         <i className="text-xl font-bold my-4">Change Password</i>
                         <form onSubmit={handleSubmit} className="w-full max-w-xs">
@@ -175,7 +175,7 @@ export default function ChangePassword() {
         );
     } else {
         return (
-            <div className="container mx-auto py-12 px-4">
+            <div className="container mx-auto py-8 px-4">
                 <div className="h-full">
                     <div className="w-full h-fit border-b-2 border-neutral-300">
                         <p className="border-b-2 text-lg w-fit py-2 px-4">Account Setting</p>

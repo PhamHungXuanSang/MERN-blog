@@ -150,10 +150,10 @@ export default function ForgotPassword() {
     ];
 
     return (
-        <div className="flex flex-col items-center justify-center">
+        <div className="flex flex-col items-center gap-6 py-12 min-h-screen">
             <i className="text-xl font-bold my-4">Forgot Password</i>
             {step === 1 && (
-                <div className="shadow-md rounded mb-4 flex flex-col md:w-[30%]">
+                <div className="shadow-md rounded mb-4 flex flex-col w-[70%] md:w-[30%]">
                     <div className="mb-4">
                         <Label value="Email address" />
                         <TextInput
@@ -171,7 +171,7 @@ export default function ForgotPassword() {
             )}
 
             {step === 2 && (
-                <div className="shadow-md rounded mb-4 flex flex-col md:w-[30%]">
+                <div className="shadow-md rounded mb-4 flex flex-col w-[70%] md:w-[30%]">
                     <div className="mb-4 flex">
                         {OTP.map((otp, index) => {
                             return (
@@ -195,7 +195,7 @@ export default function ForgotPassword() {
             )}
 
             {step === 3 && (
-                <div className="shadow-md rounded mb-4 flex flex-col md:w-[30%]">
+                <div className="shadow-md rounded mb-4 flex flex-col w-[70%] md:w-[30%]">
                     <div className="mb-4 relative">
                         <Label value="New Password" />
                         <TextInput

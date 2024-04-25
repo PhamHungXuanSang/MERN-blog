@@ -32,7 +32,7 @@ const notiSchema = new mongoose.Schema(
         },
         type: {
             type: String,
-            enum: ['system', 'like', 'comment', 'reply', 'rate', 'subscriber', 'new blog'], // Chỉ 1 trong các kiểu này mới được lưu vào db
+            enum: ['system', 'like', 'comment', 'reply', 'rate', 'subscriber', 'new blog'],
             required: true,
             default: 'system',
         },

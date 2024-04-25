@@ -23,15 +23,15 @@ const commentSchema = new mongoose.Schema(
         content: { type: String, required: true },
         parent: { type: Schema.Types.ObjectId, ref: 'Comment' }, // Comment cha của cmt này
         children: { type: [Schema.Types.ObjectId], ref: 'Comment' }, // Comment con của cmt này
-        likes: {
-            // Số lượt like comment
-            type: Array,
-            default: [],
-        },
-        numberOfLikes: {
-            type: Number,
-            default: 0,
-        },
+        // likes: {
+        //     // Số lượt like comment
+        //     type: Array,
+        //     default: [],
+        // },
+        // numberOfLikes: {
+        //     type: Number,
+        //     default: 0,
+        // },
     },
     { timestamps: true },
 );

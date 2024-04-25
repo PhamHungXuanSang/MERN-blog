@@ -171,15 +171,15 @@ export default function DashProfileUpdate() {
     };
 
     return (
-        <div className="flex-1 mx-auto py-12 px-4">
+        <div className="flex-1 mx-auto py-8 px-4">
             <div className="h-full">
                 <div className="w-full h-fit border-b-2 border-neutral-300">
                     <p className="border-b-2 text-lg w-fit py-2 px-4">Update Profile</p>
                 </div>
 
                 <form className="mt-4">
-                    <div className="flex p-2">
-                        <div className="w-[11%] mr-8 flex flex-col justify-start items-center">
+                    <div className="flex flex-col md:flex-row p-2">
+                        <div className="md:w-[11%] mr-8 flex flex-col justify-start items-center">
                             <input
                                 type="file"
                                 accept="image/*"

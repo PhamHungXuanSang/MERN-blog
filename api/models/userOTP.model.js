@@ -12,7 +12,8 @@ const UserOTPSchema = new Schema(
         },
         expiresAt: {
             type: Date,
-            required: true,
+            default: () => new Date(+new Date() + 5 * 60 * 1000),
+            index: { expires: '5m' },
         },
     },
     { timestamps: true },

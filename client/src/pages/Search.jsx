@@ -8,6 +8,7 @@ import OneByOneAppearEffect from '../components/OneByOneAppearEffect';
 import NotFound from '../components/NotFound';
 import OneByOneAppearFromRightEffect from '../components/OneByOneAppearFromRightEffect';
 import User from '../components/User';
+import InPageNavigation from '../components/InPageNavigation';
 
 export default function Search() {
     const [filterData, setFilterData] = useState({
@@ -28,7 +29,7 @@ export default function Search() {
         }
         getSearchValue();
     }, [location.search]);
-    
+
     let { query } = useParams();
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPage, setTotalPage] = useState(1);
@@ -84,7 +85,7 @@ export default function Search() {
     return (
         <section className="container mx-auto min-h-screen h-fit justify-center gap-10">
             {/* Search filter */}
-            <div className="w-full flex gap-10 pt-12 mb-4">
+            <div className="w-full flex flex-col md:flex-row gap-4 md:gap-10 pt-12 mb-4">
                 <div className="flex gap-4 items-center">
                     <div className="mb-2 block">
                         <Label htmlFor="sort" value="Sort by:" className="whitespace-nowrap font-semibold" />
@@ -118,50 +119,74 @@ export default function Search() {
                         <option>entertainment</option>
                     </Select>
                 </div>
-                <Button onClick={getSearchValue} gradientMonochrome="teal">
+                <Button onClick={getSearchValue} gradientMonochrome="teal" className="max-w-[30%] ml-4">
                     Apply Filters
                 </Button>
             </div>
             <div className="w-full flex">
                 {/* Blog */}
-                <div className="border-r-2 h-full w-[70%]">
-                    <div className="w-full h-fit border-b-2 border-neutral-300">
-                        <p
-                            className={`font-bold border-b-2 border-black dark:bg-[#4b5563] bg-[#f3f4f6] text-lg w-fit py-2 px-4 inline-block`}
-                        >
-                            Search result for{' '}
-                            <u>
-                                <i>{query}</i>
-                            </u>
-                        </p>
-                    </div>
-
-                    {blogs != null ? (
-                        blogs.length == 0 ? (
-                            <NotFound object={`Not found blog by ${query} search value`} />
-                        ) : (
-                            <>
-                                {blogs.map((blog, i) => (
-                                    <OneByOneAppearEffect transition={{ duration: 1, delay: i * 0.12 }} key={i}>
-                                        <Blog key={i} content={blog} author={blog.authorId} />
-                                    </OneByOneAppearEffect>
-                                ))}
-                                <Pagination
-                                    className="text-center mt-4"
-                                    currentPage={currentPage}
-                                    totalPages={Math.ceil(totalPage / limit)}
-                                    onPageChange={onPageChange}
-                                    showIcons
-                                />
-                            </>
-                        )
-                    ) : (
-                        <Spinner className="block mx-auto mt-4" size="xl" />
-                    )}
+                <div className="w-full md:max-w-[68%]">
+                    <InPageNavigation
+                        routes={[`Search result for ${query}`, 'Search result for User']}
+                        defaultHidden={['Search result for User']}
+                    >
+                        <>
+                            {blogs != null ? (
+                                blogs.length == 0 ? (
+                                    <NotFound object={`Not found blog by ${query} search value`} />
+                                ) : (
+                                    <>
+                                        {blogs.map((blog, i) => (
+                                            <OneByOneAppearEffect transition={{ duration: 1, delay: i * 0.12 }} key={i}>
+                                                <Blog key={i} content={blog} author={blog.authorId} />
+                                            </OneByOneAppearEffect>
+                                        ))}
+                                        <Pagination
+                                            className="text-center mt-4"
+                                            currentPage={currentPage}
+                                            totalPages={Math.ceil(totalPage / limit)}
+                                            onPageChange={onPageChange}
+                                            previousLabel=""
+                                            nextLabel=""
+                                            showIcons
+                                        />
+                                    </>
+                                )
+                            ) : (
+                                <Spinner className="block mx-auto mt-4" size="xl" />
+                            )}
+                        </>
+                        <div className="flex flex-col gap-4">
+                            <div className="flex items-center">
+                                <h1 className="font-medium text-xl mr-1">Search result for User</h1>
+                                <FaUser />
+                            </div>
+                            <div className="flex gap-2 flex-wrap">
+                                {users != null ? (
+                                    users.length == 0 ? (
+                                        <NotFound object={`Not found user by ${query} search value`} />
+                                    ) : (
+                                        <>
+                                            {users.map((user, i) => (
+                                                <OneByOneAppearFromRightEffect
+                                                    transition={{ duration: 1, delay: i * 0.15 }}
+                                                    key={i}
+                                                >
+                                                    <User user={user} />
+                                                </OneByOneAppearFromRightEffect>
+                                            ))}
+                                        </>
+                                    )
+                                ) : (
+                                    <Spinner className="block mx-auto mt-4" size="xl" />
+                                )}
+                            </div>
+                        </div>
+                    </InPageNavigation>
                 </div>
 
                 {/* User */}
-                <div className="h-full pl-4 w-[30%] max-md:hidden">
+                <div className="max-w-[30%] border-l border-gray-300 pl-4 pt-3 max-md:hidden">
                     <div className="flex flex-col gap-4">
                         <div className="flex items-center">
                             <h1 className="font-medium text-xl mr-1">Search result for User</h1>

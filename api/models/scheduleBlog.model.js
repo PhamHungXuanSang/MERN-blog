@@ -16,6 +16,7 @@ const scheduleBlogSchema = new mongoose.Schema(
         description: {
             type: String,
             required: true,
+            maxlength: 200,
         },
         content: {
             type: [],

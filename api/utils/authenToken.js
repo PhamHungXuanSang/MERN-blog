@@ -47,13 +47,13 @@ export const authenToken = async (req, res, next) => {
 
                 res.cookie('access_token', newAccessToken, {
                     httpOnly: true,
-                    secure: process.env.NODE_ENV === 'production',
-                    sameSite: 'Strict',
+                    secure: true,
+                    sameSite: 'strict',
                 });
                 res.cookie('refresh_token', newRefreshToken, {
                     httpOnly: true,
-                    secure: process.env.NODE_ENV === 'production',
-                    sameSite: 'Strict',
+                    secure: true,
+                    sameSite: 'strict',
                 });
 
                 req.user = rest;

@@ -57,7 +57,32 @@ export const signup = async (req, res, next) => {
         sendEmailServices(
             user.email,
             'MERN Blog email verify',
-            `<a href="http://localhost:3000/api/email/verify?email=${user.email}&&token=${hashedEmail}">Click here to verify your email</a>`,
+            `<!DOCTYPE html>
+  <html>
+    <head>
+      <style>
+        .verify-button {
+          padding: 10px 15px;
+          background-color: #4CAF50;
+          color: white;
+          border: none;
+          border-radius: 5px;
+          text-decoration: none;
+        }
+        .verify-button:hover {
+          background-color: #45a049;
+        }
+      </style>
+    </head>
+    <body>
+      <a 
+        href="http://localhost:3000/api/email/verify?email=${user.email}&token=${hashedEmail}"
+        class="verify-button"
+      >
+        Click here to verify your email
+      </a>
+    </body>
+  </html>`,
         );
         res.json('Dang ky thanh cong');
     } catch (error) {
@@ -129,11 +154,12 @@ export const signin = async (req, res, next) => {
         } catch (error) {
             next(error);
         }
-        res.cookie('refresh_token', refToken);
+        res.cookie('access_token', token);
+        res.cookie('refresh_token', refToken, { httpOnly: true, secure: true, sameSite: 'strict' });
 
-        const { password: secret, ...rest } = validUser._doc; // Tách phần password ra để díu không res trả về để đảm bảo ko lộ password
+        const { password: secret, ...rest } = validUser._doc;
 
-        res.status(200).cookie('access_token', token).json(rest);
+        res.status(200).json(rest);
     } catch (error) {
         next(error);
     }
@@ -174,10 +200,15 @@ export const google = async (req, res, next) => {
             } catch (error) {
                 next(error);
             }
-            res.cookie('refresh_token', refToken);
+            res.cookie('access_token', token);
+            res.cookie('refresh_token', refToken, {
+                httpOnly: true,
+                secure: true,
+                sameSite: 'strict',
+            });
 
             const { password: secret, ...rest } = user._doc;
-            res.status(200).cookie('access_token', token).json(rest);
+            res.status(200).json(rest);
         } else {
             //const generatedPassword = Math.random().toString(36).slice(-8) + Math.random().toString(36).slice(-8);
             //const hashedPassword = bcryptjs.hashSync(generatedPassword, 10);
@@ -222,10 +253,15 @@ export const google = async (req, res, next) => {
                 } catch (error) {
                     next(error);
                 }
-                res.cookie('refresh_token', refToken);
+                res.cookie('access_token', token);
+                res.cookie('refresh_token', refToken, {
+                    httpOnly: true,
+                    secure: true,
+                    sameSite: 'strict',
+                });
 
                 const { password: secret, ...rest } = newUser._doc;
-                res.status(200).cookie('access_token', token).json(rest);
+                res.status(200).json(rest);
             } catch (error) {
                 next(error);
             }

@@ -48,13 +48,42 @@ export const sendEmailOTP = async (req, res, next) => {
             const newOTP = new UserOTP({
                 email,
                 OTP: hashedOTP,
-                expiresAt: Date.now() + 300000,
+                //expiresAt: Date.now() + 300000,
             });
             await newOTP.save();
             sendEmailServices(
                 email,
                 'MERN Blog authenticate by OTP',
-                `<p>Enter <b>${OTP}</b> in the app to verify your email address.</p><p>This code <b>expires in 5 minute.</b>.</p>`,
+                `<!DOCTYPE html>
+  <html>
+    <head>
+      <style>
+        body {
+          font-family: Arial, sans-serif;
+          line-height: 1.6;
+        }
+        .otp-message {
+          margin: 20px 0;
+          color: #333;
+        }
+        .otp-code {
+          font-size: 24px;
+          font-weight: bold;
+          color: #007bff;
+        }
+        .expires {
+          font-size: 16px;
+          color: #555;
+        }
+      </style>
+    </head>
+    <body>
+      <div class="otp-message">
+        Enter <span class="otp-code">${OTP}</span> in the app to verify your email address.
+      </div>
+      <p class="expires">This code <b>expires in 5 minutes.</b></p>
+    </body>
+  </html>`,
             );
             return res.status(200).json('OTP has been send');
         } else {
@@ -73,7 +102,7 @@ export const verifyEmailOTP = async (req, res, next) => {
         } else {
             const userOTP = await UserOTP.findOne({ email });
             if (!userOTP) {
-                return next(errorHandler(404, "User OTP doesn't exist or has been verified already."));
+                return next(errorHandler(404, 'User OTP does not exist or has expired.'));
             } else {
                 const { expiresAt } = userOTP;
                 const hashedOTP = userOTP.OTP;

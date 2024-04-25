@@ -88,7 +88,7 @@ export default function DashTransaction() {
     // }
 
     return (
-        <div className="py-12 px-4">
+        <div className="py-8 px-4">
             {/* {userTransactionInfo != null ? (
                 <>
                     <div className="w-full h-fit border-b-2 border-neutral-300">
