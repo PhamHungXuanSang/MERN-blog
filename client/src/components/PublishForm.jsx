@@ -1,5 +1,5 @@
 import { Button, Modal, Select, Spinner, TextInput, Textarea } from 'flowbite-react';
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
 import { EditorContext } from '../pages/Editor';
 import Tag from './Tag';
@@ -14,6 +14,7 @@ export default function PublishForm() {
     const currentUser = useSelector((state) => state.user.currentUser);
     const [loading, setLoading] = useState(false);
     const [showModal, setShowModal] = useState(false);
+    const [allCate, setAllCate] = useState(null);
 
     const navigate = useNavigate();
     const dispatch = useDispatch();
@@ -26,6 +27,17 @@ export default function PublishForm() {
         setBlog,
         setEditorState,
     } = useContext(EditorContext);
+
+    useEffect(() => {
+        const getAllCategory = async () => {
+            const res = await fetch(`/api/category/get-all-not-blocked-category`, {
+                method: 'GET',
+            });
+            const data = await res.json();
+            setAllCate(data.allCates);
+        };
+        getAllCategory();
+    }, []);
 
     const handleClosePreview = () => {
         setEditorState('editor');
@@ -204,13 +216,11 @@ export default function PublishForm() {
                         className="h-16 resize-none leading-7 w-[100%] rounded-md px-3 pt-1 bg-grey pl-2 border border-grey focus:bg-transparent"
                     >
                         <option value={'uncategorized'}>Uncategorized</option>
-                        <option value={'programing'}>Programing</option>
-                        <option value={'travel'}>Travel</option>
-                        <option value={'food'}>Food</option>
-                        <option value={'technology'}>Technology</option>
-                        <option value={'health'}>Health</option>
-                        <option value={'sport'}>Sport</option>
-                        <option value={'entertainment'}>Entertainment</option>
+                        {allCate?.map((cate, i) => (
+                            <option value={cate.categoryName} key={i}>
+                                {cate.categoryName.charAt(0).toUpperCase() + cate.categoryName.slice(1)}
+                            </option>
+                        ))}
                     </Select>
 
                     <i className="block text-gray-500 text-sm text-right">{200 - description.length} characters left</i>

@@ -29,7 +29,6 @@ export default function BlogManagement() {
                 body: JSON.stringify({ userId: currentUser._id }),
             });
             const data = await res.json();
-            //console.log(data.blogs);
             setAllBlogs(data.total);
             if (res.ok) {
                 const firstFiveBlogs = data.blogs.slice(0, 5);
@@ -95,7 +94,7 @@ export default function BlogManagement() {
         setShowBlockModal(false);
         try {
             const res = await fetch(`/api/blog/block-blog/${currentUser._id}`, {
-                method: 'post',
+                method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ blogId: blogIdToBlock }),
             });
@@ -198,7 +197,7 @@ export default function BlogManagement() {
             )}
             <ModalConfirm
                 showModal={showModal}
-                setShowModal={setShowModal} // Giả định rằng setShowModal là một hàm setState từ component cha
+                setShowModal={setShowModal}
                 title={`You definitely want to delete this blog ?`}
                 onConfirm={handleDeleteBlog}
                 onNoConfirm={() => setShowModal(false)}

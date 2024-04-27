@@ -16,7 +16,7 @@ export default function BlogMini({ content, author, index }) {
                     <p className="line-clamp-1">@{username}</p>
                 </div>
 
-                <h1 className="text-base font-medium leading-7 line-clamp-2 break-words">{title}</h1>
+                <h1 className="font-medium line-clamp-1 break-words">{title}</h1>
             </Link>
         </div>
     );

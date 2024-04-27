@@ -38,7 +38,7 @@ export default function Offer() {
 
     const handleGetAllPackage = async () => {
         try {
-            const res = await fetch('/api/package/get-all-packages', {
+            const res = await fetch('/api/package/get-all-not-blocked-packages', {
                 method: 'GET',
                 headers: { 'Content-Type': 'application/json' },
             });
@@ -74,7 +74,6 @@ export default function Offer() {
                 dispatch(signOutSuccess());
                 return navigate('/sign-in');
             } else if (res.status === 200) {
-                // Gửi thông báo bằng toast và gửi email bằng node mailer đến người dùng
                 dispatch(successfullyPurchase(data));
                 toast.success('You have successfully purchased the package');
                 return navigate('/dash-board?tab=create-blog');
@@ -88,8 +87,6 @@ export default function Offer() {
         setShowModal(false);
         dispatch(setSelectedPackage(choosePlan));
         return navigate('/checkout');
-        // Điều hướng qua trang checkout
-        // Gọi api thanh toán
     };
 
     const handleBuy = (pack) => {

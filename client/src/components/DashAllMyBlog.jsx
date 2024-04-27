@@ -13,6 +13,7 @@ export default function DashAllMyBlog() {
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPage, setTotalPage] = useState(1);
     const limit = 2;
+    const [allCate, setAllCate] = useState(null);
 
     const [filterData, setFilterData] = useState({
         query: query,
@@ -33,6 +34,14 @@ export default function DashAllMyBlog() {
             });
         }
         getBlogs();
+        const getAllCategory = async () => {
+            const res = await fetch(`/api/category/get-all-category`, {
+                method: 'GET',
+            });
+            const data = await res.json();
+            setAllCate(data.allCates);
+        };
+        getAllCategory();
     }, [location.search]);
 
     const getBlogs = async () => {
@@ -125,13 +134,9 @@ export default function DashAllMyBlog() {
                         >
                             <option>all category</option>
                             <option>uncategorized</option>
-                            <option>programing</option>
-                            <option>travel</option>
-                            <option>food</option>
-                            <option>technology</option>
-                            <option>health</option>
-                            <option>sport</option>
-                            <option>entertainment</option>
+                            {allCate?.map((cate, i) => (
+                                <option key={i}>{cate.categoryName}</option>
+                            ))}
                         </Select>
                     </div>
                     <Button onClick={getBlogs} gradientMonochrome="teal">

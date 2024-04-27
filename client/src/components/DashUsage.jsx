@@ -62,7 +62,9 @@ export default function DashUsage() {
                         <p className="flex-1">
                             Creation expiration:{' '}
                             {userTransactionInfo.expirationDate
-                                ? dateToDateAndTime(userTransactionInfo.expirationDate)
+                                ? new Date(userTransactionInfo.expirationDate).getFullYear() < 2100
+                                    ? dateToDateAndTime(userTransactionInfo.expirationDate)
+                                    : 'Lifetime use'
                                 : 'NaN'}
                         </p>
                         <p className="flex-1">Total amount: {totalAmount(userTransactions)} $</p>

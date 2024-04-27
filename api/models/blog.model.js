@@ -32,7 +32,6 @@ const blogSchema = new mongoose.Schema(
         },
         category: {
             type: String,
-            enum: ['uncategorized', 'programing', 'travel', 'food', 'technology', 'health', 'sport', 'entertainment'],
             default: 'uncategorized',
             required: true,
         },

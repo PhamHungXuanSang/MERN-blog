@@ -1,5 +1,4 @@
 import mongoose from 'mongoose';
-import { Schema } from 'mongoose';
 
 const packageSchema = new mongoose.Schema({
     packageName: {
@@ -19,6 +18,11 @@ const packageSchema = new mongoose.Schema({
         type: Number,
         min: 1,
         required: true,
+    },
+    isBlocked: {
+        type: Boolean,
+        required: true,
+        default: false,
     },
 });
 

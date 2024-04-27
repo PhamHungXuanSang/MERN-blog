@@ -18,6 +18,7 @@ export default function DashScheduleBlogs() {
         category: 'all category',
     });
     const limit = 2;
+    const [allCate, setAllCate] = useState(null);
 
     const location = useLocation();
 
@@ -33,6 +34,14 @@ export default function DashScheduleBlogs() {
             });
         }
         getScheduleBlogs();
+        const getAllCategory = async () => {
+            const res = await fetch(`/api/category/get-all-not-blocked-category`, {
+                method: 'GET',
+            });
+            const data = await res.json();
+            setAllCate(data.allCates);
+        };
+        getAllCategory();
     }, [location.search]);
 
     const handleChange = (e) => {
@@ -121,13 +130,9 @@ export default function DashScheduleBlogs() {
                         >
                             <option>all category</option>
                             <option>uncategorized</option>
-                            <option>programing</option>
-                            <option>travel</option>
-                            <option>food</option>
-                            <option>technology</option>
-                            <option>health</option>
-                            <option>sport</option>
-                            <option>entertainment</option>
+                            {allCate?.map((cate, i) => (
+                                <option key={i}>{cate.categoryName}</option>
+                            ))}
                         </Select>
                     </div>
                     <Button onClick={getScheduleBlogs} gradientMonochrome="teal">

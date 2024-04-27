@@ -36,6 +36,7 @@ export default function Search() {
     const limit = 2;
     const [blogs, setBlogs] = useState(null);
     const [users, setUsers] = useState(null);
+    const [allCate, setAllCate] = useState(null);
 
     const getSearchValue = async () => {
         setBlogs(null);
@@ -71,6 +72,14 @@ export default function Search() {
 
     useEffect(() => {
         getSearchValue();
+        const getAllCategory = async () => {
+            const res = await fetch(`/api/category/get-all-category`, {
+                method: 'GET',
+            });
+            const data = await res.json();
+            setAllCate(data.allCates);
+        };
+        getAllCategory();
     }, [currentPage, query]);
 
     useEffect(() => {
@@ -110,13 +119,9 @@ export default function Search() {
                     >
                         <option>all category</option>
                         <option>uncategorized</option>
-                        <option>programing</option>
-                        <option>travel</option>
-                        <option>food</option>
-                        <option>technology</option>
-                        <option>health</option>
-                        <option>sport</option>
-                        <option>entertainment</option>
+                        {allCate?.map((cate, i) => (
+                            <option key={i}>{cate.categoryName}</option>
+                        ))}
                     </Select>
                 </div>
                 <Button onClick={getSearchValue} gradientMonochrome="teal" className="max-w-[30%] ml-4">

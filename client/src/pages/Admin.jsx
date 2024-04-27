@@ -8,6 +8,7 @@ import RevenueManagement from '../components/RevenueManagement';
 import RevenueEachPackage from '../components/RevenueEachPackage';
 import RevenuePackage from '../components/RevenuePackage';
 import AdminSideBar from '../components/AdminSidebar';
+import CateManagement from '../components/CateManagement';
 
 export default function Admin() {
     const [tab, setTab] = useState('');
@@ -32,6 +33,7 @@ export default function Admin() {
                 {tab === 'revenue-each-package' && <RevenueEachPackage />}
                 {tab === 'revenue-package' && <RevenuePackage />}
                 {tab === 'new-package' && <NewPackage />}
+                {tab === 'cate-management' && <CateManagement />}
                 {tab === 'blog-management' && <BlogManagement />}
                 {tab === 'user-management' && <UserManagement />}
             </div>

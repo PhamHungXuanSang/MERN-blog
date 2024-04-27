@@ -1,16 +1,37 @@
-import { Button, Label, TextInput } from 'flowbite-react';
-import { useState } from 'react';
+import { Button, Label, Spinner, Table, TextInput } from 'flowbite-react';
+import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { CiCircleRemove } from 'react-icons/ci';
 import { signOutSuccess } from '../redux/user/userSlice.js';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import NotFound from './NotFound.jsx';
+import ModalConfirm from './ModalConfirm.jsx';
 
 export default function PackageManagement() {
     const [formData, setFormData] = useState({});
     const [list, setList] = useState(['']);
+    const [packages, setPackages] = useState(null);
+    const [packageIdToBlock, setPackageIdToBlock] = useState('');
+    const [showBlockModal, setShowBlockModal] = useState(false);
+
+    const currentUser = useSelector((state) => state.user.currentUser);
+
     const navigate = useNavigate();
     const dispatch = useDispatch();
+
+    useEffect(() => {
+        const getAllPackage = async () => {
+            const res = await fetch(`/api/package/get-all-packages`, {
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json' },
+            });
+            const data = await res.json();
+            setPackages(data.packages);
+        };
+
+        getAllPackage();
+    }, []);
 
     const handleType = (e) => {
         setFormData({ ...formData, [e.target.id]: e.target.value });
@@ -48,10 +69,10 @@ export default function PackageManagement() {
         if (!formData.packageExpiry) {
             return toast.error('Please choose expire time');
         }
-        console.log('Submitted data: ', {
-            ...formData,
-            packageDescription: list,
-        });
+        // console.log('Submitted data: ', {
+        //     ...formData,
+        //     packageDescription: list,
+        // });
         try {
             const res = await fetch(`/api/package/add-new-package`, {
                 method: 'POST',
@@ -64,9 +85,34 @@ export default function PackageManagement() {
                 return navigate('/sign-in');
             }
             if (res.ok) {
-                return toast.success('New package has been created 👍');
+                setPackages(data.allPackages);
+                toast.success('New package has been created 👍');
             } else {
-                console.log(data.message);
+                return toast.error(data.message);
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    const handleBlockPackage = async () => {
+        setShowBlockModal(false);
+        try {
+            const res = await fetch(`/api/package/block-package/${currentUser._id}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ packageId: packageIdToBlock }),
+            });
+            const data = await res.json();
+            if (res.status === 403) {
+                dispatch(signOutSuccess());
+                return navigate('/sign-in');
+            }
+            if (!res.ok) {
+                return toast.error(data.message);
+            } else {
+                toast.success(data.message);
+                setPackages(data.allPackages);
             }
         } catch (error) {
             console.log(error);
@@ -80,20 +126,14 @@ export default function PackageManagement() {
             </div>
 
             <form className="mt-4 px-4">
-                <div className="flex gap-20">
-                    <div className="flex gap-4 items-center mt-4">
+                <div className="flex gap-10">
+                    <div className="flex gap-4 items-center">
                         <div className="mb-2 block">
                             <Label htmlFor="packageName" value="Name" />
                         </div>
-                        <TextInput
-                            id="packageName"
-                            placeholder="Package name"
-                            //defaultValue={currentUser.userDesc}
-                            maxLength={50}
-                            onChange={handleType}
-                        />
+                        <TextInput id="packageName" placeholder="Package name" maxLength={50} onChange={handleType} />
                     </div>
-                    <div className="flex gap-4 items-center mt-4">
+                    <div className="flex gap-4 items-center">
                         <div className="mb-2 block">
                             <Label htmlFor="packagePrice" value="Price" />
                         </div>
@@ -103,46 +143,27 @@ export default function PackageManagement() {
                             type="number"
                             min={0}
                             placeholder="Package price (USD)"
-                            //defaultValue={currentUser.userDesc}
                             onChange={handleType}
                         />
                     </div>
-                    <div className="flex gap-4 items-center mt-4">
+                    <div className="flex gap-4 items-center">
                         <div className="mb-2 block">
                             <Label htmlFor="packageExpiry" value="Expire" />
                         </div>
-                        {/* <select
-                            id="packageExpiry"
-                            name="packageExpiry"
-                            onChange={handleType}
-                            className="dark:bg-[#374151] rounded-md"
-                        >
-                            <option value="1m">1 Month</option>
-                            <option value="2m">2 Month</option>
-                            <option value="3m">3 Month</option>
-                            <option value="4m">4 Month</option>
-                            <option value="5m">5 Month</option>
-                            <option value="6m">6 Month</option>
-                            <option value="12m">12 Month</option>
-                        </select> */}
                         <TextInput
-                            className="spin-button-none"
+                            className="spin-button-none w-[200px]"
                             id="packageExpiry"
                             type="number"
                             min={1}
                             max={365}
-                            placeholder="Package expires in (day)"
-                            //defaultValue={currentUser.userDesc}
+                            placeholder="Package expires (day)"
                             onChange={handleType}
                         />
                     </div>
                 </div>
-                <div className="flex items-start gap-4 mt-4">
+                <div className="flex items-center gap-4 mt-4">
                     <div className="block">
                         <Label htmlFor="packageDescription" value="Package Description" />
-                        <Button outline className="mt-2" type="button" onClick={handleAdd}>
-                            Add desc
-                        </Button>
                     </div>
                     <div>
                         {list.map((item, index) => (
@@ -161,11 +182,67 @@ export default function PackageManagement() {
                             </div>
                         ))}
                     </div>
+                    <Button outline type="button" onClick={handleAdd}>
+                        Add desc
+                    </Button>
+                    <Button onClick={handleSubmit} outline type="submit">
+                        Create new package
+                    </Button>
                 </div>
-                <Button onClick={handleSubmit} outline type="submit" className="mt-8">
-                    Create new package
-                </Button>
             </form>
+            {packages != null ? (
+                packages?.length > 0 ? (
+                    <>
+                        <Table hoverable className="shadow-md mt-6 text-center" striped>
+                            <Table.Head>
+                                <Table.HeadCell>Num</Table.HeadCell>
+                                <Table.HeadCell>Package Name</Table.HeadCell>
+                                <Table.HeadCell>Package Price</Table.HeadCell>
+                                <Table.HeadCell>Days</Table.HeadCell>
+                                <Table.HeadCell>Block</Table.HeadCell>
+                            </Table.Head>
+                            <Table.Body className="divide-y">
+                                {packages?.map((pack, i) => {
+                                    return (
+                                        <Table.Row key={i} className="bg-white dark:border-gray-700 dark:bg-gray-800">
+                                            <Table.Cell>{i + 1}</Table.Cell>
+                                            <Table.Cell>{pack.packageName}</Table.Cell>
+                                            <Table.Cell>{pack.packagePrice}</Table.Cell>
+                                            <Table.Cell>
+                                                {pack.packageExpiry <= 365 ? pack.packageExpiry : 'Lifetime use'}
+                                            </Table.Cell>
+                                            <Table.Cell>
+                                                <span
+                                                    onClick={() => {
+                                                        setShowBlockModal(true);
+                                                        setPackageIdToBlock(pack._id);
+                                                    }}
+                                                    className="text-teal-300 font-medium hover:underline cursor-pointer"
+                                                >
+                                                    {pack.isBlocked ? 'UnBlocked' : 'Block'}
+                                                </span>
+                                            </Table.Cell>
+                                        </Table.Row>
+                                    );
+                                })}
+                            </Table.Body>
+                        </Table>
+                    </>
+                ) : (
+                    <NotFound object={'No packages found'} />
+                )
+            ) : (
+                <Spinner className="block mx-auto mt-4" size="xl" />
+            )}
+            <ModalConfirm
+                showModal={showBlockModal}
+                setShowModal={setShowBlockModal}
+                title={`You definitely want to block this package?`}
+                onConfirm={handleBlockPackage}
+                onNoConfirm={() => setShowBlockModal(false)}
+                confirm="Yes I am sure"
+                noConfirm="No, I'm not sure"
+            />
         </div>
     );
 }

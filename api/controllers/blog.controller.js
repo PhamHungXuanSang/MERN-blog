@@ -28,13 +28,54 @@ export const latestBlogs = async (req, res, next) => {
     }
 };
 
-export const trendingBlogs = async (req, res, next) => {
+export const trendingHightestRatedBlogs = async (req, res, next) => {
     try {
-        const trendingBlogs = await Blog.find({ 'isBlocked.status': false })
-            .populate('authorId', '_id username email userAvatar')
-            .sort({ viewed: -1, likeCount: -1 })
-            .limit(5);
-        res.status(200).json(trendingBlogs);
+        const [trendingBlogs, topRatedBlogs] = await Promise.all([
+            Blog.find({ 'isBlocked.status': false })
+                .populate('authorId', '_id username email userAvatar')
+                .sort({ viewed: -1, likeCount: -1 })
+                .limit(5),
+            Blog.aggregate([
+                {
+                    $match: { 'isBlocked.status': false },
+                },
+                {
+                    $lookup: {
+                        from: 'users',
+                        localField: 'authorId',
+                        foreignField: '_id',
+                        as: 'authorId',
+                    },
+                },
+                {
+                    $unwind: '$authorId',
+                },
+                {
+                    $project: {
+                        title: 1,
+                        thumb: 1,
+                        slug: 1,
+                        createdAt: 1,
+                        averageRating: {
+                            $cond: {
+                                if: { $eq: [{ $size: '$rating' }, 0] },
+                                then: 0,
+                                else: {
+                                    $divide: [{ $sum: '$rating.star' }, { $size: '$rating' }],
+                                },
+                            },
+                        },
+                        'authorId._id': 1,
+                        'authorId.username': 1,
+                        'authorId.email': 1,
+                        'authorId.userAvatar': 1,
+                    },
+                },
+                { $sort: { averageRating: -1 } },
+                { $limit: 5 },
+            ]),
+        ]);
+        return res.status(200).json({ trendingBlogs, topRatedBlogs });
     } catch (error) {
         next(error);
     }

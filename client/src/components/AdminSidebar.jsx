@@ -5,6 +5,7 @@ import { HiOutlineUserGroup, HiDocumentText } from 'react-icons/hi';
 import { TbBusinessplan } from 'react-icons/tb';
 import { FcStatistics } from 'react-icons/fc';
 import { BiSolidCartAdd } from 'react-icons/bi';
+import { MdCategory } from 'react-icons/md';
 
 export default function AdminSideBar() {
     const location = useLocation();
@@ -36,7 +37,7 @@ export default function AdminSideBar() {
         <Sidebar aria-label="Sidebar with content separator example" className="w-full">
             <Sidebar.Items className="pt-8">
                 <Sidebar.ItemGroup>
-                    <span className="text-3xl font-semibold pb-2 pl-2">Business</span>
+                    <span className="text-2xl font-semibold pl-2">Business</span>
                     <Link to="/admin?tab=main-board">
                         <Sidebar.Item active={tab === 'main-board'} icon={FcStatistics} as="div" className="mt-2">
                             Overview
@@ -60,7 +61,15 @@ export default function AdminSideBar() {
                     </Link>
                 </Sidebar.ItemGroup>
                 <Sidebar.ItemGroup>
-                    <span className="text-3xl font-semibold pb-2 pl-2">Blog</span>
+                    <span className="text-2xl font-semibold pl-2">Category</span>
+                    <Link to="/admin?tab=cate-management">
+                        <Sidebar.Item active={tab === 'cate-management'} icon={MdCategory} as="div" className="mt-2">
+                            Cate Management
+                        </Sidebar.Item>
+                    </Link>
+                </Sidebar.ItemGroup>
+                <Sidebar.ItemGroup>
+                    <span className="text-2xl font-semibold pl-2">Blog</span>
                     <Link to="/admin?tab=blog-management">
                         <Sidebar.Item
                             active={tab === 'blog-management'}
@@ -73,7 +82,7 @@ export default function AdminSideBar() {
                     </Link>
                 </Sidebar.ItemGroup>
                 <Sidebar.ItemGroup>
-                    <span className="text-3xl font-semibold pb-2 pl-2">User</span>
+                    <span className="text-2xl font-semibold pl-2">User</span>
                     <Link to="/admin?tab=user-management">
                         <Sidebar.Item
                             active={tab === 'user-management'}
