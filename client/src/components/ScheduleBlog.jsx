@@ -26,9 +26,9 @@ export default function ScheduleBlog({ blog, setScheduleBlogs }) {
                 return navigate('/sign-in');
             }
             if (!res.ok) {
-                toast.error(data.message);
+                toast.error(data.message, { duration: 6000 });
             } else {
-                toast.success('Schedule blog has been deleted');
+                toast.success('Schedule blog has been deleted', { duration: 3000 });
                 setScheduleBlogs((prev) => prev.filter((blog) => blog._id !== scheduleBlogIdToDelete));
             }
         } catch (error) {

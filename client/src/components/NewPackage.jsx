@@ -39,7 +39,7 @@ export default function PackageManagement() {
 
     const handleChange = (e, index) => {
         if (list.includes(e.target.value) && list.length != 1) {
-            return toast.error('Please do not enter duplicate package description');
+            return toast.error('Please do not enter duplicate package description', { duration: 6000 });
         }
         const newList = [...list];
         newList[index] = e.target.value;
@@ -48,7 +48,7 @@ export default function PackageManagement() {
 
     const handleAdd = () => {
         if (list[list.length - 1] == '') {
-            return toast.error('Please enter package description');
+            return toast.error('Please enter package description', { duration: 6000 });
         }
         setList([...list, '']);
     };
@@ -64,10 +64,10 @@ export default function PackageManagement() {
             e.preventDefault();
         }
         if (Object.keys(formData).length === 0 || list[list.length - 1] == '') {
-            return toast.error('Please enter value to submit');
+            return toast.error('Please enter value to submit', { duration: 3000 });
         }
         if (!formData.packageExpiry) {
-            return toast.error('Please choose expire time');
+            return toast.error('Please choose expire time', { duration: 3000 });
         }
         // console.log('Submitted data: ', {
         //     ...formData,
@@ -86,9 +86,9 @@ export default function PackageManagement() {
             }
             if (res.ok) {
                 setPackages(data.allPackages);
-                toast.success('New package has been created 👍');
+                toast.success('New package has been created 👍', { duration: 4000 });
             } else {
-                return toast.error(data.message);
+                return toast.error(data.message, { duration: 6000 });
             }
         } catch (error) {
             console.log(error);
@@ -109,9 +109,9 @@ export default function PackageManagement() {
                 return navigate('/sign-in');
             }
             if (!res.ok) {
-                return toast.error(data.message);
+                return toast.error(data.message, { duration: 6000 });
             } else {
-                toast.success(data.message);
+                toast.success(data.message, { duration: 6000 });
                 setPackages(data.allPackages);
             }
         } catch (error) {

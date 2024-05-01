@@ -102,9 +102,9 @@ export default function SignUp() {
                     </MoveFromTopEffect>
                 </div>
                 {/*Right */}
-                <div className="flex-1">
+                <div className="flex-1 dark:bg-slate-800 bg-slate-300 py-4 px-8 rounded-xl shadow-xl">
                     <MoveFromTopEffect>
-                        <i className="text-2xl lg:text-5xl text-center block text-gray-500">Join us now!</i>
+                        <i className="text-2xl lg:text-4xl text-center block text-gray-500">Join us now!</i>
                     </MoveFromTopEffect>
                     <form className="flex flex-col gap-4" onSubmit={handleSubmitSignUp}>
                         <div>

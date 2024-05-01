@@ -66,7 +66,8 @@ export default function BlogAction() {
     };
 
     const handleAddNewFolder = async () => {
-        if (createFolder == '') return toast.error('Please name folder first');
+        if (createFolder == '')
+            return toast.error('Please name folder first', { duration: 3000 });
         try {
             const res = await fetch(`/api/usersFolder/add-new-folder/${currentUser._id}`, {
                 method: 'POST',
@@ -83,7 +84,7 @@ export default function BlogAction() {
                 setFolders((prev) => [...prev, data.folderName]);
                 setCreateFolder('');
             } else {
-                return toast.error(data.message);
+                return toast.error(data.message, { duration: 6000 });
             }
         } catch (error) {
             console.log(error);
@@ -107,7 +108,7 @@ export default function BlogAction() {
 
     const handleSaveBlog = async () => {
         if (folder == '') {
-            return toast.error('Please choose folder to save blog');
+            return toast.error('Please choose folder to save blog', { duration: 3000 });
         }
         try {
             const res = await fetch(`/api/usersFolder/save-blog-to-folder/${currentUser._id}`, {
@@ -122,11 +123,11 @@ export default function BlogAction() {
                 return navigate('/sign-in');
             }
             if (res.status === 200) {
-                toast.success(`Blog has been added to ${folder}`);
+                toast.success(`Blog has been added to ${folder}`, { duration: 3000 });
                 setShowModal(false);
                 setFolder('');
             } else {
-                return toast.error(data.message);
+                return toast.error(data.message, { duration: 6000 });
             }
         } catch (error) {
             console.log(error);

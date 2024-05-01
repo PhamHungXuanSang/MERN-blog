@@ -48,9 +48,10 @@ export default function SignIn() {
                 return;
             }
             if (res.ok) {
-                socket.emit('newUserLogin', data._id);
+                //socket.emit('newUserLogin', data._id);
                 dispatch(signInSuccess(data));
-                return navigate('/');
+                navigate('/');
+                socket.emit('refreshBrower', data._id);
             } else {
                 dispatch(signInFailure(data.message));
             }
@@ -78,9 +79,9 @@ export default function SignIn() {
                     </MoveFromTopEffect>
                 </div>
                 {/*Right */}
-                <div className="flex-1">
+                <div className="flex-1 dark:bg-slate-800 bg-slate-100 py-4 px-8 rounded-xl shadow-xl">
                     <MoveFromTopEffect>
-                        <i className="text-2xl lg:text-5xl text-center block text-gray-500">Welcome back!</i>
+                        <i className="text-2xl lg:text-4xl text-center block text-gray-500">Welcome back!</i>
                     </MoveFromTopEffect>
                     <form className="flex flex-col gap-4" onSubmit={handleSubmitSignIn}>
                         <div>

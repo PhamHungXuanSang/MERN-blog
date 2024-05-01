@@ -20,15 +20,35 @@ export default function ChangePassword() {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log(oldPassword, newPassword, confirmNewPassword);
+        if (oldPassword.length <= 0 || newPassword.length <= 0 || confirmNewPassword.length <= 0) {
+            return toast.error('Plese enter all field', { duration: 3000 });
+        }
         if (arrValid.some((item) => item == false)) {
-            return toast.error('Please enter a password that meets the requirements');
+            return toast.error('Please enter a password that meets the requirements', { duration: 4000 });
+        }
+        if (newPassword != confirmNewPassword) {
+            return toast.error('Password confirm not match', { duration: 3000 });
         }
         setShowModal(true);
     };
 
     const handleChangePassword = async () => {
         setShowModal(false);
+        try {
+            const res = await fetch(`/api/user/changePassword/${currentUser.email}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ oldPassword, newPassword, confirmNewPassword }),
+            });
+            const data = await res.json();
+            if (res.ok) {
+                return toast.success(data.message, { duration: 6000 });
+            } else {
+                return toast.error(data.message, { duration: 6000 });
+            }
+        } catch (error) {
+            console.log(error);
+        }
     };
 
     let validationRegex = [

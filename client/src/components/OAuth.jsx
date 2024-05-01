@@ -34,9 +34,10 @@ export default function OAuth() {
                     return;
                 }
                 if (res.ok) {
-                    socket.emit('newUserLogin', data._id);
+                    //socket.emit('newUserLogin', data._id);
                     dispatch(signInSuccess(data));
-                    return navigate('/');
+                    navigate('/');
+                    socket.emit('refreshBrower', data._id);
                 } else {
                     dispatch(signInFailure(data.message));
                 }

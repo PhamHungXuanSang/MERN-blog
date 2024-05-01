@@ -15,6 +15,7 @@ import FadeInWhenVisible from '../components/FadeInWhenVisible.jsx';
 import { FaUserPlus, FaUserMinus } from 'react-icons/fa';
 import toast from 'react-hot-toast';
 import { signOutSuccess } from '../redux/user/userSlice.js';
+import BackToTopButton from '../components/BackToTopButton.jsx';
 
 export const BlogContext = createContext({});
 
@@ -78,7 +79,9 @@ export default function ReadBlog() {
     };
 
     const handleToggleSubscribe = async () => {
-        isSubscribed ? toast.success('Unsubscribed') : toast.success('Subscribed');
+        isSubscribed
+            ? toast.success('Unsubscribed', { duration: 1000 })
+            : toast.success('Subscribed', { duration: 1000 });
         setIsSubscribed((prev) => !prev);
         try {
             const res = await fetch(`/api/user/toggle-subscribe/${blog.authorId._id}/${currentUser._id}`, {
@@ -113,6 +116,9 @@ export default function ReadBlog() {
                     <div className="max-w-[900px] block mx-auto py-10 max-lg:px-[5vw]">
                         <img src={blog.thumb} className="aspect-video object-cover rounded mx-auto" />
                         <div className="mt-12">
+                            <div className="mx-auto w-fit py-1 px-3 my-4 font-semibold capitalize dark:bg-slate-800 bg-slate-100 rounded-3xl">
+                                {blog.category}
+                            </div>
                             <h1 className="text-3xl text-center font-medium line-clamp-2 break-words">{blog.title}</h1>
                             <div className="flex max-sm:flex-col-reverse justify-between items-center my-8">
                                 <div className="flex flex-col gap-4 items-center border border-teal-500 p-2 rounded-lg">
@@ -175,7 +181,8 @@ export default function ReadBlog() {
 
                         {/* Tags */}
                         {blog != null && (
-                            <div className="flex flex-wrap gap-2">
+                            <div className="flex flex-wrap items-center gap-2">
+                                <p>Tags: </p>
                                 {blog.tags.map((tag, i) => (
                                     <div key={i}>
                                         <div className="relative py-2 px-4 opacity-50 scale-90 hover:opacity-100 hover:scale-100 duration-200 dark:bg-slate-500 bg-gray-200 rounded-full inline-block hover:bg-opacity-50">
@@ -185,6 +192,26 @@ export default function ReadBlog() {
                                 ))}
                             </div>
                         )}
+
+                        {/* Author infor */}
+                        <div className="p-4 my-4 dark:bg-slate-800 bg-slate-50 rounded-xl shadow">
+                            <div className="flex items-center gap-8">
+                                <div className="rounded-full max-w-24 max-h-24 border-2 flex justify-center items-center">
+                                    <img
+                                        alt="Avatar"
+                                        src={blog.authorId.userAvatar}
+                                        className="max-w-20 max-h-20 rounded-full shadow-2xl"
+                                    />
+                                </div>
+                                <div className="flex flex-col gap-2">
+                                    <p className="font-semibold">@{blog.authorId.username}</p>
+                                    <p className="line-clamp-2 break-words">{blog.authorId.userDesc}</p>
+                                    <Link to={`/user/${blog.authorId.username}`} className="text-teal-600">
+                                        View profile
+                                    </Link>
+                                </div>
+                            </div>
+                        </div>
 
                         {/* Rating blog */}
                         {currentUser && !blog.rating.some((item) => item.userId == currentUser._id) && (
@@ -281,6 +308,7 @@ export default function ReadBlog() {
             ) : (
                 <Spinner className="block mx-auto mt-4" size="xl" />
             )}
+            <BackToTopButton />
         </section>
     );
 }

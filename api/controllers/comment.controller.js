@@ -87,6 +87,7 @@ export const addComment = async (req, res, next) => {
                     '',
                     '',
                     `The author has responded your comment: ${comment}`,
+                    'reply',
                 );
             }
         } else {
@@ -105,6 +106,7 @@ export const addComment = async (req, res, next) => {
                     '',
                     '',
                     `User ${commentedByUserName} comment in your post: ${comment}`,
+                    'comment',
                 );
             } else if (replyingTo && parentComment) {
                 if (parentComment.commentedBy == blogAuthor) {
@@ -121,6 +123,7 @@ export const addComment = async (req, res, next) => {
                         '',
                         '',
                         `User ${commentedByUserName} reply to your comment: ${comment}`,
+                        'reply',
                     );
                 } else if (parentComment.commentedBy == commentedBy) {
                 } else {
@@ -137,6 +140,7 @@ export const addComment = async (req, res, next) => {
                         '',
                         '',
                         `User ${commentedByUserName} reply to your comment: ${comment}`,
+                        'reply',
                     );
                 }
             }

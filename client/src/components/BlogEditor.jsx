@@ -93,7 +93,7 @@ export default function BlogEditor() {
             () => {
                 getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
                     toast.dismiss(loadingToast);
-                    toast.success('Uploaded 👌');
+                    toast.success('Uploaded 👌', { duration: 6000 });
                     setBlog({ ...blog, thumb: downloadURL });
                 });
             },
@@ -116,7 +116,7 @@ export default function BlogEditor() {
 
     const handlePublishEditor = () => {
         if (!title.length) {
-            return toast.error('Please type your blog title');
+            return toast.error('Please type your blog title', { duration: 3000 });
         }
         if (textEditor.isReady) {
             textEditor
@@ -126,12 +126,12 @@ export default function BlogEditor() {
                         setBlog({ ...blog, content: data });
                         setEditorState('publish');
                     } else {
-                        return toast.error('Write something to publish your new blog');
+                        return toast.error('Write something to publish your new blog', { duration: 3000 });
                     }
                 })
                 .catch((error) => {
                     console.log(error);
-                    return toast.error('Do not leave blank spaces at the end of the article');
+                    return toast.error('Do not leave blank spaces at the end of the article', { duration: 3000 });
                 });
         }
     };

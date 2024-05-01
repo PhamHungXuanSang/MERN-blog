@@ -6,8 +6,11 @@ import {
     getAllUser,
     updateUserRole,
     resetPassword,
+    changePassword,
     getViewedBlogsHistory,
     toggleSubscribe,
+    getTopAuthors,
+    getAllUserProfile,
 } from '../controllers/user.controller.js';
 import { authenToken } from '../utils/authenToken.js';
 
@@ -19,7 +22,10 @@ router.delete('/delete-account/:userId', authenToken, deleteAccount);
 router.get('/get-all-user', getAllUser);
 router.put('/update-user-role/:userId', authenToken, updateUserRole);
 router.put('/resetPassword/:email', resetPassword);
+router.put('/changePassword/:email', changePassword);
 router.get(`/get-viewed-blogs-history/:userId`, authenToken, getViewedBlogsHistory);
 router.get(`/toggle-subscribe/:authorId/:userId`, authenToken, toggleSubscribe);
+router.post('/get-top-authors', getTopAuthors);
+router.post('/get-all-user-profile', getAllUserProfile);
 
 export default router;

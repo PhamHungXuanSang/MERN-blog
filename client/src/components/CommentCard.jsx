@@ -37,7 +37,7 @@ export default function CommentCard({ index, leftVal, commentData }) {
 
     const handleReplyClick = () => {
         if (!currentUser) {
-            return toast.error('Please sign in to reply');
+            return toast.error('Please sign in to reply', { duration: 3000 });
         }
 
         setIsReplying((preVal) => !preVal);

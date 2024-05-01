@@ -163,7 +163,7 @@ export default function RevenuePackage() {
                             document.querySelector('#csvLink').click();
                             setShowModal(false);
                         } else {
-                            return toast.error('Please enter file name');
+                            return toast.error('Please enter file name', { duration: 6000 });
                         }
                     }}
                     onNoConfirm={() => setShowModal(false)}

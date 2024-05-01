@@ -13,7 +13,7 @@ export default function Blog({ content, author }) {
     return (
         <Link
             to={`/blog/${slug}`}
-            className="group flex gap-8 justify-between items-center border-b-2 my-2 dark:hover:bg-slate-600 hover:bg-gray-100 py-2 px-4 rounded"
+            className="group flex gap-8 justify-between items-center border-b my-2 dark:hover:bg-slate-600 hover:bg-gray-100 py-2 px-4 rounded"
         >
             <div className="max-w-[70%] flex-grow">
                 <div className="flex gap-2 items-center mb-2">
@@ -40,16 +40,16 @@ export default function Blog({ content, author }) {
                         <span>{viewed}</span>
                     </div>
                     <div className="flex items-center gap-2">
-                        <SlLike fill='red'/>
+                        <SlLike fill="red" />
                         <span>{likeCount}</span>
                     </div>
                     <div className="flex items-center gap-2">
-                        <FaRegComments fill='green' />
+                        <FaRegComments fill="green" />
                         <span>{commentCount}</span>
                     </div>
                     {averageRating > 0 ? (
                         <div className="flex items-center gap-2">
-                            <FaStarHalfAlt fill='yellow' />
+                            <FaStarHalfAlt fill="yellow" />
                             <span>{averageRating}</span>
                         </div>
                     ) : (
@@ -60,7 +60,7 @@ export default function Blog({ content, author }) {
             <div className="h-28 aspect-auto">
                 <img
                     src={thumb}
-                    className="group-hover:scale-125 duration-300 w-full h-full aspect-square object-cover rounded"
+                    className="group-hover:scale-110 md:group-hover:scale-125 duration-300 w-full h-full aspect-square object-cover rounded"
                 />
             </div>
         </Link>

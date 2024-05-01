@@ -1,3 +1,5 @@
+/* eslint-disable no-useless-escape */
+/* eslint-disable no-unused-vars */
 import Paragraph from '@editorjs/paragraph';
 import ColorPlugin from 'editorjs-text-color-plugin';
 import AlignmentBlockTune from 'editorjs-text-alignment-blocktune';
@@ -39,12 +41,12 @@ const uploadImageFile = (imageFile) => {
                 'state_changed',
                 (snapshot) => {},
                 (error) => {
-                    toast.error('Could not upload image (File must be less than 12MB)');
+                    toast.error('Could not upload image (File must be less than 12MB)', { duration: 6000 });
                     reject(error);
                 },
                 () => {
                     getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-                        toast.success('Uploaded 👌');
+                        toast.success('Uploaded 👌', { duration: 3000 });
                         resolve(downloadURL);
                     });
                 },

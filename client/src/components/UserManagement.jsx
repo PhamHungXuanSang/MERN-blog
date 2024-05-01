@@ -88,7 +88,7 @@ export default function UserManagement() {
                 return navigate('sign-in');
             }
             if (!res.ok) {
-                toast.error(data.message);
+                toast.error(data.message, { duration: 6000 });
             } else {
                 setUsers(data.users);
                 // Gọi hàm kiểm tra createPermission
@@ -97,7 +97,7 @@ export default function UserManagement() {
                     // Nếu về data thì gọi hàm set lại currentUser trong redux
                     dispatch(setCurrentUser(rs));
                 }
-                toast.success(`User account has been set to ${role}`);
+                toast.success(`User account has been set to ${role}`, { duration: 6000 });
             }
         } catch (error) {
             console.log(error);

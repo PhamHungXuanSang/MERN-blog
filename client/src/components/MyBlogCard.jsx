@@ -51,9 +51,9 @@ export default function MyBlogCard({ blog, setBlogs }) {
                 return navigate('/sign-in');
             }
             if (!res.ok) {
-                toast.error(data.message);
+                toast.error(data.message, { duration: 6000 });
             } else {
-                toast.success('Blog has been deleted');
+                toast.success('Blog has been deleted', { duration: 3000 });
                 setBlogs((prev) => prev.filter((blog) => blog._id !== blogIdToDelete));
             }
         } catch (error) {
@@ -75,9 +75,9 @@ export default function MyBlogCard({ blog, setBlogs }) {
                 return navigate('/sign-in');
             }
             if (!res.ok) {
-                toast.error(data.message);
+                toast.error(data.message, { duration: 6000 });
             } else {
-                toast.success(data.message);
+                toast.success(data.message, { duration: 6000 });
             }
         } catch (error) {
             console.log(error);

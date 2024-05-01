@@ -30,7 +30,7 @@ export default function NotificationCommentField({
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (!comment.length) {
-            return toast.error('Please enter comment');
+            return toast.error('Please enter comment', { duration: 3000 });
         }
 
         try {
@@ -55,7 +55,7 @@ export default function NotificationCommentField({
             }
             data = data._doc;
             setIsReplying(false);
-            toast.success('Reply sent successfully');
+            toast.success('Reply sent successfully', { duration: 3000 });
             // setComment('');
             // data.commentedBy = { username, userAvatar, _id: userId };
 

@@ -73,9 +73,9 @@ export default function DashSavedBlogs() {
                 setFolders(['all', ...data.folderNameArr]);
                 setBlogs(data.blogs);
                 setFolder('all');
-                return toast.success(`Folder ${folderName} has been removed`);
+                return toast.success(`Folder ${folderName} has been removed`, { duration: 3000 });
             } else {
-                return toast.error(data.message);
+                return toast.error(data.message, { duration: 6000 });
             }
         } catch (error) {
             console.log(error);
@@ -96,9 +96,9 @@ export default function DashSavedBlogs() {
             }
             if (res.ok) {
                 setBlogs(data.blogs);
-                return toast.success(`Blog has been removed from ${folderName}`);
+                return toast.success(`Blog has been removed from ${folderName}`, { duration: 3000 });
             } else {
-                return toast.error(data.message);
+                return toast.error(data.message, { duration: 6000 });
             }
         } catch (error) {
             console.log(error);

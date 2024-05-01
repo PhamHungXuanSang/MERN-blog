@@ -5,6 +5,7 @@ import toast from 'react-hot-toast';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { signOutSuccess, successfullyPurchase } from '../redux/user/userSlice.js';
+import { setSelectedPackage } from '../redux/selectedPackage/selectedPackageSlice.js';
 
 export default function PaypalCheckoutButton(props) {
     const { pack } = props;
@@ -26,10 +27,11 @@ export default function PaypalCheckoutButton(props) {
             }
             if (res.status == 200) {
                 dispatch(successfullyPurchase(data));
-                toast.success('Successful transaction. Check your email for more detail');
+                dispatch(setSelectedPackage(null));
+                toast.success('Successful transaction. Check your email for more detail', { duration: 6000 });
                 return navigate('/dash-board?tab=create-blog');
             } else {
-                toast.error(error);
+                toast.error(error, { duration: 6000 });
                 return;
             }
         }
@@ -60,7 +62,7 @@ export default function PaypalCheckoutButton(props) {
                 handleApprove(data.orderID);
             }}
             onCancel={() => {
-                toast.error('Transaction canceled');
+                toast.error('Transaction canceled', { duration: 4000 });
             }}
             onError={(err) => {
                 setError(err);

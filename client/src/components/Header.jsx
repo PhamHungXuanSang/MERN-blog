@@ -280,7 +280,7 @@ export default function Header() {
                         if (inputValue.length > 0) {
                             navigate(`/search/${inputValue}`);
                         } else {
-                            toast.error('Please enter search value');
+                            toast.error('Please enter search value', { duration: 3000 });
                         }
                     }}
                 />

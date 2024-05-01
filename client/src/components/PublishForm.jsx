@@ -23,7 +23,7 @@ export default function PublishForm() {
 
     let {
         blog,
-        blog: { title, description, tags, thumb },
+        blog: { title, description, category, tags, thumb },
         setBlog,
         setEditorState,
     } = useContext(EditorContext);
@@ -70,7 +70,7 @@ export default function PublishForm() {
                     setBlog({ ...blog, tags: [...tags, tag] });
                 }
             } else {
-                toast.error('Add maximum 10 tags');
+                toast.error('Add maximum 10 tags', { duration: 3000 });
             }
             e.target.value = '';
         }
@@ -78,15 +78,15 @@ export default function PublishForm() {
 
     const handlePublishBlog = async () => {
         if (!title.length) {
-            return toast.error('Please type your blog title before publishing');
+            return toast.error('Please type your blog title before publishing', { duration: 4000 });
         }
 
         if (!description.length || description.length > 200) {
-            return toast.error('Please type your blog description before publishing');
+            return toast.error('Please type your blog description before publishing', { duration: 4000 });
         }
 
         if (!tags.length) {
-            return toast.error('Please enter at least 1 tag');
+            return toast.error('Please enter at least 1 tag', { duration: 4000 });
         }
 
         let loadingToast = toast.loading('Publishing ...');
@@ -105,19 +105,19 @@ export default function PublishForm() {
                 return navigate('/sign-in');
             } else if (res.status === 200) {
                 toast.dismiss(loadingToast);
-                toast.success('Published 👍');
+                toast.success('Published 👍', { duration: 6000 });
                 setTimeout(() => {
                     navigate(`/blog/${rs.slug}`);
                 }, 500);
             } else if (rs.success === false) {
                 toast.dismiss(loadingToast);
                 setLoading(false);
-                return toast.error(rs.message);
+                return toast.error(rs.message, { duration: 6000 });
             }
         } catch (error) {
             toast.dismiss(loadingToast);
             setLoading(false);
-            return toast.error(error.message);
+            return toast.error(error.message, { duration: 6000 });
         }
     };
 
@@ -125,24 +125,24 @@ export default function PublishForm() {
         if (date >= new Date()) {
             setPostingTime(date);
             let pt = dateToDateAndTime(date);
-            return toast.success(`Posting time set to ${pt}`);
+            return toast.success(`Posting time set to ${pt}`, { duration: 6000 });
         } else {
-            return toast.error('Please choose a posting time after the current time');
+            return toast.error('Please choose a posting time after the current time', { duration: 6000 });
         }
     };
 
     const handlePushToWaiting = async () => {
         if (postingTime >= new Date()) {
             if (!title.length) {
-                return toast.error('Please type your blog title before publishing');
+                return toast.error('Please type your blog title before publishing', { duration: 4000 });
             }
 
             if (!description.length || description.length > 200) {
-                return toast.error('Please type your blog description before publishing');
+                return toast.error('Please type your blog description before publishing', { duration: 4000 });
             }
 
             if (!tags.length) {
-                return toast.error('Please enter at least 1 tag');
+                return toast.error('Please enter at least 1 tag', { duration: 4000 });
             }
 
             let loadingToast = toast.loading('Publishing ...');
@@ -159,47 +159,54 @@ export default function PublishForm() {
                     return navigate('/sign-in');
                 } else if (res.status === 200) {
                     toast.dismiss(loadingToast);
-                    toast.success('Added to schedule 👍');
+                    toast.success('Added to schedule 👍', { duration: 6000 });
                     setTimeout(() => {
                         return navigate(`/dash-board?tab=schedule-list`);
                     }, 500);
                 } else if (rs.success === false) {
                     toast.dismiss(loadingToast);
                     setLoading(false);
-                    return toast.error(rs.message);
+                    return toast.error(rs.message, { duration: 6000 });
                 }
             } catch (error) {
                 toast.dismiss(loadingToast);
-                return toast.error(error.message);
+                return toast.error(error.message, { duration: 6000 });
             }
         } else {
-            return toast.error('Please choose a posting time after the current time');
+            return toast.error('Please choose a posting time after the current time', { duration: 6000 });
         }
     };
 
     return (
-        <>
-            <section className="w-fit container mx-auto min-h-screen grid items-center lg:grid-cols-2">
+        <div>
+            <section className="w-full container mx-auto min-h-screen grid items-start lg:grid-cols-2">
                 <Toaster />
                 <div className="max-w-[450px] block mx-auto mb-4">
-                    <p className="lg:text-5xl font-semibold py-2 px-4">Preview</p>
-                    <div className="w-full aspect-auto rounded-lg overflow-hidden bg-grey mt-4">
-                        <img src={thumb} className="aspect-auto object-cover" />
+                    <p className="text-3xl font-semibold py-2 px-4">Preview</p>
+                    <div className="w-full aspect-auto rounded-lg overflow-hidden mt-4">
+                        <img
+                            src={
+                                thumb
+                                    ? thumb
+                                    : 'https://expeditionmeister.com/oc-content/plugins/blog/img/blog/blog-default.png'
+                            }
+                            className="aspect-auto object-cover"
+                        />
                     </div>
                     <h1 className="text-3xl font-medium mt-2 leading-tight line-clamp-2">{title}</h1>
                     <p className="line-clamp-2 text-xl leading-7 mt-4">{description}</p>
                 </div>
-                <div className="border-grey lg:border-1 lg:pl-8">
+                <div className="border-gray-300 lg:border-1 lg:pl-8">
                     <p className="my-2">Blog Title</p>
                     <TextInput
                         onChange={handleTitleChange}
                         type="text"
                         placeholder="Blog Title"
                         defaultValue={title}
-                        className="w-[100%] rounded-md px-3 py-1 bg-grey border border-grey focus:bg-transparent"
+                        className="w-[100%] rounded-md focus:bg-transparent"
                     />
 
-                    <p className="mb-2 mt-6">Description about your blog</p>
+                    <p className="my-2">Description about your blog</p>
                     <Textarea
                         onChange={handleDescriptionChange}
                         onKeyDown={handleTitleKeyDown}
@@ -207,15 +214,18 @@ export default function PublishForm() {
                         type="text"
                         placeholder="Description"
                         defaultValue={description}
-                        className="h-16 resize-none leading-7 w-[100%] rounded-md p-4 bg-grey border border-grey focus:bg-transparent"
+                        className="h-16 resize-none w-[100%] rounded-md border border-gray-300 focus:bg-transparent"
                     />
+                    <i className="block text-gray-500 text-sm text-right">{200 - description.length} characters left</i>
 
-                    <p className="mb-2 mt-6">Choose your blog category</p>
+                    <p className="my-2">Blog category</p>
                     <Select
                         onChange={handleChooseCate}
-                        className="h-16 resize-none leading-7 w-[100%] rounded-md px-3 pt-1 bg-grey pl-2 border border-grey focus:bg-transparent"
+                        className="resize-none w-[100%] rounded-md focus:bg-transparent"
                     >
-                        <option value={'uncategorized'}>Uncategorized</option>
+                        <option value={category ? category : 'Uncategorized'}>
+                            {category ? category.charAt(0).toUpperCase() + category.slice(1) : 'Uncategorized'}
+                        </option>
                         {allCate?.map((cate, i) => (
                             <option value={cate.categoryName} key={i}>
                                 {cate.categoryName.charAt(0).toUpperCase() + cate.categoryName.slice(1)}
@@ -223,15 +233,14 @@ export default function PublishForm() {
                         ))}
                     </Select>
 
-                    <i className="block text-gray-500 text-sm text-right">{200 - description.length} characters left</i>
-                    <p className="mb-2 mt-6">Topics - Usefull for searching your blog</p>
+                    <p className="my-2">Topics - Usefull for searching your blog</p>
 
-                    <div className="relative w-[100%] rounded-md p-4 bg-grey border border-grey focus:bg-transparent pl-2 py-2 pb-4">
+                    <div className="relative w-[100%] rounded-md p-4 border border-gray-300 focus:bg-transparent pl-2 py-2 pb-4">
                         <input
                             onKeyDown={handleAddTopic}
                             type="text"
                             placeholder="Topic"
-                            className="sticky w-[100%] rounded-md px-4 dark:bg-[#374151] dark:text-gray-400 border border-grey focus:bg-transparent bg-white top-0 left-0 pl-4 mb-3 focus:bg-white"
+                            className="sticky w-[100%] rounded-md px-4 dark:bg-[#374151] dark:text-gray-400 border border-gray-300 focus:bg-transparent bg-white top-0 left-0 pl-4 mb-3 focus:bg-white"
                         />
                         {tags.map((tag, i) => {
                             return <Tag tag={tag} key={i} />;
@@ -288,6 +297,6 @@ export default function PublishForm() {
                     </Modal.Body>
                 </Modal>
             )}
-        </>
+        </div>
     );
 }

@@ -15,15 +15,14 @@ export default function FooterComponent() {
                     </div>
                     <div className="grid grid-cols-2 gap-8 mt-4 sm:gap-6">
                         <div>
+                            <Footer.Title title="About us" />
+                            <Footer.LinkGroup col>
+                                <Link to="/introduction-page">Introduction Page</Link>
+                            </Footer.LinkGroup>
+                        </div>
+                        <div>
                             <Footer.Title title="Follow us" />
                             <Footer.LinkGroup col>
-                                <Footer.Link
-                                    href="https://github.com/PhamHungXuanSang"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                >
-                                    Github
-                                </Footer.Link>
                                 <Footer.Link
                                     href="https://www.youtube.com/channel/UCkQvZq6y9mui3STeU1BkN5Q"
                                     target="_blank"
@@ -50,11 +49,11 @@ export default function FooterComponent() {
                             referrerPolicy="no-referrer-when-downgrade"
                             className="rounded-lg overflow-hidden"
                         ></iframe>
-                        <div className="mt-2">Phone number: +84 858630304</div>
-                        <div className="mt-2">Address: 77 Nguyen Hue, Hue, VietNam</div>
+                        <div className="mt-2 text-sm">77 Nguyen Hue, Hue city, Vietnam</div>
+                        <div className="mt-2 text-sm">Phone number: +84 858630304</div>
                     </div>
                 </div>
-                <Footer.Divider />
+                <hr className="my-2 opacity-20" />
                 <div className="w-full text-center">
                     <Footer.Copyright href="#" by="Pham Hung Xuan Sang™" year={new Date().getFullYear()} />
                 </div>

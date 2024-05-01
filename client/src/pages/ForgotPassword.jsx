@@ -31,7 +31,7 @@ export default function ForgotPassword() {
 
     const handleSendCode = async () => {
         if (currentUser && email != currentUser.email) {
-            return toast.error('Please enter the email you registered with');
+            return toast.error('Please enter the email you registered with', { duration: 6000 });
         }
         try {
             const res = await fetch(`/api/email/sendEmailOTP`, {
@@ -45,10 +45,10 @@ export default function ForgotPassword() {
                 return navigate('/sign-in');
             }
             if (res.status === 200) {
-                toast.success('OTP code has been send to your email');
+                toast.success('OTP code has been send to your email', { duration: 6000 });
                 setStep(2);
             } else {
-                toast.error(data.message);
+                toast.error(data.message, { duration: 6000 });
             }
         } catch (error) {
             console.log(error);
@@ -97,28 +97,28 @@ export default function ForgotPassword() {
                     return navigate('/sign-in');
                 }
                 if (res.status === 200) {
-                    toast.success('OTP authentication successful 👍');
+                    toast.success('OTP authentication successful 👍', { duration: 6000 });
                     setStep(3);
                 } else {
-                    return toast.error(data.message);
+                    return toast.error(data.message, { duration: 6000 });
                 }
             } catch (error) {
                 console.log(error);
             }
         } else {
-            return toast.error('Please enter all OTP characters');
+            return toast.error('Please enter all OTP characters', { duration: 4000 });
         }
     };
 
     const handleResetPassword = async () => {
         if (newPassword == '' || confirmNewPassword == '') {
-            return toast.error('Please enter password and password confirm');
+            return toast.error('Please enter password and password confirm', { duration: 4000 });
         }
         if (arrValid.some((item) => item == false)) {
-            return toast.error('Please enter a password that meets the requirements');
+            return toast.error('Please enter a password that meets the requirements', { duration: 4000 });
         }
         if (newPassword !== confirmNewPassword) {
-            return toast.error('Password confirm not match');
+            return toast.error('Password confirm not match', { duration: 3000 });
         }
         try {
             const res = await fetch(`/api/user/resetPassword/${email}`, {
@@ -132,9 +132,9 @@ export default function ForgotPassword() {
                 return navigate('/sign-in');
             }
             if (res.status === 200) {
-                return toast.success('Password has been reset');
+                return toast.success('Password has been reset', { duration: 3000 });
             } else {
-                return toast.error(data.message);
+                return toast.error(data.message, { duration: 6000 });
             }
         } catch (error) {
             console.log(error);

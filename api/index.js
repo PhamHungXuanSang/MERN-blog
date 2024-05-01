@@ -61,11 +61,10 @@ export const io = new Server(httpServer, {
 });
 
 io.on('connection', (socket) => {
-    socket.emit('helloGuy', 'hiha');
-    socket.on('newUserLogin', (userId) => {
-        addOnlineUser(userId, socket.id);
-        console.log(userOnline);
-    });
+    // socket.on('newUserLogin', (userId) => {
+    //     addOnlineUser(userId, socket.id);
+    //     console.log(userOnline);
+    // });
 
     socket.on('refreshBrower', (userId) => {
         removeOnlineUser(userId, null);

@@ -81,7 +81,7 @@ export default function BlogManagement() {
                 return navigate('/sign-in');
             }
             if (!res.ok) {
-                toast.error(data.message);
+                toast.error(data.message, { duration: 6000 });
             } else {
                 setBlogs((prev) => prev.filter((blog) => blog._id !== blogIdToDelete));
             }
@@ -104,9 +104,9 @@ export default function BlogManagement() {
                 return navigate('/sign-in');
             }
             if (!res.ok) {
-                toast.error(data.message);
+                toast.error(data.message, { duration: 6000 });
             } else {
-                toast.success(data.message);
+                toast.success(data.message, { duration: 6000 });
                 setBlogs((prev) => [...prev]);
             }
         } catch (error) {

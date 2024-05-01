@@ -9,6 +9,7 @@ import OneByOneAppearEffect from './OneByOneAppearEffect';
 import formatDate from '../utils/formatDate.js';
 import { FaStarHalfAlt } from 'react-icons/fa';
 import InPageNavigation from './InPageNavigation.jsx';
+import { MdVerifiedUser } from 'react-icons/md';
 
 export default function DashProfile() {
     const currentUser = useSelector((state) => state.user.currentUser);
@@ -77,7 +78,12 @@ export default function DashProfile() {
                             className="rounded-full w-32 h-32 object-cover block mx-auto"
                         />
                         <b className="block my-3">@{currentUser.username}</b>
-                        <span className="block mb-4 leading-2 line-clamp-3 break-words">{currentUser.email}</span>
+                        <div className="flex gap-1 w-fit mx-auto">
+                            <span className="block mb-4 line-clamp-2 break-words w-fit mx-auto">
+                                {currentUser.email}
+                            </span>
+                            <MdVerifiedUser fill="green" size={22} />
+                        </div>
                         <i className="block my-3 leading-2 line-clamp-3 break-words">
                             {currentUser.userDesc || 'No description about this account'}
                         </i>
@@ -125,7 +131,10 @@ export default function DashProfile() {
                         className="rounded-full w-32 h-32 object-cover block mx-auto"
                     />
                     <b className="block my-3">@{currentUser.username}</b>
-                    <span className="block mb-4 leading-2 line-clamp-3 break-words">{currentUser.email}</span>
+                    <div className="flex gap-1 w-fit mx-auto">
+                        <span className="block mb-4 line-clamp-2 break-words w-fit mx-auto">{currentUser.email}</span>
+                        {currentUser.emailVerified.verifiedAt && <MdVerifiedUser fill="green" size={22} />}
+                    </div>
                     <i className="block my-3 leading-2 line-clamp-3 break-words">
                         {currentUser.userDesc || 'No description about this account'}
                     </i>

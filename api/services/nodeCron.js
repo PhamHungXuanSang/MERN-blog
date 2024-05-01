@@ -45,6 +45,7 @@ async function publishBlogs() {
                             '',
                             '',
                             `Author ${author.username} just posted a new blog with the title: ${blog.title}`,
+                            'new blog'
                         );
                     }
                 } catch (notifyError) {

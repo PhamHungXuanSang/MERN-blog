@@ -29,7 +29,7 @@ export default function CateManagement() {
             e.preventDefault();
         }
         if (newCate.length <= 0) {
-            return toast.error('Please enter new category name');
+            return toast.error('Please enter new category name', { duration: 3000 });
         }
         document.querySelector('#cateName').value = '';
         const res = await fetch(`/api/category/add-new-category`, {
@@ -44,9 +44,9 @@ export default function CateManagement() {
         }
         if (res.ok) {
             setAllCate(data.allCates);
-            return toast.success(data.message);
+            return toast.success(data.message, { duration: 6000 });
         } else {
-            return toast.error(data.message);
+            return toast.error(data.message, { duration: 6000 });
         }
     };
 
@@ -75,9 +75,9 @@ export default function CateManagement() {
                 return navigate('/sign-in');
             }
             if (!res.ok) {
-                toast.error(data.message);
+                toast.error(data.message, { duration: 6000 });
             } else {
-                toast.success(data.message);
+                toast.success(data.message, { duration: 6000 });
                 setAllCate((prev) => prev.filter((cate) => cate._id !== cateIdToDelete));
             }
         } catch (error) {
@@ -99,9 +99,9 @@ export default function CateManagement() {
                 return navigate('/sign-in');
             }
             if (!res.ok) {
-                return toast.error(data.message);
+                return toast.error(data.message, { duration: 6000 });
             } else {
-                toast.success(data.message);
+                toast.success(data.message, { duration: 6000 });
                 setAllCate(data.allCates);
             }
         } catch (error) {

@@ -45,7 +45,7 @@ export default function NotificationCard({ data, index, notificationState, unRea
                     const hasUnreadNotification = notifications.some((noti) => noti.read == false);
                     return dispatch(setCurrentUser({ ...currentUser, newNotification: hasUnreadNotification }));
                 } else {
-                    return toast.error(resMes.message);
+                    return toast.error(resMes.message, { duration: 6000 });
                 }
             } catch (error) {
                 console.log(error);
@@ -79,9 +79,9 @@ export default function NotificationCard({ data, index, notificationState, unRea
                     return nt;
                 });
                 setNotifications(notifications.filter((noti) => noti._id != notificationId));
-                return toast.success('Notification deleted');
+                return toast.success('Notification deleted', { duration: 3000 });
             } else {
-                return toast.error(data.message);
+                return toast.error(data.message, { duration: 6000 });
             }
         } catch (error) {
             console.log(error);

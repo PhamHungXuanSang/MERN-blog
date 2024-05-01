@@ -18,7 +18,7 @@ export default function Editor() {
     if (!currentUser.isAdmin) {
         if (currentUser.createPermission == false) {
             navigate('/offer');
-            toast.error('You need to purchase a plan to use this feature', { id: 'toast-need-offer' });
+            toast.error('You need to purchase a plan to use this feature', { duration: 6000 });
         }
     }
     const [blog, setBlog] = useState(blogStructure);

@@ -6,6 +6,8 @@ import { signOutSuccess } from '../redux/user/userSlice.js';
 import dateToDateAndTime from '../utils/dateToDateAndTime.js';
 import { Spinner } from 'flowbite-react';
 import formatDate from '../utils/formatDate.js';
+import { IoIosArrowBack } from 'react-icons/io';
+import { setSelectedPackage } from '../redux/selectedPackage/selectedPackageSlice.js';
 
 export default function Checkout() {
     const [userTransactionInfo, setUserTransactionInfo] = useState(null);
@@ -44,6 +46,16 @@ export default function Checkout() {
     return (
         <div className="py-8 px-4">
             <div className="paypal rounded-lg border border-teal-500 md:max-w-[50%] mx-auto p-4">
+                <div
+                    className="flex items-center gap-1 cursor-pointer w-fit opacity-50 hover:opacity-100 mb-2"
+                    onClick={() => {
+                        dispatch(setSelectedPackage(null));
+                        return navigate('/offer');
+                    }}
+                >
+                    <IoIosArrowBack />
+                    <p>Back</p>
+                </div>
                 {userTransactionInfo != null ? (
                     new Date(userTransactionInfo.expirationDate).getFullYear() < 2100 ? (
                         <>

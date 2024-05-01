@@ -157,6 +157,7 @@ export const createBlog = async (req, res, next) => {
                     '',
                     '',
                     `Author ${author.username} just posted a new blog with the title: ${savedBlog.title}`,
+                    'new blog',
                 );
             });
 
@@ -198,7 +199,7 @@ export const readBlog = async (req, res, next) => {
     try {
         const blog = await Blog.findOneAndUpdate({ slug }, { $inc: { viewed: 1 } }, { new: true }).populate(
             'authorId',
-            '_id username email userAvatar subscribeUsers',
+            '_id username email userAvatar userDesc subscribeUsers',
         );
         if (!blog) {
             return next(errorHandler(404, 'Blog not found'));
@@ -245,7 +246,7 @@ export const updateLikeBlog = async (req, res, next) => {
     let blogId = req.body._id;
     try {
         let [blog, user] = await Promise.all([
-            Blog.findById(blogId).populate('authorId', '_id username email userAvatar'),
+            Blog.findById(blogId).populate('authorId', '_id username email userAvatar userDesc'),
             User.findById(userId).select('username'),
         ]);
         let index = blog.likes.indexOf(userId);
@@ -264,6 +265,7 @@ export const updateLikeBlog = async (req, res, next) => {
                     '',
                     '',
                     `User ${user.username} like your blog`,
+                    'like',
                 );
             }
         }
@@ -303,6 +305,7 @@ export const ratingBlog = async (req, res, next) => {
                 '',
                 '',
                 `User ${user.username} rating ${ratingStar} stars for your blog: ${blog.title}`,
+                'rate',
             );
         }
 

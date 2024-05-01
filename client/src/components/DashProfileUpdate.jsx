@@ -112,6 +112,7 @@ export default function DashProfileUpdate() {
                 dispatch(updateUserProfileFailure(null));
                 return toast.error(
                     'Please enter the correct social media link format. Start with https://www.youtube.com/',
+                    { duration: 6000 },
                 );
             }
         }
@@ -121,6 +122,7 @@ export default function DashProfileUpdate() {
                 dispatch(updateUserProfileFailure(null));
                 return toast.error(
                     'Please enter the correct social media link format. Start with https://www.facebook.com/',
+                    { duration: 6000 },
                 );
             }
         }
@@ -130,15 +132,17 @@ export default function DashProfileUpdate() {
                 dispatch(updateUserProfileFailure(null));
                 return toast.error(
                     'Please enter the correct social media link format. Start with https://www.tiktok.com/',
+                    { duration: 6000 },
                 );
             }
         }
 
         if (formData.github) {
-            if (!formData.github.startsWith('https://www.github.com/')) {
+            if (!formData.github.startsWith('https://github.com/')) {
                 dispatch(updateUserProfileFailure(null));
                 return toast.error(
-                    'Please enter the correct social media link format. Start with https://www.github.com/',
+                    'Please enter the correct social media link format. Start with https://github.com/',
+                    { duration: 6000 },
                 );
             }
         }
@@ -155,7 +159,7 @@ export default function DashProfileUpdate() {
                 return navigate('/sign-in');
             } else if (res.status === 200) {
                 dispatch(updateUserProfileSuccess(dataUpdated));
-                return toast.success('Profile updated');
+                return toast.success('Profile updated', { duration: 3000 });
             } else if (dataUpdated.success === false) {
                 dispatch(updateUserProfileFailure(dataUpdated.message));
                 return;
@@ -308,7 +312,7 @@ export default function DashProfileUpdate() {
                                     <TextInput
                                         type="text"
                                         id="github"
-                                        placeholder="https://www.github.com/..."
+                                        placeholder="https://github.com/..."
                                         defaultValue={currentUser.githubLink}
                                         onChange={handleUpdateUserProfile}
                                     />

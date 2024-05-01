@@ -1,3 +1,5 @@
+/* eslint-disable react/prop-types */
+/* eslint-disable no-unused-vars */
 import { Button, Textarea } from 'flowbite-react';
 import { useContext, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -30,7 +32,7 @@ export default function CommentField({ action, index = undefined, replyingTo = u
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (!comment.length) {
-            return toast.error('Please enter comment');
+            return toast.error('Please enter comment', { duration: 3000 });
         }
 
         try {

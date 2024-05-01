@@ -61,6 +61,7 @@ export default function Offer() {
     useEffect(() => {
         handleCheckFreeTrial();
         handleGetAllPackage();
+        dispatch(setSelectedPackage(null));
     }, []);
 
     const handleGetFreeTrial = async () => {
@@ -75,7 +76,7 @@ export default function Offer() {
                 return navigate('/sign-in');
             } else if (res.status === 200) {
                 dispatch(successfullyPurchase(data));
-                toast.success('You have successfully purchased the package');
+                toast.success('You have successfully purchased the package', { duration: 6000 });
                 return navigate('/dash-board?tab=create-blog');
             }
         } catch (error) {
