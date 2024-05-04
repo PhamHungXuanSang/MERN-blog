@@ -3,6 +3,9 @@ import Transaction from '../models/transaction.model.js';
 import User from '../models/user.model.js';
 import { sendEmailServices } from '../services/emailService.js';
 import { errorHandler } from '../utils/error.js';
+import PayOS from '@payos/node';
+
+const payos = new PayOS(process.env.PAYOS_CLIENT_ID, process.env.PAYOS_API_KEY, process.env.PAYOS_CHECK_SUM);
 
 export const checkFreeTrial = async (req, res, next) => {
     if (req.user._id !== req.params.userId) {
@@ -46,6 +49,7 @@ export const getFreeTrial = async (req, res, next) => {
             { $set: { createPermission: true } }, // set ở phần User
             { new: true },
         ).select('-password');
+        // Thêm code gửi email thông báo đã đăng ký dùng thử 7 ngày thành công
         return res.status(200).json(currentUser);
     } catch (error) {
         next(error);
@@ -136,7 +140,7 @@ export const checkCreatePermission = async (req, res, next) => {
     }
 };
 
-export const choosePlan = async (req, res, next) => {
+export const paypalPayment = async (req, res, next) => {
     const userId = req.user._id;
     const { _id: packageId, packageName, packagePrice, packageExpiry } = req.body; // Giả sử packageExpiry là số ngày
     let currentDate = new Date();
@@ -208,16 +212,16 @@ export const choosePlan = async (req, res, next) => {
         font-size: 16px;
     }
     .footer {
-        margin-top: 20px;
+        margin-top: 12px;
         border-top: 1px solid #CCC;
         padding-top: 5px;
     }
     .main-content {
-        margin-top: 20px;
+        margin-top: 12px;
     }
     .button {
         display: inline-block;
-        margin-top: 20px;
+        margin-top: 12px;
         padding: 10px 20px;
         color: #ffffff !important;
         background-color: #007BFF;
@@ -228,6 +232,15 @@ export const choosePlan = async (req, res, next) => {
         color: #007BFF;
         text-decoration: none;
     }
+    .package-info {
+        font-size: 14px;
+        margin-top: 10px;
+        margin-bottom: 10px;
+    }
+    .package-info p {
+        margin-top: 1px;
+        margin-bottom: 1px;
+    }
 </style>
 </head>
 <body>
@@ -236,8 +249,18 @@ export const choosePlan = async (req, res, next) => {
             Hello, ${updatedUser.username},
         </p>
         <p class="main-content">
-            You have successfully registered for the Create Blog feature on our platform. We're thrilled to have you onboard and can't wait to see the amazing content you'll create.
+            You have ${transactionType} successfully for the Create Blog feature on our platform. We're thrilled to have you onboard and can't wait to see the amazing content you'll create.
         </p>
+        <div class="package-info">
+            <p><strong>Package Information:</strong></p>
+            <p>Name: ${packageName}</p>
+            <p>Price: ${packagePrice}$</p>
+            <p>Number of days valid: ${packageExpiry <= 365 ? packageExpiry + 'days' : 'Lifetime'}</p>
+            <p>Estimated expiration date: ${currentDate}</p>
+            <p>Purchase date: ${new Date().toLocaleString('en-US', {
+                timeZone: 'Asia/Ho_Chi_Minh',
+            })}</p>
+        </div>
         <a href="http://localhost:5173/dash-board?tab=create-blog" class="button">Create your blog here</a>
         <p class="main-content">
             If you have any questions, feel free to contact our support team at <a href="mailto:20t1020536@husc.edu.vn" class="support-email">20t1020536@husc.edu.vn</a>. We're here to help!
@@ -282,4 +305,20 @@ export const getTransactionHistory = async (req, res, next) => {
     } catch (error) {
         next(error);
     }
+};
+
+export const createPaymentLink = async (req, res, next) => {
+    const userId = req.user._id;
+    const { _id: packageId, packageName, packagePrice, packageExpiry } = req.body;
+    console.log(userId, packageName, packagePrice);
+    //let currentDate = new Date();
+    const order = {
+        amount: packagePrice,
+        description: `Pay ${packageName}`,
+        orderCode: Math.floor(Math.random() * (99 - 10 + 1)) + 10,
+        returnUrl: `http://localhost:5173/order-status-success`,
+        cancelUrl: `http://localhost:5173/order-status-cancel`,
+    };
+    const paymentLink = await payos.createPaymentLink(order);
+    res.status(200).json({ checkoutUrl: paymentLink.checkoutUrl });
 };

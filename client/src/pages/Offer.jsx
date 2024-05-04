@@ -77,7 +77,7 @@ export default function Offer() {
             } else if (res.status === 200) {
                 dispatch(successfullyPurchase(data));
                 toast.success('You have successfully purchased the package', { duration: 6000 });
-                return navigate('/dash-board?tab=create-blog');
+                return navigate('/order-status-success');
             }
         } catch (error) {
             console.log(error);

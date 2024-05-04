@@ -15,7 +15,7 @@ export default function PaypalCheckoutButton(props) {
 
     const handleApprove = async (orderID) => {
         if (orderID) {
-            const res = await fetch('/api/transaction/choose-plan', {
+            const res = await fetch('/api/transaction/paypal-payment', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(pack),
@@ -29,7 +29,7 @@ export default function PaypalCheckoutButton(props) {
                 dispatch(successfullyPurchase(data));
                 dispatch(setSelectedPackage(null));
                 toast.success('Successful transaction. Check your email for more detail', { duration: 6000 });
-                return navigate('/dash-board?tab=create-blog');
+                return navigate('/order-status-success');
             } else {
                 toast.error(error, { duration: 6000 });
                 return;

@@ -5,21 +5,8 @@ export default function FooterComponent() {
     return (
         <Footer container className="border border-t-8 border-teal-500">
             <div className="w-full container mx-auto">
-                <div className="grid w-full justify-between sm:flex sm:justify-between md:flex md:grid-cols-1 overflow-hidden">
-                    <div>
-                        <Link to="/" className="seft-center font-semibold text-lg sm:text-xl dark:text-white">
-                            <span className="px-3 py-1 rounded-lg bg-gradient-to-tr from-green-500 to-blue-500 text-white">
-                                MERN Blog
-                            </span>
-                        </Link>
-                    </div>
-                    <div className="grid grid-cols-2 gap-8 mt-4 sm:gap-6">
-                        <div>
-                            <Footer.Title title="About us" />
-                            <Footer.LinkGroup col>
-                                <Link to="/introduction-page">Introduction Page</Link>
-                            </Footer.LinkGroup>
-                        </div>
+                <div className="grid w-full justify-around sm:flex md:flex md:grid-cols-1 overflow-hidden">
+                    <div className="grid grid-cols-3 gap-8 mt-4 sm:gap-6">
                         <div>
                             <Footer.Title title="Follow us" />
                             <Footer.LinkGroup col>
@@ -37,6 +24,18 @@ export default function FooterComponent() {
                                 >
                                     Facebook
                                 </Footer.Link>
+                            </Footer.LinkGroup>
+                        </div>
+                        <div>
+                            <Footer.Title title="About us" />
+                            <Footer.LinkGroup col>
+                                <Link to="/introduction-page">Our Platform</Link>
+                            </Footer.LinkGroup>
+                        </div>
+                        <div>
+                            <Footer.Title title="Contact us" />
+                            <Footer.LinkGroup col>
+                                <Link to="/contact-us-page">Form Contact</Link>
                             </Footer.LinkGroup>
                         </div>
                     </div>

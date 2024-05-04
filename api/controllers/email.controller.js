@@ -124,3 +124,37 @@ export const verifyEmailOTP = async (req, res, next) => {
         next(error);
     }
 };
+
+export const sendContactUsEmail = async (req, res, next) => {
+    const { name, email, phoneNumber, message } = req.body.formData;
+    if (!name || !email || !phoneNumber || !message) {
+        return res.status(400).json({ message: 'Missing required fields' });
+    }
+    try {
+        sendEmailServices(
+            '20t1020536@husc.edu.vn',
+            'Message from MERN blog. New user contact message',
+            `<div style="width: 100%; background-color: #f3f9ff; padding: 5rem 0">
+        <div style="max-width: 700px; background-color: white; margin: 0 auto">
+            <div style="width: 100%; background-color: #00efbc; padding: 20px 0">
+                <a href='http://localhost:5173/' style="display: inline-block; margin-top: 20px; padding: 10px 20px; color: #ffffff !important; background-color: #007BFF; border-radius: 5px; text-decoration: none"></a>
+                <div>
+                    <div style="width: 100%;gap:10px;padding: 30px 0; display: grid">
+                        <p style="font-weight: 800; font-size: 1.2rem; padding: 0 30px">From MERN blog</p>
+                        <div style="font-size: .8rem; margin: 0 30px">
+                            <p>FullName: <b>${name}</b></p>
+                            <p>Email: <b>${email}</b></p>
+                            <p>Phone Number: <b>${phoneNumber}</b></p>
+                            <p>Message: <i>${message}</i></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>`,
+        );
+        return res.status(200).json({ message: 'The email has been sent to the administrator' });
+    } catch (error) {
+        next(error);
+    }
+};

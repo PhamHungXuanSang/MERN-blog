@@ -19,6 +19,7 @@ import scheduleBlogRoutes from './routes/scheduleBlog.route.js';
 import categoryRoutes from './routes/category.route.js';
 import cookieParser from 'cookie-parser';
 import { jobAtStartOfHour, jobAtHalfPastHour } from './services/nodeCron.js';
+
 //import path from 'path';
 
 dotenv.config();

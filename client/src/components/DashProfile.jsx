@@ -72,7 +72,7 @@ export default function DashProfile() {
                         <img
                             src={
                                 currentUser.userAvatar ||
-                                'https://www.shutterstock.com/image-vector/user-profile-icon-vector-avatar-600nw-2220431045.jpg'
+                                '../../public/user-profile-icon-vector-avatar.webp'
                             }
                             alt="Ảnh profile"
                             className="rounded-full w-32 h-32 object-cover block mx-auto"
@@ -125,7 +125,7 @@ export default function DashProfile() {
                     <img
                         src={
                             currentUser.userAvatar ||
-                            'https://www.shutterstock.com/image-vector/user-profile-icon-vector-avatar-600nw-2220431045.jpg'
+                            '../../public/user-profile-icon-vector-avatar.webp'
                         }
                         alt="Ảnh profile"
                         className="rounded-full w-32 h-32 object-cover block mx-auto"

@@ -12,6 +12,7 @@ import InPageNavigation from '../components/InPageNavigation';
 import BlogTopRated from '../components/BlogTopRated';
 import { Link } from 'react-router-dom';
 import { SlNote } from 'react-icons/sl';
+import BackToTopButton from '../components/BackToTopButton';
 
 export default function Home() {
     const [activeTab, setActiveTab] = useState('all category');
@@ -338,6 +339,7 @@ export default function Home() {
                     <Spinner className="block mx-auto mt-4" size="lg" />
                 )}
             </div>
+            <BackToTopButton />
         </section>
     );
 }

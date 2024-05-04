@@ -166,7 +166,7 @@ export default function MainBoardManagement() {
             <div className="flex flex-wrap gap-4 py-3 mx-auto justify-center">
                 <div className="flex flex-col w-full md:w-auto shadow-md p-2 rounded-md dark:bg-gray-800">
                     <div className="flex justify-between p-3 text-sm font-semibold">
-                        <h1 className="text-center p-2">RECENT USERS</h1>
+                        <h3 className="text-center p-2">RECENT USERS</h3>
                         <Button outline gradientDuoTone="greenToBlue">
                             <Link to={'/admin?tab=user-management'}>See all</Link>
                         </Button>
@@ -209,7 +209,7 @@ export default function MainBoardManagement() {
 
                 <div className="flex flex-col w-full md:w-auto shadow-md p-2 rounded-md dark:bg-gray-800">
                     <div className="flex justify-between p-3 text-sm font-semibold">
-                        <h1 className="text-center p-2">RECENT BLOGS</h1>
+                        <h3 className="text-center p-2">RECENT BLOGS</h3>
                         <Button outline gradientMonochrome="success">
                             <Link to={'/admin?tab=blog-management'}>See all</Link>
                         </Button>
@@ -252,7 +252,7 @@ export default function MainBoardManagement() {
 
                 <div className="flex flex-col w-full md:w-auto shadow-md p-2 rounded-md dark:bg-gray-800">
                     <div className="flex justify-between p-3 text-sm font-semibold">
-                        <h1 className="text-center p-2">RECENT COMMENTS</h1>
+                        <h3 className="text-center p-2">RECENT COMMENTS</h3>
                     </div>
                     <Table hoverable>
                         <Table.Head>

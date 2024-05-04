@@ -102,7 +102,7 @@ export default function SignUp() {
                     </MoveFromTopEffect>
                 </div>
                 {/*Right */}
-                <div className="flex-1 dark:bg-slate-800 bg-slate-300 py-4 px-8 rounded-xl shadow-xl">
+                <div className="flex-1 dark:bg-slate-800 bg-slate-300 py-4 px-8 rounded-xl shadow-xl mt-4 md:mt-0">
                     <MoveFromTopEffect>
                         <i className="text-2xl lg:text-4xl text-center block text-gray-500">Join us now!</i>
                     </MoveFromTopEffect>

@@ -1,6 +1,11 @@
 import express from 'express';
-import { authenToken } from '../utils/authenToken.js';
-import { sendEmail, verifyEmail, sendEmailOTP, verifyEmailOTP } from '../controllers/email.controller.js';
+import {
+    sendEmail,
+    verifyEmail,
+    sendEmailOTP,
+    verifyEmailOTP,
+    sendContactUsEmail,
+} from '../controllers/email.controller.js';
 
 const router = express.Router();
 
@@ -8,5 +13,6 @@ router.post('/sendEmail', sendEmail);
 router.get('/verify', verifyEmail);
 router.post('/sendEmailOTP', sendEmailOTP);
 router.post('/verifyEmailOTP', verifyEmailOTP);
+router.post('/send-contact-us-email', sendContactUsEmail);
 
 export default router;

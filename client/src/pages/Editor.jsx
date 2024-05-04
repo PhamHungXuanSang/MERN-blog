@@ -15,12 +15,7 @@ export default function Editor() {
     const navigate = useNavigate();
     let { slug } = useParams();
     const currentUser = useSelector((state) => state.user.currentUser);
-    if (!currentUser.isAdmin) {
-        if (currentUser.createPermission == false) {
-            navigate('/offer');
-            toast.error('You need to purchase a plan to use this feature', { duration: 6000 });
-        }
-    }
+
     const [blog, setBlog] = useState(blogStructure);
     const [editorState, setEditorState] = useState('editor');
     const [textEditor, setTextEditor] = useState({ isReady: false });
@@ -55,6 +50,12 @@ export default function Editor() {
     };
 
     useEffect(() => {
+        if (!currentUser.isAdmin) {
+            if (currentUser.createPermission == false) {
+                toast.error('You need to purchase a plan to use this feature', { duration: 6000 });
+                return navigate('/offer');
+            }
+        }
         fetchBlog();
     }, []);
 

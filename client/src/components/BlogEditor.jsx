@@ -10,8 +10,33 @@ import { tools } from './Tools';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { IoSend } from 'react-icons/io5';
+import useSpeechToText from '../hooks/useSpeechToText';
+import useClipboard from 'react-use-clipboard';
 
 export default function BlogEditor() {
+    const [textInput, setTextInput] = useState('');
+    const [lang, setLang] = useState('en-US');
+    const { isListening, transcript, startListening, stopListening, hasRecognitionSupport } = useSpeechToText({
+        continuous: true,
+        lang,
+    });
+    const [isCopied, setCopied] = useClipboard(textInput, {
+        successDuration: 1000,
+    });
+
+    const btnStartListening = () => {
+        startListening();
+    };
+
+    const btnStopListening = () => {
+        stopVoiceInput();
+    };
+
+    const stopVoiceInput = () => {
+        setTextInput((prevVal) => prevVal + (transcript.length ? (prevVal.length ? ' ' : '') + transcript : ''));
+        stopListening();
+    };
+
     const targetRef = useRef(null);
     const hiddenElementRef = useRef(null);
     const [imageFile, setImageFile] = useState(null);
@@ -144,10 +169,12 @@ export default function BlogEditor() {
         document.getElementById('openAI').classList.toggle('hidden');
     };
 
+    const handleShowCreateText = () => {
+        document.getElementById('speechToText').classList.toggle('hidden');
+    };
+
     const getImages = async () => {
         try {
-            // console.log(inputIdea);
-            // console.log(import.meta.env.VITE_REACT_APP_AI_DALL_E_KEY);
             const res = await fetch('https://api.openai.com/v1/images/generations', {
                 method: 'POST',
                 headers: {
@@ -196,7 +223,7 @@ export default function BlogEditor() {
             });
 
             const data = await res.json();
-            console.log(data);
+            //console.log(data);
         } catch (error) {
             console.log(error);
         }
@@ -271,6 +298,9 @@ export default function BlogEditor() {
                 <div id="textEditor"></div>
 
                 <div className="flex justify-end gap-4 w-full md:max-w-[650px] mx-auto">
+                    <Button outline gradientDuoTone="redToYellow" onClick={handleShowCreateText}>
+                        Create text content with speech
+                    </Button>
                     <Button outline gradientDuoTone="redToYellow" onClick={handleShowCreateImage}>
                         Create images with AI
                     </Button>
@@ -286,7 +316,7 @@ export default function BlogEditor() {
                     onClick={(e) => e.stopPropagation()}
                 >
                     <div className="flex justify-between items-center">
-                        <h3 className="text-lg font-bold text-black">Create content using AI</h3>
+                        <h3 className="text-lg font-bold text-black">Create images using AI</h3>
                         <button
                             className="text-gray-700 border-none bg-transparent hover:bg-gray-200 rounded-lg text-lg p-2 ml-auto inline-flex items-center"
                             onClick={handleShowCreateImage}
@@ -329,6 +359,60 @@ export default function BlogEditor() {
                             {output}
                         </Textarea>
                     </p>
+                </div>
+            </div>
+
+            <div
+                className="fixed inset-0 bg-black bg-opacity-50 overflow-y-auto z-50 h-full w-full hidden"
+                id="speechToText"
+            >
+                <div
+                    className="relative top-20 mx-auto p-5 border w-[98vw] md:w-[60vw] shadow-lg rounded-md bg-white text-black"
+                    onClick={(e) => e.stopPropagation()}
+                >
+                    <div className="flex justify-between items-center">
+                        <h3 className="text-lg font-bold">Create text content with speech</h3>
+                        <Select value={lang} onChange={(e) => setLang(e.target.value)} className="w-fit ml-4">
+                            <option value={'en-US'}>English</option>
+                            <option value={'vi-VN'}>Vietnamese</option>
+                        </Select>
+                        <button
+                            className="text-gray-700 border-none bg-transparent hover:bg-gray-200 rounded-lg text-lg p-2 ml-auto inline-flex items-center"
+                            onClick={handleShowCreateText}
+                        >
+                            &#x2715;
+                        </button>
+                    </div>
+                    {hasRecognitionSupport ? (
+                        <>
+                            {/* {isListening ? 'ALO NGHE NE' : 'KO NGHE'} */}
+                            <Textarea
+                                disabled={isListening}
+                                rows={5}
+                                value={
+                                    isListening
+                                        ? textInput +
+                                          (transcript.length ? (textInput.length ? ' ' : '') + transcript : '')
+                                        : textInput
+                                }
+                                onChange={(e) => setTextInput(e.target.value)}
+                                className="my-8 w-[98%] md:w-[90%] mx-auto"
+                            />
+                            <div className="flex flex-col md:flex-row flex-wrap gap-4 md:gap-0 items-center justify-evenly">
+                                <Button onClick={setCopied} gradientDuoTone="cyanToBlue">
+                                    {isCopied ? 'Copied 👍' : 'Copy to Clipboard'}
+                                </Button>
+                                <Button onClick={() => btnStartListening()} outline gradientDuoTone="greenToBlue">
+                                    Start Listening
+                                </Button>
+                                <Button onClick={() => btnStopListening()} outline gradientDuoTone="pinkToOrange">
+                                    Stop Listening
+                                </Button>
+                            </div>
+                        </>
+                    ) : (
+                        <p>Your brower not support listening</p>
+                    )}
                 </div>
             </div>
         </div>

@@ -8,6 +8,8 @@ import { Spinner } from 'flowbite-react';
 import formatDate from '../utils/formatDate.js';
 import { IoIosArrowBack } from 'react-icons/io';
 import { setSelectedPackage } from '../redux/selectedPackage/selectedPackageSlice.js';
+import toast from 'react-hot-toast';
+import { BsBank2 } from 'react-icons/bs';
 
 export default function Checkout() {
     const [userTransactionInfo, setUserTransactionInfo] = useState(null);
@@ -42,6 +44,28 @@ export default function Checkout() {
 
         fetchUsage();
     }, []);
+
+    const handleBankTransferPayment = async () => {
+        try {
+            const res = await fetch('/api/transaction/create-payment-link', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(selectedPackage),
+            });
+            const data = await res.json();
+            if (res.status === 403) {
+                dispatch(signOutSuccess());
+                return navigate('/sign-in');
+            }
+            if (res.ok) {
+                window.location.href = data.checkoutUrl;
+            } else {
+                return toast.error('Can not create payment link');
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    };
 
     return (
         <div className="py-8 px-4">
@@ -90,9 +114,9 @@ export default function Checkout() {
                                             </p>
                                             <p>
                                                 <i>Transaction type:</i>{' '}
-                                                {userTransactionInfo.expirationDate > new Date()
-                                                    ? 'Extended use'
-                                                    : 'Register to use'}
+                                                {new Date(userTransactionInfo.expirationDate) > new Date()
+                                                    ? 'Extended'
+                                                    : 'Register'}
                                             </p>
                                             <p>
                                                 <i>Estimated</i>
@@ -142,8 +166,19 @@ export default function Checkout() {
                                     </div>
                                 </div>
                             </div>
-                            <div className="max-w-[240px] mx-auto mt-6">
-                                <PaypalCheckoutButton pack={selectedPackage} />
+                            <div className="flex flex-col md:flex-row justify-between items-center">
+                                <div className="max-w-[240px] mx-auto mt-6">
+                                    <PaypalCheckoutButton pack={selectedPackage} />
+                                </div>
+                                <button
+                                    className="mt-6 md:mt-0 bg-gradient-to-r from-green-400 to-blue-500 hover:from-green-500 hover:to-blue-600 text-white font-semibold py-2 px-4 rounded shadow-lg transform transition duration-500 hover:scale-105"
+                                    onClick={handleBankTransferPayment}
+                                >
+                                    <h4 className="text-lg flex items-center gap-2">
+                                        <BsBank2 size={28} />
+                                        Bank Transfer Payment
+                                    </h4>
+                                </button>
                             </div>
                         </>
                     ) : (

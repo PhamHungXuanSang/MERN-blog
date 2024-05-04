@@ -8,7 +8,7 @@ import SignIn from './pages/SignIn';
 import SignUp from './pages/SignUp';
 import Dashboard from './pages/Dashboard';
 import Header from './components/Header';
-import Footer from './components/FooterComponent';
+import Footer from './components/Footer';
 import PrivateRoute from './components/PrivateRoute';
 import toast, { Toaster } from 'react-hot-toast';
 import Search from './pages/Search';
@@ -29,8 +29,11 @@ import { setCurrentUser, signOutSuccess } from './redux/user/userSlice.js';
 import { io } from 'socket.io-client';
 import ChangePassword from './pages/ChangePassword.jsx';
 import ScheduleEditor from './pages/ScheduleEditor.jsx';
-import IntroductionPage from './pages/IntroductionPage.jsx';
+import Introduction from './pages/Introduction.jsx';
+import Contact from './pages/Contact.jsx';
 import AllUser from './pages/AllUser.jsx';
+import CancelledTransaction from './pages/CancelledTransaction.jsx';
+import SuccessfulTransaction from './pages/SuccessfulTransaction.jsx';
 export const socket = io('http://localhost:3000');
 
 export default function App() {
@@ -54,7 +57,9 @@ export default function App() {
 
     useEffect(() => {
         if (currentUser) {
+            //setInterval(() => {
             socket.emit('refreshBrower', currentUser._id);
+            //}, [15000]);
             socket.on('newNotification', (data) => {
                 dispatch(setCurrentUser({ ...currentUser, newNotification: true }));
                 let { userAvatar, thumb, title, message, type } = data;
@@ -126,11 +131,7 @@ export default function App() {
                     <Route element={<PrivateRoute />}>
                         <Route
                             path="/notification"
-                            element={
-                                <Notification
-                                    filterStateMapping={filterStateMapping}
-                                />
-                            }
+                            element={<Notification filterStateMapping={filterStateMapping} />}
                         />
                         <Route path="/dash-board" element={<Dashboard />} />
                         <Route path="/change-password" element={<ChangePassword />} />
@@ -138,12 +139,15 @@ export default function App() {
                         <Route path="/schedule-editor/:slug" element={<ScheduleEditor />} />
                         <Route path="/offer" element={<Offer />} />
                         <Route path="/checkout" element={<Checkout />} />
+                        <Route path="/order-status-cancel" element={<CancelledTransaction />} />
+                        <Route path="/order-status-success" element={<SuccessfulTransaction />} />
                     </Route>
                     <Route element={<AdminPrivateRoute />}>
                         <Route path="/admin" element={<Admin />} />
                     </Route>
                     <Route path="/forgot-password" element={<ForgotPassword />} />
-                    <Route path="/introduction-page" element={<IntroductionPage />} />
+                    <Route path="/introduction-page" element={<Introduction />} />
+                    <Route path="/contact-us-page" element={<Contact />} />
                     <Route path="/all-user" element={<AllUser />} />
                     <Route path="*" element={<PageNotFound />} />
                 </Routes>

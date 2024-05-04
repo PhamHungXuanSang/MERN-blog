@@ -1,19 +1,27 @@
+import { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
+import { removeSelectedPackage } from '../redux/selectedPackage/selectedPackageSlice';
 
-export default function PageNotFound() {
+const CancelledTransaction = () => {
+    const dispatch = useDispatch();
+    useEffect(() => {
+        dispatch(removeSelectedPackage());
+    }, []);
+
     return (
         <section
             className="h-full relative p-10 flex flex-col items-center gap-20 text-center"
             style={{ animation: 'fadeIn 2s' }}
         >
             <img
-                src="../../public/pngtree-error-404-page-not-found.jpg"
-                className="select-none border-2 border-gray-300 w-64 aspect-square object-cover rounded"
+                src="../../public/transaction-cancelled.png"
+                className="select-none border-2 border-gray-300 w-48 aspect-square object-cover rounded"
             />
             <div>
-                <h1 className="text-4xl leading-7">Page not found</h1>
+                <h1 className="text-4xl leading-7">The transaction has been cancelled</h1>
                 <p className="text-xl leading-7 mt-4">
-                    The page you are loking for does not exists. Back to the{' '}
+                    Package payment failed. Back to the{' '}
                     <Link to={'/'} className="font-semibold underline hover:text-teal-500">
                         Home page
                     </Link>
@@ -31,7 +39,7 @@ export default function PageNotFound() {
             </div>
         </section>
     );
-}
+};
 
 const styleSheet = document.styleSheets[0];
 styleSheet.insertRule(
@@ -43,3 +51,5 @@ styleSheet.insertRule(
 `,
     styleSheet.cssRules.length,
 );
+
+export default CancelledTransaction;

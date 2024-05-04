@@ -79,7 +79,7 @@ export default function SignIn() {
                     </MoveFromTopEffect>
                 </div>
                 {/*Right */}
-                <div className="flex-1 dark:bg-slate-800 bg-slate-100 py-4 px-8 rounded-xl shadow-xl">
+                <div className="flex-1 dark:bg-slate-800 bg-slate-100 py-4 px-8 rounded-xl shadow-xl mt-4 md:mt-0">
                     <MoveFromTopEffect>
                         <i className="text-2xl lg:text-4xl text-center block text-gray-500">Welcome back!</i>
                     </MoveFromTopEffect>
