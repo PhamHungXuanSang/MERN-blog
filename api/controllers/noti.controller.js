@@ -1,14 +1,10 @@
 import Noti from '../models/noti.model.js';
-import { errorHandler } from '../utils/error.js';
 
 export const newNotification = async (req, res, next) => {
-    if (req.user._id !== req.params.userId) {
-        return next(errorHandler(403, 'Unauthorized'));
-    }
     try {
         const userId = req.params.userId;
-        const newNoti = await Noti.find({ recipient: userId, read: false });
-        return res.status(200).json(newNoti);
+        const newNoti = await Noti.findOne({ recipient: userId, read: false });
+        return res.status(200).json(newNoti != null);
     } catch (error) {
         next(error);
     }

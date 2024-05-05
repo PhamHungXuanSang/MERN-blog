@@ -7,7 +7,7 @@ export default function PageNotFound() {
             style={{ animation: 'fadeIn 2s' }}
         >
             <img
-                src="../../public/pngtree-error-404-page-not-found.jpg"
+                src="/pngtree-error-404-page-not-found.jpg"
                 className="select-none border-2 border-gray-300 w-64 aspect-square object-cover rounded"
             />
             <div>

@@ -126,8 +126,8 @@ export const verifyEmailOTP = async (req, res, next) => {
 };
 
 export const sendContactUsEmail = async (req, res, next) => {
-    const { name, email, phoneNumber, message } = req.body.formData;
-    if (!name || !email || !phoneNumber || !message) {
+    const { name, email, countryCode, phoneNumber, message } = req.body.formData;
+    if (!name || !email || !countryCode || !phoneNumber || !message) {
         return res.status(400).json({ message: 'Missing required fields' });
     }
     try {
@@ -144,6 +144,7 @@ export const sendContactUsEmail = async (req, res, next) => {
                         <div style="font-size: .8rem; margin: 0 30px">
                             <p>FullName: <b>${name}</b></p>
                             <p>Email: <b>${email}</b></p>
+                            <p>Country Code: <b>+${countryCode}</b></p>
                             <p>Phone Number: <b>${phoneNumber}</b></p>
                             <p>Message: <i>${message}</i></p>
                         </div>

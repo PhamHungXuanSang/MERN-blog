@@ -15,7 +15,7 @@ export default function PaypalCheckoutButton(props) {
 
     const handleApprove = async (orderID) => {
         if (orderID) {
-            const res = await fetch('/api/transaction/paypal-payment', {
+            const res = await fetch('/api/transaction/store-payment', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(pack),
@@ -56,9 +56,7 @@ export default function PaypalCheckoutButton(props) {
                 });
             }}
             onApprove={async (data, actions) => {
-                const order = await actions.order.capture();
-                console.log(order);
-
+                await actions.order.capture();
                 handleApprove(data.orderID);
             }}
             onCancel={() => {

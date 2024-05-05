@@ -289,7 +289,7 @@ export const getViewedBlogsHistory = async (req, res, next) => {
         return next(errorHandler(403, 'Unauthorized'));
     }
     const startIndex = parseInt(req.query.startIndex || 0);
-    const limit = parseInt(req.query.limit || 2);
+    const limit = parseInt(req.query.limit || 4);
 
     try {
         const userWithBlogs = await User.findById(userId).populate('viewedBlogsHistory.blog').exec();
@@ -408,6 +408,16 @@ export const getAllUserProfile = async (req, res, next) => {
         }
         paginationUsers = paginationUsers.slice(startIndex, startIndex + limit);
         return res.status(200).json({ paginationUsers, allUsers });
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const getUserSubscribeAuthors = async (req, res, next) => {
+    try {
+        const userId = req.body.userId;
+        const authors = await User.find({ subscribeUsers: userId }).select('_id username userAvatar');
+        return res.status(200).json({ authors });
     } catch (error) {
         next(error);
     }

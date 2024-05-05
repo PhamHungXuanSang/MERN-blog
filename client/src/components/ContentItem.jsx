@@ -102,7 +102,7 @@ export default function ContentItem({ type, block }) {
     }
 
     if (type == 'raw') {
-        return <CopyBlock text={block.data.html} showLineNumbers={true} codeBlock />;
+        return <CopyBlock text={block.data.html} codeBlock />;
     }
 
     if (type == 'code') {

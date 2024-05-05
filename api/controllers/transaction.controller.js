@@ -37,7 +37,7 @@ export const getFreeTrial = async (req, res, next) => {
                     isTrialed: true,
                     createPermission: true,
                     expirationDate: new Date(currentDate.getTime() + 7 * 24 * 60 * 60 * 1000),
-                }, // set ở phần Transaction
+                },
             },
             { new: true },
         );
@@ -46,10 +46,84 @@ export const getFreeTrial = async (req, res, next) => {
         }
         const currentUser = await User.findOneAndUpdate(
             { _id: userId },
-            { $set: { createPermission: true } }, // set ở phần User
+            { $set: { createPermission: true } },
             { new: true },
         ).select('-password');
-        // Thêm code gửi email thông báo đã đăng ký dùng thử 7 ngày thành công
+        sendEmailServices(
+            currentUser.email,
+            'MERN Blog successfully registered for a free trial to Create Blog',
+            `<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Email Confirmation</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<style type="text/css">
+    .email-content {
+        font-family: 'Arial', sans-serif;
+        color: #333;
+        margin: 0;
+        padding: 20px;
+    }
+    .header, .footer {
+        font-size: 16px;
+    }
+    .footer {
+        margin-top: 12px;
+        border-top: 1px solid #CCC;
+        padding-top: 5px;
+    }
+    .main-content {
+        margin-top: 12px;
+    }
+    .button {
+        display: inline-block;
+        margin-top: 12px;
+        padding: 10px 20px;
+        color: #ffffff !important;
+        background-color: #007BFF;
+        border-radius: 5px;
+        text-decoration: none;
+    }
+    .link, .support-email {
+        color: #007BFF;
+        text-decoration: none;
+    }
+    .package-info {
+        font-size: 14px;
+        margin-top: 10px;
+        margin-bottom: 10px;
+    }
+    .package-info p {
+        margin-top: 1px;
+        margin-bottom: 1px;
+    }
+</style>
+</head>
+<body>
+    <div class="email-content">
+        <p class="header">
+            Hello, ${currentUser.username},
+        </p>
+        <p class="main-content">
+            You have successfully registered to free trial create blog in <strong>7 days</strong>. We're thrilled to have you onboard and can't wait to see the amazing content you'll create.
+        </p>
+        <a href="http://localhost:5173/dash-board?tab=create-blog" class="button">Create your blog here</a>
+        <p class="main-content">
+            If you have any questions, feel free to contact our support team at <a href="mailto:20t1020536@husc.edu.vn" class="support-email">20t1020536@husc.edu.vn</a>. We're here to help!
+        </p>
+        <div class="footer">
+            Best regards,<br/>
+            The MERN Blog Team
+        </div>
+        <div class="footer">
+            © MERN Blog. All rights reserved.
+        </div>
+    </div>
+</body>
+</html>`,
+        );
         return res.status(200).json(currentUser);
     } catch (error) {
         next(error);
@@ -140,9 +214,9 @@ export const checkCreatePermission = async (req, res, next) => {
     }
 };
 
-export const paypalPayment = async (req, res, next) => {
+export const storePayment = async (req, res, next) => {
     const userId = req.user._id;
-    const { _id: packageId, packageName, packagePrice, packageExpiry } = req.body; // Giả sử packageExpiry là số ngày
+    const { _id: packageId, packageName, packagePrice, packageExpiry } = req.body;
     let currentDate = new Date();
     try {
         const userTransaction = await Transaction.findOne({ userId }).exec();
@@ -151,7 +225,7 @@ export const paypalPayment = async (req, res, next) => {
         }
 
         let transactionType;
-        // Bây giờ packageExpiry là số ngày, ta sẽ cộng trực tiếp vào currentDate hoặc expirationDate
+        // PackageExpiry là số ngày, ta sẽ cộng trực tiếp vào currentDate hoặc expirationDate
         if (!userTransaction.expirationDate || userTransaction.expirationDate < currentDate) {
             currentDate.setDate(currentDate.getDate() + packageExpiry);
             transactionType = 'buy package';
@@ -201,7 +275,6 @@ export const paypalPayment = async (req, res, next) => {
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <style type="text/css">
-    /* Add your styling here */
     .email-content {
         font-family: 'Arial', sans-serif;
         color: #333;
@@ -297,7 +370,7 @@ export const getTransactionHistory = async (req, res, next) => {
             }
         }
         const [allUserTransactionHistorys, userTransactionInfo] = await Promise.all([
-            PaymentHistory.find({ userId }).sort({ paymentDate: -1 }), // Giả sử bạn muốn sắp xếp theo ngày tạo giảm dần
+            PaymentHistory.find({ userId }).sort({ paymentDate: -1 }),
             Transaction.findOne({ userId }).populate('userId', 'username userAvatar email createdAt'),
         ]);
         const userTransactionHistorys = allUserTransactionHistorys.slice(startIndex, startIndex + limit);
@@ -308,17 +381,35 @@ export const getTransactionHistory = async (req, res, next) => {
 };
 
 export const createPaymentLink = async (req, res, next) => {
-    const userId = req.user._id;
-    const { _id: packageId, packageName, packagePrice, packageExpiry } = req.body;
-    console.log(userId, packageName, packagePrice);
-    //let currentDate = new Date();
+    const { packageName } = req.body;
     const order = {
-        amount: packagePrice,
-        description: `Pay ${packageName}`,
-        orderCode: Math.floor(Math.random() * (99 - 10 + 1)) + 10,
+        amount: 2000,
+        description: `${packageName}`,
+        items: [
+            {
+                name: `${packageName}`,
+                quantity: 1,
+                price: 2000,
+            },
+        ],
+        orderCode: Number(String(new Date().getTime()).slice(-6)),
         returnUrl: `http://localhost:5173/order-status-success`,
         cancelUrl: `http://localhost:5173/order-status-cancel`,
     };
     const paymentLink = await payos.createPaymentLink(order);
     res.status(200).json({ checkoutUrl: paymentLink.checkoutUrl });
+};
+
+export const getPaymentInfo = async (req, res, next) => {
+    const orderCode = req.params.orderCode;
+    try {
+        const paymentLink = await payos.getPaymentLinkInformation(orderCode);
+        if (paymentLink) {
+            return res.status(200).json({ id: paymentLink.id });
+        } else {
+            return next(errorHandler(400, 'Can not get payment info'));
+        }
+    } catch (error) {
+        next(error);
+    }
 };

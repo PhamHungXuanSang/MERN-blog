@@ -12,6 +12,13 @@ import { setNotiTypeSetting } from '../redux/notiSetting/notiSettingSlice';
 
 export default function Notification({
     filterStateMapping,
+    // setSystemState,
+    // setLikeState,
+    // setCommentState,
+    // setReplyState,
+    // setRateState,
+    // setSubscriberState,
+    // setNewBlogState,
 }) {
     const currentUser = useSelector((state) => state.user.currentUser);
     const [filter, setFilter] = useState('all');
@@ -53,8 +60,29 @@ export default function Notification({
     const handleSettingNoti = (filter) => {
         if (filter != 'new blog') {
             dispatch(setNotiTypeSetting(filter));
+            // switch (filter) {
+            //     case 'system':
+            //         setSystemState((prev) => !prev);
+            //         break;
+            //     case 'like':
+            //         setLikeState((prev) => !prev);
+            //         break;
+            //     case 'comment':
+            //         setCommentState((prev) => !prev);
+            //         break;
+            //     case 'reply':
+            //         setReplyState((prev) => !prev);
+            //         break;
+            //     case 'rate':
+            //         setRateState((prev) => !prev);
+            //         break;
+            //     case 'subscriber':
+            //         setSubscriberState((prev) => !prev);
+            //         break;
+            // }
         } else {
             dispatch(setNotiTypeSetting('newBlog'));
+            // setNewBlogState((prev) => !prev);
         }
     };
 

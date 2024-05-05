@@ -6,7 +6,7 @@ export default function BlogMini({ content, author, index }) {
     const { userAvatar, username } = author;
 
     return (
-        <div className="p-4 dark:hover:bg-slate-700 hover:bg-gray-100 border-2 border-teal-500 rounded-3xl">
+        <div className="px-3 py-2 dark:hover:bg-slate-700 hover:bg-gray-100 border-2 border-teal-500 rounded-3xl h-48">
             <p className="text-center sm:text-xl font-bold text-gray-300 leading-none">
                 Top {index < 10 ? '0' + (index + 1) : index + 1}
             </p>
@@ -16,7 +16,7 @@ export default function BlogMini({ content, author, index }) {
                     <p className="line-clamp-1">@{username}</p>
                 </div>
 
-                <h3 className="font-medium line-clamp-1 break-words">{title}</h3>
+                <h3 className="font-medium line-clamp-3 break-words">{title}</h3>
             </Link>
         </div>
     );

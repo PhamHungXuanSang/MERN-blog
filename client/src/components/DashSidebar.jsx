@@ -177,21 +177,6 @@ export default function DashSidebar() {
                         </>
                     </Sidebar.ItemGroup>
                 )}
-                {/* <Sidebar.ItemGroup>
-                    <span className="text-2xl font-semibold pl-2">Setting</span>
-                    <>
-                        <Link to="/dash-board?tab=account-setting">
-                            <Sidebar.Item
-                                onClick={() => toggleHiddenSidebar()}
-                                className="mt-2"
-                                active={tab === 'account-setting'}
-                                icon={IoSettings}
-                            >
-                                Account setting
-                            </Sidebar.Item>
-                        </Link>
-                    </>
-                </Sidebar.ItemGroup> */}
             </Sidebar.Items>
         </Sidebar>
     );

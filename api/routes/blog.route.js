@@ -2,7 +2,7 @@ import express from 'express';
 import { authenToken } from '../utils/authenToken.js';
 import {
     latestBlogs,
-    trendingHightestRatedBlogs,
+    allCategoryTrendingHightestRatedBlogs,
     categoryBlogs,
     createBlog,
     editBlog,
@@ -18,7 +18,7 @@ import {
 const router = express.Router();
 
 router.get('/latest-blogs', latestBlogs);
-router.get('/trending-hightest-rated-blogs', trendingHightestRatedBlogs);
+router.get('/trending-hightest-rated-blogs', allCategoryTrendingHightestRatedBlogs);
 router.get('/category/:cate', categoryBlogs);
 router.post('/create-blog/:userId', authenToken, createBlog);
 router.post('/edit-blog/:slug', authenToken, editBlog);

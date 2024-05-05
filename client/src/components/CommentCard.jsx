@@ -179,7 +179,7 @@ export default function CommentCard({ index, leftVal, commentData }) {
     };
 
     return (
-        <div className="w-full" style={{ paddingLeft: `${leftVal * 10}px` }}>
+        <div className="w-full" style={{ paddingLeft: `${leftVal * 8}px` }}>
             <div className="my-5 p-6 rounded-md border border-gray-300">
                 <div className="flex gap-3 items-center mb-8 text-sm">
                     <img className="w-6 h-6 object-cover rounded-full" src={userAvatar} alt="avatar" />

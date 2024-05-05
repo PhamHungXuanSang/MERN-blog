@@ -7,6 +7,7 @@ import createNoti from '../utils/createNoti.js';
 import pushNewNoti from '../utils/pushNewNoti.js';
 import { userOnline } from '../index.js';
 import ScheduleBlog from '../models/scheduleBlog.model.js';
+import Category from '../models/category.model.js';
 
 export const latestBlogs = async (req, res, next) => {
     try {
@@ -28,9 +29,9 @@ export const latestBlogs = async (req, res, next) => {
     }
 };
 
-export const trendingHightestRatedBlogs = async (req, res, next) => {
+export const allCategoryTrendingHightestRatedBlogs = async (req, res, next) => {
     try {
-        const [trendingBlogs, topRatedBlogs] = await Promise.all([
+        const [trendingBlogs, topRatedBlogs, allCates] = await Promise.all([
             Blog.find({ 'isBlocked.status': false })
                 .populate('authorId', '_id username email userAvatar')
                 .sort({ viewed: -1, likeCount: -1 })
@@ -74,8 +75,9 @@ export const trendingHightestRatedBlogs = async (req, res, next) => {
                 { $sort: { averageRating: -1 } },
                 { $limit: 5 },
             ]),
+            Category.find(),
         ]);
-        return res.status(200).json({ trendingBlogs, topRatedBlogs });
+        return res.status(200).json({ trendingBlogs, topRatedBlogs, allCates });
     } catch (error) {
         next(error);
     }

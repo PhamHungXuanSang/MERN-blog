@@ -17,7 +17,7 @@ export default function AboutUser({
             <p className="leading-2 line-clamp-3 break-words">
                 {userDesc.length ? userDesc : 'No description about this account'}
             </p>
-            <div className="flex gap-x-7 gap-y-2 flex-wrap my-4 items-center justify-evenly text-gray-300">
+            <div className="flex gap-x-7 gap-y-2 flex-wrap my-4 items-center justify-center text-gray-300">
                 {youtubeLink ? (
                     <Link to={youtubeLink} target="_blank">
                         <FaYoutube size={28} />
@@ -47,7 +47,11 @@ export default function AboutUser({
                     ''
                 )}
             </div>
-            <i>Joined on {formatDate(createdAt)}</i>
+            <i
+                className="text-gray-500 text-md"
+            >
+                Joined on {formatDate(createdAt)}
+            </i>
         </div>
     );
 }

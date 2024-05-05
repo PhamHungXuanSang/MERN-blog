@@ -4,6 +4,7 @@ const packageSchema = new mongoose.Schema({
     packageName: {
         type: String,
         required: true,
+        unique: true,
     },
     packagePrice: {
         type: Number,
@@ -18,6 +19,7 @@ const packageSchema = new mongoose.Schema({
         type: Number,
         min: 1,
         required: true,
+        unique: true,
     },
     isBlocked: {
         type: Boolean,

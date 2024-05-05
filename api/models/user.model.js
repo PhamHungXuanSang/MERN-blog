@@ -75,6 +75,7 @@ const userSchema = new mongoose.Schema(
             default: [],
         },
         subscribeUsers: {
+            // Chứa những thằng đã đăng ký ông này
             type: [Schema.Types.ObjectId],
             ref: 'User',
             default: [],

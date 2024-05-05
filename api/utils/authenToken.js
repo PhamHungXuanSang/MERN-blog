@@ -9,7 +9,7 @@ export const authenToken = async (req, res, next) => {
     if (!token) {
         res.clearCookie('access_token');
         res.clearCookie('refresh_token');
-        userOnline.delete(userId.toString());
+        userOnline.delete(userId?.toString());
         return next(errorHandler(403, 'No access token provided.'));
     }
 
@@ -24,7 +24,7 @@ export const authenToken = async (req, res, next) => {
             if (!prevRefreshToken) {
                 res.clearCookie('access_token');
                 res.clearCookie('refresh_token');
-                userOnline.delete(userId.toString());
+                userOnline.delete(userId?.toString());
                 return next(errorHandler(403, 'No refresh token provided.'));
             }
 
@@ -33,7 +33,7 @@ export const authenToken = async (req, res, next) => {
                 if (!refreshTokenDoc) {
                     res.clearCookie('access_token');
                     res.clearCookie('refresh_token');
-                    userOnline.delete(userId.toString());
+                    userOnline.delete(userId?.toString());
                     return next(errorHandler(403, 'Refresh token not found in database.'));
                 }
 
@@ -62,19 +62,19 @@ export const authenToken = async (req, res, next) => {
                 if (error.name === 'TokenExpiredError') {
                     res.clearCookie('access_token');
                     res.clearCookie('refresh_token');
-                    userOnline.delete(userId.toString());
+                    userOnline.delete(userId?.toString());
                     return next(errorHandler(403, 'Refresh token expired.'));
                 } else {
                     res.clearCookie('access_token');
                     res.clearCookie('refresh_token');
-                    userOnline.delete(userId.toString());
+                    userOnline.delete(userId?.toString());
                     return next(errorHandler(403, 'Error while refreshing tokens.'));
                 }
             }
         } else {
             res.clearCookie('access_token');
             res.clearCookie('refresh_token');
-            userOnline.delete(userId.toString());
+            userOnline.delete(userId?.toString());
             return next(errorHandler(403, 'Invalid access token.'));
         }
     }

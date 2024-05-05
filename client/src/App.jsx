@@ -45,6 +45,13 @@ export default function App() {
     const currentUser = useSelector((state) => state.user.currentUser);
     const dispatch = useDispatch();
     let { system, like, comment, reply, rate, subscriber, newBlog } = useSelector((state) => state.notiSetting);
+    // const [systemState, setSystemState] = useState(system);
+    // const [likeState, setLikeState] = useState(like);
+    // const [commentState, setCommentState] = useState(comment);
+    // const [replyState, setReplyState] = useState(reply);
+    // const [rateState, setRateState] = useState(rate);
+    // const [subscriberState, setSubscriberState] = useState(subscriber);
+    // const [newBlogState, setNewBlogState] = useState(newBlog);
     let filterStateMapping = {
         'new blog': newBlog,
         system: system,
@@ -56,65 +63,80 @@ export default function App() {
     };
 
     useEffect(() => {
-        if (currentUser) {
-            //setInterval(() => {
-            socket.emit('refreshBrower', currentUser._id);
-            //}, [15000]);
-            socket.on('newNotification', (data) => {
-                dispatch(setCurrentUser({ ...currentUser, newNotification: true }));
-                let { userAvatar, thumb, title, message, type } = data;
-                if (filterStateMapping[type]) {
-                    toast.custom(
-                        (t) => (
-                            <div
-                                className={`${
-                                    t.visible ? 'animate-enter' : 'animate-leave'
-                                } max-w-md w-full bg-white shadow-lg rounded-lg pointer-events-auto flex ring-1 ring-black ring-opacity-5`}
-                            >
-                                <div className="flex-1 w-0 p-4">
-                                    <div className="flex items-start">
-                                        {userAvatar != null && (
-                                            <div className="flex-shrink-0 pt-0.5">
-                                                <img className="h-10 w-10 rounded-full" src={userAvatar} alt="img" />
-                                            </div>
-                                        )}
-                                        {thumb != null && (
-                                            <div className="flex-shrink-0 pt-0.5">
-                                                <img className="h-10 w-10" src={thumb} alt="img" />
-                                            </div>
-                                        )}
-                                        <div className="ml-3 flex-1">
-                                            {title != null && (
-                                                <p className="text-sm font-medium text-gray-900">{title}</p>
-                                            )}
-                                            {message && <p className="mt-1 text-sm text-gray-500">{message}</p>}
+        filterStateMapping = {
+            'new blog': newBlog,
+            system: system,
+            like: like,
+            comment: comment,
+            reply: reply,
+            subscriber: subscriber,
+            rate: rate,
+        };
+        const handleNewNotification = (data) => {
+            dispatch(setCurrentUser({ ...currentUser, newNotification: true }));
+            let { userAvatar, thumb, title, message, type } = data;
+            if (filterStateMapping[type]) {
+                toast.custom(
+                    (t) => (
+                        <div
+                            className={`${
+                                t.visible ? 'animate-enter' : 'animate-leave'
+                            } max-w-md w-full bg-white shadow-lg rounded-lg pointer-events-auto flex ring-1 ring-black ring-opacity-5`}
+                        >
+                            <div className="flex-1 w-0 p-4">
+                                <div className="flex items-start">
+                                    {userAvatar != null && (
+                                        <div className="flex-shrink-0 pt-0.5">
+                                            <img className="h-10 w-10 rounded-full" src={userAvatar} alt="img" />
                                         </div>
+                                    )}
+                                    {thumb != null && (
+                                        <div className="flex-shrink-0 pt-0.5">
+                                            <img className="h-10 w-10" src={thumb} alt="img" />
+                                        </div>
+                                    )}
+                                    <div className="ml-3 flex-1">
+                                        {title != null && <p className="text-sm font-medium text-gray-900">{title}</p>}
+                                        {message && <p className="mt-1 text-sm text-gray-500">{message}</p>}
                                     </div>
                                 </div>
-                                <div className="flex border-l border-gray-200">
-                                    <button
-                                        onClick={() => {
-                                            toast.dismiss(t.id);
-                                        }}
-                                        className="w-full border border-transparent rounded-none rounded-r-lg p-4 flex items-center justify-center text-sm font-medium text-indigo-600 hover:text-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                                    >
-                                        Close
-                                    </button>
-                                </div>
                             </div>
-                        ),
-                        {
-                            duration: 6000,
-                        },
-                    );
-                }
-            });
-            socket.on('forcedLogout', () => {
-                dispatch(signOutSuccess());
-                return toast.error('Your account has been blocked', { duration: 6000 });
-            });
+                            <div className="flex border-l border-gray-200">
+                                <button
+                                    onClick={() => {
+                                        toast.dismiss(t.id);
+                                    }}
+                                    className="w-full border border-transparent rounded-none rounded-r-lg p-4 flex items-center justify-center text-sm font-medium text-indigo-600 hover:text-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                >
+                                    Close
+                                </button>
+                            </div>
+                        </div>
+                    ),
+                    {
+                        duration: 6000,
+                    },
+                );
+            }
+        };
+
+        const handleForcedLogout = () => {
+            dispatch(signOutSuccess());
+            return toast.error('Your account has been blocked', { duration: 6000 });
+        };
+        if (currentUser) {
+            socket.emit('refreshBrower', currentUser._id);
+            socket.on('newNotification', handleNewNotification);
+            socket.on('forcedLogout', handleForcedLogout);
         }
-    }, []);
+
+        return () => {
+            if (currentUser) {
+                socket.off('newNotification', handleNewNotification);
+                socket.off('forcedLogout', handleForcedLogout);
+            }
+        };
+    }, [system, like, comment, reply, rate, subscriber, newBlog]);
 
     return (
         <PayPalScriptProvider options={initialOptions}>
@@ -131,7 +153,18 @@ export default function App() {
                     <Route element={<PrivateRoute />}>
                         <Route
                             path="/notification"
-                            element={<Notification filterStateMapping={filterStateMapping} />}
+                            element={
+                                <Notification
+                                    filterStateMapping={filterStateMapping}
+                                    // setSystemState={setSystemState}
+                                    // setLikeState={setLikeState}
+                                    // setCommentState={setCommentState}
+                                    // setReplyState={setReplyState}
+                                    // setRateState={setRateState}
+                                    // setSubscriberState={setSubscriberState}
+                                    // setNewBlogState={setNewBlogState}
+                                />
+                            }
                         />
                         <Route path="/dash-board" element={<Dashboard />} />
                         <Route path="/change-password" element={<ChangePassword />} />

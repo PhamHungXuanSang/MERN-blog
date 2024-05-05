@@ -13,26 +13,26 @@ export default function Blog({ content, author }) {
     return (
         <Link
             to={`/blog/${slug}`}
-            className="group flex gap-8 justify-between items-center border-b my-2 dark:hover:bg-slate-600 hover:bg-gray-100 py-2 px-4 rounded"
+            className="group flex gap-8 justify-between items-center border-b my-2 dark:hover:bg-slate-800 hover:bg-gray-100 py-2 px-4 rounded"
         >
             <div className="max-w-[70%] flex-grow">
                 <div className="flex gap-2 items-center mb-2">
                     <img
                         src={userAvatar}
                         alt={'avatar'}
-                        className="w-6 h-6 rounded-full duration-300 group-hover:scale-110"
+                        className="w-6 h-6 rounded-full duration-300 group-hover:scale-125"
                     />
-                    <p className="line-clamp-1 break-words duration-300 group-hover:scale-110">@{username}</p>
+                    <p className="line-clamp-1 break-words">@{username}</p>
                     <p className="min-w-fit ml-4">Published on: {dateToDateAndTime(createdAt)}</p>
                 </div>
-                <h1 className="text-xl font-semibold line-clamp-2 break-words duration-300 group-hover:scale-105">
+                <h1 className="text-xl font-semibold line-clamp-2 break-words duration-100 group-hover:scale-105 w-fit relative before:content-[''] before:absolute before:top-[6%] before:right-[-1px] before:w-0 before:h-[93%] before:rounded-sm before:bg-gradient-to-r before:from-indigo-500 before:from-10% before:via-sky-500 before:via-30% before:to-emerald-500 before:to-90% before:-z-10 before:transition-[0.5s] group-hover:before:left-[1px] group-hover:before:right-auto group-hover:before:w-full">
                     {title}
                 </h1>
                 <i className="my-2 text-md leading-7 max-sm:hidden md:max-[1100px]:hidden line-clamp-1">
                     {description}
                 </i>
                 <div className="flex flex-wrap gap-5 mt-4">
-                    <span className="px-4 whitespace-nowrap rounded-full capitalize bg-slate-200 dark:bg-slate-500 font-semibold">
+                    <span className="px-4 whitespace-nowrap rounded-full capitalize border border-teal-500 font-semibold">
                         {category}
                     </span>
                     <div className="flex items-center gap-2">
@@ -60,7 +60,7 @@ export default function Blog({ content, author }) {
             <div className="h-28 aspect-auto">
                 <img
                     src={thumb}
-                    className="group-hover:scale-110 md:group-hover:scale-125 duration-300 w-full h-full aspect-square object-cover rounded"
+                    className="group-hover:scale-110 md:group-hover:scale-110 duration-500 w-full h-full aspect-square object-cover rounded"
                 />
             </div>
         </Link>

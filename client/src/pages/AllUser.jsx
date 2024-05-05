@@ -123,7 +123,7 @@ export default function AllUser() {
                                                         ? item.user.userDesc
                                                         : 'No description about this account'}
                                                 </p>
-                                                <div className="flex flex-wrap my-2 items-center justify-evenly">
+                                                <div className="flex flex-wrap gap-8 my-2 items-center justify-center">
                                                     {item.user.youtubeLink ? (
                                                         <Link to={item.user.youtubeLink} target="_blank">
                                                             <FaYoutube size={28} />

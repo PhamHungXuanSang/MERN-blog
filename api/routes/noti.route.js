@@ -4,7 +4,7 @@ import { newNotification, getNotifications, deleteNotification, markAsRead } fro
 
 const router = express.Router();
 
-router.get('/newNotification/:userId', authenToken, newNotification);
+router.get('/newNotification/:userId', newNotification);
 router.post(`/get-notifications/:userId`, authenToken, getNotifications);
 router.delete(`/delete-notification/:notificationId`, authenToken, deleteNotification);
 router.post(`/mark-as-read/:notificationId`, authenToken, markAsRead);

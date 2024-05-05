@@ -3,9 +3,10 @@ import {
     checkFreeTrial,
     getFreeTrial,
     checkCreatePermission,
-    paypalPayment,
+    storePayment,
     getTransactionHistory,
     createPaymentLink,
+    getPaymentInfo,
 } from '../controllers/transaction.controller.js';
 import { authenToken } from '../utils/authenToken.js';
 
@@ -14,8 +15,9 @@ const router = express.Router();
 router.post('/checkFreeTrial/:userId', authenToken, checkFreeTrial);
 router.post('/getFreeTrial/:userId', authenToken, getFreeTrial);
 router.get('/checkCreatePermission/:userId', checkCreatePermission);
-router.post('/paypal-payment', authenToken, paypalPayment);
+router.post('/store-payment', authenToken, storePayment);
 router.get(`/get-transaction-history/:userId`, authenToken, getTransactionHistory);
-router.post('/create-payment-link', authenToken, createPaymentLink);
+router.post('/create-payment-link', createPaymentLink);
+router.post('/get-payment-info/:orderCode', getPaymentInfo);
 
 export default router;

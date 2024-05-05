@@ -1,16 +1,22 @@
+import PhoneInput from 'react-phone-input-2';
+import 'react-phone-input-2/lib/style.css';
 import { Button, TextInput, Textarea } from 'flowbite-react';
 import { useState } from 'react';
 import MoveFromTopEffect from '../components/MoveFromTopEffect';
 import { Link } from 'react-router-dom';
 import toast from 'react-hot-toast';
+import { useSelector } from 'react-redux';
 
 export default function Contact() {
+    const [countryCode, setCountryCode] = useState('+1');
     const [formData, setFormData] = useState({
         name: '',
         email: '',
+        countryCode,
         phoneNumber: '',
         message: '',
     });
+    const darkMode = useSelector((state) => state.darkMode.darkMode);
 
     const handleChange = (e) => {
         setFormData({
@@ -18,6 +24,13 @@ export default function Contact() {
             [e.target.name]: e.target.value,
         });
     };
+
+    const handleChangeCountryCode = (phone) => {
+        setCountryCode(phone);
+        formData.countryCode = phone;
+    };
+
+    console.log(formData);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -45,8 +58,8 @@ export default function Contact() {
     };
 
     return (
-        <div className="container mx-auto p-6">
-            <div className="flex flex-wrap items-center mx-3 overflow-hidden dark:bg-slate-800 rounded-3xl">
+        <div className="container mx-auto">
+            <div className="flex flex-wrap items-center mx-3 my-6 overflow-hidden dark:bg-slate-800 rounded-3xl">
                 {/* Left side */}
                 <div className="flex-1 sm:px-8">
                     <MoveFromTopEffect>
@@ -102,16 +115,42 @@ export default function Contact() {
                             <label className="block text-sm font-bold mb-2" htmlFor="phoneRegion">
                                 Phone Number
                             </label>
-                            <TextInput
-                                id="phoneNumber"
-                                type="tel"
-                                value={formData.phoneNumber}
-                                onChange={handleChange}
-                                required
-                                placeholder="0123456789"
-                                name="phoneNumber"
-                                className="placeholder:text-gray-500 text-teal-500"
-                            />
+                            <div className="flex gap-2">
+                                <PhoneInput
+                                    id="phoneRegion"
+                                    country={'us'}
+                                    name="countryCode"
+                                    value={countryCode}
+                                    onChange={(phone) => handleChangeCountryCode(phone)}
+                                    containerStyle={{ width: '40px' }}
+                                    inputStyle={{
+                                        display: 'none',
+                                        color: darkMode == 'light' ? 'black' : 'blue',
+                                        backgroundColor: darkMode == 'light' ? 'slate-600' : 'slate-600',
+                                    }}
+                                    buttonStyle={{
+                                        width: '40px',
+                                        height: '40px',
+                                        border: darkMode == 'light' ? '1px solid black' : '#374151',
+                                        borderRadius: '8px',
+                                        backgroundColor: darkMode == 'light' ? 'white' : '#374151',
+                                    }}
+                                    dropdownStyle={{ backgroundColor: darkMode == 'light' ? 'white' : '#374151' }}
+                                />
+
+                                <div>
+                                    <TextInput
+                                        id="phoneNumber"
+                                        type="tel"
+                                        value={formData.phoneNumber}
+                                        onChange={handleChange}
+                                        required
+                                        placeholder={countryCode[0] == '+' ? countryCode : '+' + countryCode}
+                                        name="phoneNumber"
+                                        className="placeholder:text-gray-500 text-teal-500"
+                                    />
+                                </div>
+                            </div>
 
                             <div className="my-6">
                                 <label className="block text-sm font-bold mb-2">Message</label>

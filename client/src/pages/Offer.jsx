@@ -57,7 +57,6 @@ export default function Offer() {
         }
     };
 
-    // Lấy về thông tin về transaction của người dùng
     useEffect(() => {
         handleCheckFreeTrial();
         handleGetAllPackage();
@@ -76,7 +75,7 @@ export default function Offer() {
                 return navigate('/sign-in');
             } else if (res.status === 200) {
                 dispatch(successfullyPurchase(data));
-                toast.success('You have successfully purchased the package', { duration: 6000 });
+                toast.success('You have successfully registered for a free trial to create a blog', { duration: 6000 });
                 return navigate('/order-status-success');
             }
         } catch (error) {
@@ -143,9 +142,7 @@ export default function Offer() {
 - Intellectual Property: Must not violate intellectual property rights.
 - User Conduct: Maintain professionalism and respect within the community.
 - Fact-Checking: Ensure accuracy of any stated facts or claims.
-- Commercial Activity: Commercial endeavors require prior approval.
 - Platform Rights: We reserve the right to remove content, or suspend or terminate access for violations.
-- Terms Modification: Terms can change at any time, without notice.
 - Liability: The platform isn't liable for damages from using the Create Blog feature.
 
 Usage of the Create Blog function signifies agreement to these condensed terms and the platform's Terms of Service.`}

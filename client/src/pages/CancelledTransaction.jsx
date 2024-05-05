@@ -15,7 +15,7 @@ const CancelledTransaction = () => {
             style={{ animation: 'fadeIn 2s' }}
         >
             <img
-                src="../../public/transaction-cancelled.png"
+                src="/transaction-cancelled.png"
                 className="select-none border-2 border-gray-300 w-48 aspect-square object-cover rounded"
             />
             <div>

@@ -114,7 +114,10 @@ export default function ReadBlog() {
                 >
                     <CommentsContainer />
                     <div className="max-w-[900px] block mx-auto py-10 max-lg:px-[5vw]">
-                        <img src={blog.thumb} className="aspect-video object-cover rounded mx-auto" />
+                        <img
+                            src={blog.thumb}
+                            className="aspect-auto object-cover rounded-[10px] mx-auto max-h-[350px]"
+                        />
                         <div className="mt-12">
                             <i className="block mx-auto w-fit py-1 px-3 my-4 font-semibold capitalize border-2 border-teal-500 dark:bg-slate-800 bg-slate-100 rounded-3xl">
                                 {blog.category}

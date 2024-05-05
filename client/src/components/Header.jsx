@@ -36,11 +36,7 @@ export default function Header() {
                 headers: { 'Content-Type': 'application/json' },
             });
             const data = await res.json();
-            if (res.status === 403) {
-                dispatch(signOutSuccess());
-                return navigate('/sign-in');
-            }
-            dispatch(setCurrentUser({ ...currentUser, newNotification: data.length > 0 }));
+            dispatch(setCurrentUser({ ...currentUser, newNotification: data }));
         } catch (error) {
             console.log(error);
         }
@@ -216,7 +212,7 @@ export default function Header() {
                                     <Dropdown.Item className="flex gap-1 items-center">
                                         Notification
                                         {currentUser?.newNotification == true && (
-                                            <i className="px-2 rounded-full bg-red-500 text-sm font-thin">New</i>
+                                            <i className="px-2 rounded-full bg-red-500 text-sm font-medium">New</i>
                                         )}
                                     </Dropdown.Item>
                                 </Link>
