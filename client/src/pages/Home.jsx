@@ -10,11 +10,15 @@ import OneByOneAppearEffect from '../components/OneByOneAppearEffect';
 import OneByOneAppearFromRightEffect from '../components/OneByOneAppearFromRightEffect';
 import InPageNavigation from '../components/InPageNavigation';
 import BlogTopRated from '../components/BlogTopRated';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { SlNote } from 'react-icons/sl';
 import BackToTopButton from '../components/BackToTopButton';
 import FadeInWhenVisible from '../components/FadeInWhenVisible';
 import { useSelector } from 'react-redux';
+import 'slick-carousel/slick/slick.css';
+import 'slick-carousel/slick/slick-theme.css';
+import Slider from 'react-slick';
+import dateToDateAndTime from '../utils/dateToDateAndTime';
 
 export default function Home() {
     const [activeTab, setActiveTab] = useState('all category');
@@ -27,8 +31,12 @@ export default function Home() {
     const [totalPage, setTotalPage] = useState(1);
     const [allCate, setAllCate] = useState(null);
     const currentUser = useSelector((state) => state.user.currentUser);
-    const [authors, setAuthors] = useState(null);
+    const [authors, setAuthors] = useState([]);
+    const [authorBlogs, setAuthorBlogs] = useState(null);
+    const [activeAuthor, setActiveAuthor] = useState(null);
     const limit = 5;
+
+    const navigate = useNavigate();
 
     const handleGetLatestBlogs = async () => {
         try {
@@ -79,7 +87,7 @@ export default function Home() {
         });
         const data = await res.json();
         setAuthors(data.authors);
-        console.log(data.authors);
+        setActiveAuthor(data.authors[0].username);
     };
 
     const handleGetBlogsByCate = async (cate) => {
@@ -133,6 +141,37 @@ export default function Home() {
         setCurrentPage(page);
     };
 
+    const settings = {
+        className: 'center',
+        centerMode: true,
+        infinite: true,
+        slidesToShow: 3,
+        speed: 500,
+    };
+
+    const handleFetchAuthorBlog = async (username) => {
+        setAuthorBlogs(null);
+        setActiveAuthor(username);
+        try {
+            const res = await fetch(`/api/user/profile/${username}?page=1&&limit=3`, {
+                method: 'GET',
+            });
+            if (res.status == 404) {
+                return navigate('*');
+            }
+            const userProfile = await res.json();
+            setAuthorBlogs(userProfile.blogs);
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    useEffect(() => {
+        if (activeAuthor != null) {
+            handleFetchAuthorBlog(activeAuthor);
+        }
+    }, [activeAuthor]);
+
     return (
         <section className="h-cover container mx-auto py-8">
             <div className="flex justify-center gap-4 min-h-screen">
@@ -150,7 +189,7 @@ export default function Home() {
                                             {allCate?.map((cate, i) => {
                                                 return (
                                                     <OneByOneAppearFromRightEffect
-                                                        transition={{ duration: 1, delay: i * 0.03 }}
+                                                        transition={{ duration: 0.6, delay: i * 0.01 }}
                                                         key={i}
                                                     >
                                                         <Button
@@ -251,7 +290,7 @@ export default function Home() {
                                 {allCate?.map((cate, i) => {
                                     return (
                                         <OneByOneAppearFromRightEffect
-                                            transition={{ duration: 1, delay: i * 0.1 }}
+                                            transition={{ duration: 0.6, delay: i * 0.1 }}
                                             key={i}
                                         >
                                             <Button
@@ -304,24 +343,115 @@ export default function Home() {
                     </div>
                 </div>
             </div>
-            {/* Thêm code hiển thị danh sách authors đã subscribe */}
             {currentUser && (
                 <>
                     <hr className="mt-20 my-6 opacity-50" />
                     <div className="flex justify-between mb-8">
-                        <p className="font-semibold text-3xl mx-auto">Following Authors</p>
-                        <div className="flex items-center group">
-                            <Link to={'/all-following-author'} className="dark:opacity-60 group-hover:opacity-90 pr-2">
-                                All
-                            </Link>
-                            <Link to={'/all-following-author'}>
-                                <FaArrowRight
-                                    size={18}
-                                    className="duration-200 transition-opacity opacity-0 group-hover:opacity-90 cursor-pointer"
-                                />
-                            </Link>
-                        </div>
+                        <p className="font-semibold text-3xl mx-auto">Subscribed Authors</p>
+                        {authors != null && (
+                            <div className="flex items-center group">
+                                <Link
+                                    to={'/all-subscribed-author'}
+                                    className="dark:opacity-60 group-hover:opacity-90 pr-2"
+                                >
+                                    All
+                                </Link>
+                                <Link to={'/all-subscribed-author'}>
+                                    <FaArrowRight
+                                        size={18}
+                                        className="duration-200 transition-opacity opacity-0 group-hover:opacity-90 cursor-pointer"
+                                    />
+                                </Link>
+                            </div>
+                        )}
                     </div>
+                    <FadeInWhenVisible>
+                        {authors != null ? (
+                            authors != null && authors.length > 0 ? (
+                                authors.length == 1 ? (
+                                    <div
+                                        className="mx-auto w-fit dark:bg-white bg-slate-800 p-1 rounded-full cursor-pointer"
+                                        onClick={() => handleFetchAuthorBlog(authors[0].username)}
+                                    >
+                                        <div className="flex gap-2 items-center">
+                                            <img
+                                                src={authors[0].userAvatar}
+                                                className="w-10 h-10 rounded-full"
+                                                alt="userAvatar"
+                                            />
+                                            <span className="dark:text-black text-white">@{authors[0].username}</span>
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <Slider {...settings} className="text-center">
+                                        {authors.map((author, i) => (
+                                            <div
+                                                key={i}
+                                                className="!w-fit dark:bg-white bg-slate-800 p-1 rounded-full cursor-pointer"
+                                                onClick={() => handleFetchAuthorBlog(author.username)}
+                                            >
+                                                <div className="flex gap-2 items-center">
+                                                    <img
+                                                        src={author.userAvatar}
+                                                        className="w-10 h-10 rounded-full"
+                                                        alt="userAvatar"
+                                                    />
+                                                    <span className="dark:text-black text-white">
+                                                        @{author.username}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </Slider>
+                                )
+                            ) : (
+                                <i className="block text-center opacity-70">
+                                    You are not subscribe any author. Click the subscribe button to easily see the
+                                    authors blog
+                                </i>
+                            )
+                        ) : (
+                            <Spinner aria-label="Spinner button example" size="xl" className="mx-auto block" />
+                        )}
+                    </FadeInWhenVisible>
+                    <FadeInWhenVisible>
+                        {authorBlogs != null ? (
+                            authorBlogs.length > 0 ? (
+                                <div className="flex flex-col md:flex-row gap-2 md:gap-0 justify-between items-center mt-8 text-center">
+                                    {authorBlogs.map((blog, i) => {
+                                        return (
+                                            <Link
+                                                to={`/blog/${blog.slug}`}
+                                                key={i}
+                                                className="group md:max-w-[30%] my-0 mx-4 dark:bg-slate-800 bg-slate-100 p-4 rounded-3xl"
+                                            >
+                                                <img
+                                                    src={blog.thumb}
+                                                    alt="blogThumb"
+                                                    className="w-full aspect-video object-cover mx-auto rounded-3xl"
+                                                />
+                                                <p className="my-2 text-xl font-semibold line-clamp-2 break-words duration-100 group-hover:scale-105 w-fit relative before:content-[''] before:absolute before:top-[6%] before:right-[-1px] before:w-0 before:h-[93%] before:rounded-sm before:bg-gradient-to-r before:from-indigo-500 before:from-10% before:via-sky-500 before:via-30% before:to-emerald-500 before:to-90% before:-z-10 before:transition-[0.5s] group-hover:before:left-[1px] group-hover:before:right-auto group-hover:before:w-full">
+                                                    {blog.title}
+                                                </p>
+                                                <span className="my-2 block w-fit px-4 whitespace-nowrap rounded-full capitalize border border-teal-500 font-semibold">
+                                                    {blog.category}
+                                                </span>
+                                                <i className="min-w-fit ml-4 opacity-50 block">
+                                                    Published on: {dateToDateAndTime(blog.createdAt)}
+                                                </i>
+                                            </Link>
+                                        );
+                                    })}
+                                </div>
+                            ) : (
+                                <i className="block text-center opacity-70 mt-8">
+                                    Author {activeAuthor != null ? '@' + activeAuthor : ''} not publish any blogs.
+                                </i>
+                            )
+                        ) : (
+                            ''
+                        )}
+                    </FadeInWhenVisible>
                 </>
             )}
             <hr className="mt-20 my-6 opacity-50" />
@@ -348,7 +478,7 @@ export default function Home() {
                             topAuthors.map((author, i) => {
                                 return (
                                     <div
-                                        className="p-4 dark:bg-slate-800 bg-slate-50 md:max-w-[32%] rounded-3xl overflow-hidden hover:scale-105 duration-300"
+                                        className="p-4 dark:bg-slate-800 bg-slate-100 md:max-w-[32%] rounded-3xl overflow-hidden hover:scale-105 duration-300"
                                         key={i}
                                     >
                                         <div className="flex items-center gap-4 xl:gap-8">

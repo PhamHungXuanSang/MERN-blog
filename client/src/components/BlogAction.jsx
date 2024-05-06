@@ -245,6 +245,6 @@ export default function BlogAction() {
             )}
         </>
     ) : (
-        <Spinner aria-label="Spinner button example" size="sm" />
+        <Spinner aria-label="Spinner button example" size="sm" className="mx-auto block" />
     );
 }

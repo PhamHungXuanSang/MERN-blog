@@ -90,7 +90,7 @@ export default function UserProfile() {
 
                     <div className="text-center">
                         {userProfile == null ? (
-                            <Spinner className="block mt-4" size="lg" />
+                            <Spinner className="block mx-auto mt-4" size="xl" />
                         ) : (
                             <>
                                 <img
@@ -138,7 +138,7 @@ export default function UserProfile() {
             <div className="max-w-[30%] border-l border-gray-300 pl-4 pt-3 max-md:hidden">
                 <div className="text-center">
                     {userProfile == null ? (
-                        <Spinner className="block mt-4" size="lg" />
+                        <Spinner className="block mx-auto mt-4" size="xl" />
                     ) : (
                         <>
                             <img

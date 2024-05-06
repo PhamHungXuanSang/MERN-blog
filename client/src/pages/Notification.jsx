@@ -125,7 +125,7 @@ export default function Notification({
                 })}
             </div>
             {notifications == null ? (
-                <Spinner aria-label="Spinner button example" size="xl" />
+                <Spinner aria-label="Spinner button example" size="xl" className="mx-auto block" />
             ) : (
                 <>
                     {notifications.length ? (

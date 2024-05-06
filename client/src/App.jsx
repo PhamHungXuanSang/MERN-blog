@@ -34,6 +34,7 @@ import Contact from './pages/Contact.jsx';
 import AllUser from './pages/AllUser.jsx';
 import CancelledTransaction from './pages/CancelledTransaction.jsx';
 import SuccessfulTransaction from './pages/SuccessfulTransaction.jsx';
+import AllSubscribedAuthor from './pages/AllSubscribedAuthor.jsx';
 export const socket = io('http://localhost:3000');
 
 export default function App() {
@@ -174,6 +175,7 @@ export default function App() {
                         <Route path="/checkout" element={<Checkout />} />
                         <Route path="/order-status-cancel" element={<CancelledTransaction />} />
                         <Route path="/order-status-success" element={<SuccessfulTransaction />} />
+                        <Route path="/all-subscribed-author" element={<AllSubscribedAuthor />} />
                     </Route>
                     <Route element={<AdminPrivateRoute />}>
                         <Route path="/admin" element={<Admin />} />
