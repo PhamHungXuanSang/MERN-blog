@@ -173,7 +173,7 @@ export default function Home() {
     }, [activeAuthor]);
 
     return (
-        <section className="h-cover container mx-auto py-8">
+        <section className="h-cover container mx-auto py-8 px-2 md:px-0">
             <div className="flex justify-center gap-4 min-h-screen">
                 <div className="w-full md:max-w-[68%]">
                     <InPageNavigation routes={['home', 'Propose']} defaultHidden={['Propose']}>
@@ -182,8 +182,10 @@ export default function Home() {
                                 <>
                                     <div className="flex flex-col gap-2 my-4 md:hidden">
                                         <div className="flex items-center">
-                                            <h1 className="font-medium text-xl mr-1">View by Category</h1>
-                                            <BiSolidCategoryAlt />
+                                            <h1 className="font-medium text-xl mr-1 text-green-400">
+                                                View by Category
+                                            </h1>
+                                            <BiSolidCategoryAlt fill="green" />
                                         </div>
                                         <div className="flex gap-2 flex-wrap">
                                             {allCate?.map((cate, i) => {
@@ -241,8 +243,8 @@ export default function Home() {
                         <>
                             <div className="my-5">
                                 <div className="flex items-center gap-2 mb-2">
-                                    <h1 className="font-medium text-xl mr-1">Trending blogs</h1>
-                                    <TbTrendingUp />
+                                    <h1 className="font-medium text-xl mr-1 text-red-600">Trending blogs</h1>
+                                    <TbTrendingUp fill="red" />
                                 </div>
                                 {trendingBlogs != null ? (
                                     trendingBlogs.length == 0 ? (
@@ -260,8 +262,8 @@ export default function Home() {
                             </div>
                             <div className="my-4">
                                 <div className="flex items-center gap-2 mb-2">
-                                    <h1 className="font-medium text-xl mr-1">Highest rated blogs</h1>
-                                    <FaStarHalfAlt />
+                                    <h1 className="font-medium text-xl mr-1 text-yellow-300">Highest rated blogs</h1>
+                                    <FaStarHalfAlt fill="yellow" />
                                 </div>
                                 {topRatedBlogs != null ? (
                                     topRatedBlogs.length == 0 ? (
@@ -308,8 +310,8 @@ export default function Home() {
                         </div>
                         <div className="mb-4">
                             <div className="flex items-center gap-2 mb-2">
-                                <h1 className="font-medium text-xl mr-1 text-yellow-300">Trending blogs</h1>
-                                <TbTrendingUp fill="yellow" />
+                                <h1 className="font-medium text-xl mr-1 text-red-600">Trending blogs</h1>
+                                <TbTrendingUp fill="red" />
                             </div>
                             {trendingBlogs != null ? (
                                 trendingBlogs.length == 0 ? (
@@ -327,8 +329,8 @@ export default function Home() {
                         </div>
                         <div className="my-4">
                             <div className="flex items-center gap-2 mb-2">
-                                <h1 className="font-medium text-xl mr-1">Highest rated blogs</h1>
-                                <FaStarHalfAlt />
+                                <h1 className="font-medium text-xl mr-1 text-yellow-300">Highest rated blogs</h1>
+                                <FaStarHalfAlt fill="yellow" />
                             </div>
                             {topRatedBlogs != null ? (
                                 topRatedBlogs.length == 0 ? (

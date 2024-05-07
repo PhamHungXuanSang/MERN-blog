@@ -129,7 +129,7 @@ export default function Header() {
                                     {blogs.slice(0, 5)?.map((blog, i) => {
                                         return (
                                             <div
-                                                className="dark:hover:bg-slate-600 hover:bg-gray-100 rounded border-b border-gray-500 mb-2 py-1"
+                                                className="dark:hover:bg-slate-600 hover:bg-gray-200 rounded border-b border-gray-500 mb-2 py-1"
                                                 key={i}
                                                 onClick={() => {
                                                     setBlogs(null);
@@ -151,7 +151,7 @@ export default function Header() {
                                     {users.slice(0, 5)?.map((user, i) => {
                                         return (
                                             <div
-                                                className="dark:hover:bg-slate-600 hover:bg-gray-100 rounded border-b border-gray-500 mb-2 py-1"
+                                                className="overflow-x-hidden dark:hover:bg-slate-600 hover:bg-gray-200 rounded border-b border-gray-500 mb-2 py-1"
                                                 key={i}
                                                 onClick={() => {
                                                     setBlogs(null);

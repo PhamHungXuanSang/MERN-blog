@@ -9,10 +9,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import checkCreatePermission from '../utils/checkCreatePermission.js';
 import { setCurrentUser } from '../redux/user/userSlice.js';
 import { AiOutlineTransaction, AiFillSchedule } from 'react-icons/ai';
-import { FaInfoCircle } from 'react-icons/fa';
+import { FaInfoCircle, FaUserEdit } from 'react-icons/fa';
+import { FaCircleArrowLeft, FaCircleArrowRight } from 'react-icons/fa6';
 
 export default function DashSidebar() {
     const location = useLocation();
+    const [expanded, setExpanded] = useState(true);
     const [tab, setTab] = useState('');
     const currentUser = useSelector((state) => state.user.currentUser);
     const dispatch = useDispatch();
@@ -43,12 +45,15 @@ export default function DashSidebar() {
     return (
         <Sidebar
             aria-label="Sidebar with content separator example"
-            className="w-full hidden md:block md:max-h-full"
+            className={`w-full hidden md:block md:max-h-full transition-all ${expanded ? 'w-full' : 'w-24'}`}
             id="side-bar"
         >
-            <Sidebar.Items className="pt-8">
+            <button className="hidden w-full md:flex justify-end" onClick={() => setExpanded((prev) => !prev)}>
+                {expanded ? <FaCircleArrowLeft size={28} /> : <FaCircleArrowRight size={28} />}
+            </button>
+            <Sidebar.Items>
                 <Sidebar.ItemGroup>
-                    <span className="text-2xl font-semibold pl-2">Profile</span>
+                    <span className={`font-semibold pl-2 + ${expanded ? ' text-2xl' : ' text-lg'}`}>Profile</span>
                     <Link to="/dash-board?tab=profile">
                         <Sidebar.Item
                             onClick={() => toggleHiddenSidebar()}
@@ -58,7 +63,7 @@ export default function DashSidebar() {
                             as="div"
                             className="mt-2"
                         >
-                            Profile
+                            {expanded ? 'Profile' : ''}
                         </Sidebar.Item>
                     </Link>
                     <Link to="/dash-board?tab=update-profile">
@@ -68,13 +73,14 @@ export default function DashSidebar() {
                             active={tab === 'update-profile'}
                             labelColor="dark"
                             as="div"
+                            icon={FaUserEdit}
                         >
-                            Update profile
+                            {expanded ? 'Update profile' : ''}
                         </Sidebar.Item>
                     </Link>
                 </Sidebar.ItemGroup>
                 <Sidebar.ItemGroup>
-                    <span className="text-2xl font-semibold pl-2">Blog</span>
+                    <span className={`font-semibold pl-2 + ${expanded ? ' text-2xl' : ' text-lg'}`}>Blog</span>
                     {currentUser.isAdmin || currentUser.createPermission ? (
                         <>
                             <Link to="/dash-board?tab=create-blog">
@@ -84,7 +90,7 @@ export default function DashSidebar() {
                                     active={tab === 'create-blog'}
                                     icon={IoCreateSharp}
                                 >
-                                    Create blog
+                                    {expanded ? 'Create blog' : ''}
                                 </Sidebar.Item>
                             </Link>
                             <Link to="/dash-board?tab=schedule-list">
@@ -94,7 +100,7 @@ export default function DashSidebar() {
                                     active={tab === 'schedule-list'}
                                     icon={AiFillSchedule}
                                 >
-                                    Schedule list
+                                    {expanded ? 'Schedule list' : ''}
                                 </Sidebar.Item>
                             </Link>
                             <Link to="/dash-board?tab=all-blog">
@@ -104,20 +110,20 @@ export default function DashSidebar() {
                                     active={tab === 'all-blog'}
                                     icon={HiDocumentText}
                                 >
-                                    All my blog
+                                    {expanded ? 'All my blog' : ''}
                                 </Sidebar.Item>
                             </Link>
                         </>
                     ) : (
                         <Link to="/offer">
                             <Sidebar.Item onClick={() => toggleHiddenSidebar()} className="mt-2" icon={MdLocalOffer}>
-                                Create blog offer
+                                {expanded ? 'Create blog offer' : ''}
                             </Sidebar.Item>
                         </Link>
                     )}
                 </Sidebar.ItemGroup>
                 <Sidebar.ItemGroup>
-                    <span className="text-2xl font-semibold pl-2">History</span>
+                    <span className={`font-semibold pl-2 + ${expanded ? ' text-2xl' : ' text-lg'}`}>History</span>
                     <>
                         <Link to="/dash-board?tab=recently-viewed">
                             <Sidebar.Item
@@ -126,7 +132,7 @@ export default function DashSidebar() {
                                 active={tab === 'recently-viewed'}
                                 icon={HiMiniClipboardDocumentCheck}
                             >
-                                Recently viewed
+                                {expanded ? 'Recently viewed' : ''}
                             </Sidebar.Item>
                         </Link>
                         <Link to="/dash-board?tab=saved-blogs">
@@ -136,14 +142,14 @@ export default function DashSidebar() {
                                 active={tab === 'saved-blogs'}
                                 icon={MdFolderSpecial}
                             >
-                                Saved blogs
+                                {expanded ? 'Saved blogs' : ''}
                             </Sidebar.Item>
                         </Link>
                     </>
                 </Sidebar.ItemGroup>
                 {!currentUser.isAdmin && (
                     <Sidebar.ItemGroup>
-                        <span className="text-2xl font-semibold pl-2">Transaction</span>
+                        <span className={`font-semibold pl-2 + ${expanded ? ' text-2xl' : ' text-lg'}`}>Package</span>
                         <>
                             <Link to="/offer">
                                 <Sidebar.Item
@@ -151,7 +157,7 @@ export default function DashSidebar() {
                                     className="mt-2"
                                     icon={MdLocalOffer}
                                 >
-                                    Buy package
+                                    {expanded ? 'Buy package' : ''}
                                 </Sidebar.Item>
                             </Link>
                             <Link to="/dash-board?tab=usage">
@@ -161,7 +167,7 @@ export default function DashSidebar() {
                                     active={tab === 'usage'}
                                     icon={FaInfoCircle}
                                 >
-                                    Account usage
+                                    {expanded ? 'Account usage' : ''}
                                 </Sidebar.Item>
                             </Link>
                             <Link to="/dash-board?tab=transaction">
@@ -171,7 +177,7 @@ export default function DashSidebar() {
                                     active={tab === 'transaction'}
                                     icon={AiOutlineTransaction}
                                 >
-                                    All transaction
+                                    {expanded ? 'All transaction' : ''}
                                 </Sidebar.Item>
                             </Link>
                         </>

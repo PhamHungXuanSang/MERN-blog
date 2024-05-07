@@ -127,7 +127,7 @@ export default function ReadBlog() {
                                 <div className="flex flex-col gap-4 items-center border border-teal-500 p-2 rounded-lg">
                                     <Link
                                         to={`/user/${blog.authorId.username}`}
-                                        className="flex gap-4 justify-center items-center"
+                                        className="flex gap-0 md:gap-4 justify-center items-center max-w-full"
                                     >
                                         <img src={blog.authorId.userAvatar} className="w-12 h-12 rounded-full" />
                                         <div>

@@ -19,9 +19,9 @@ export default function BlogTopRated({ index, content }) {
     return (
         <Link
             to={`/blog/${slug}`}
-            className="group overflow-hidden flex gap-3 p-2 rounded-md dark:hover:bg-slate-800 hover:bg-gray-100"
+            className="group overflow-hidden flex gap-3 p-2 rounded-md dark:hover:bg-slate-800 hover:bg-gray-200"
         >
-            <p className="sm:text-3xl lg:text-4xl font-bold text-gray-700 leading-none group-hover:text-red-500 group-hover:scale-125 duration-300">
+            <p className="sm:text-3xl lg:text-4xl font-bold text-gray-700 leading-none group-hover:text-yellow-300 group-hover:scale-125 duration-300">
                 {index < 10 ? '0' + (index + 1) : index}
             </p>
 

@@ -13,7 +13,7 @@ export default function Blog({ content, author }) {
     return (
         <Link
             to={`/blog/${slug}`}
-            className="group flex gap-8 justify-between items-center border-b my-2 dark:hover:bg-slate-800 hover:bg-gray-100 py-2 px-4 rounded"
+            className="group flex gap-8 justify-between items-center border-b my-2 dark:hover:bg-slate-800 hover:bg-gray-200 py-2 px-4 rounded"
         >
             <div className="max-w-[70%] flex-grow">
                 <div className="flex gap-2 items-center mb-2">

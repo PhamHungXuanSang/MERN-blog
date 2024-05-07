@@ -22,6 +22,15 @@ export const addNewCate = async (req, res, next) => {
     }
 };
 
+export const getAllCategory = async (req, res, next) => {
+    try {
+        const allCates = await Category.find();
+        return res.status(200).json({ allCates });
+    } catch (error) {
+        next(error);
+    }
+};
+
 export const getAllNotBlockedCategory = async (req, res, next) => {
     try {
         const allCates = await Category.find({ isBlocked: false });

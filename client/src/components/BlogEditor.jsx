@@ -230,7 +230,7 @@ export default function BlogEditor() {
     };
 
     return (
-        <div className="flex-1 py-4">
+        <div className="flex-1 py-4 px-2 md:px-0">
             <section className="w-full">
                 <Textarea
                     defaultValue={title}
@@ -242,7 +242,7 @@ export default function BlogEditor() {
                 <div className="mx-auto mt-4 w-[60%]">
                     <Label
                         htmlFor="dropzone-file"
-                        className="dark:hover:bg-bray-800 flex w-full aspect-auto cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 hover:bg-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:border-gray-500 dark:hover:bg-gray-600"
+                        className="flex w-full aspect-auto cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 hover:bg-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:border-gray-500 dark:hover:bg-gray-600"
                     >
                         {thumb ? (
                             <img

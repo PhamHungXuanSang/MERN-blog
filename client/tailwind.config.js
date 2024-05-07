@@ -4,7 +4,7 @@ export default {
     theme: {
         extend: {
             backgroundImage: {
-                parallax: 'url("./public/aboutUsBackgroundImage.jpg")',
+                parallax: 'url("./aboutUsBackgroundImage.jpg")',
             },
         },
     },

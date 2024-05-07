@@ -27,7 +27,7 @@ export default function Admin() {
             <div className="md:w-[16%]">
                 <AdminSideBar />
             </div>
-            <div className="min-h-screen container md:w-[80%] mx-auto">
+            <div className="min-h-screen container md:w-[80%] mx-auto grow">
                 {tab === 'main-board' && <MainBoardManagement />}
                 {tab === 'revenue' && <RevenueManagement />}
                 {tab === 'revenue-each-package' && <RevenueEachPackage />}

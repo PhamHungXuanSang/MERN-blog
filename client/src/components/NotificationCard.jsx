@@ -112,7 +112,7 @@ export default function NotificationCard({ data, index, notificationState, unRea
                                 >
                                     {data.blogId.title}
                                 </Link>
-                                <div className="py-2 px-4 mt-2 rounded-md bg-gray-100 dark:bg-slate-600">
+                                <div className="py-2 px-4 mt-2 rounded-md bg-gray-200 dark:bg-slate-600">
                                     <p className="text-sm">Your comment: {data.repliedOnComment.content}</p>
                                 </div>
                             </>

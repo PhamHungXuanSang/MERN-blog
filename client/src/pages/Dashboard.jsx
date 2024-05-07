@@ -25,10 +25,10 @@ export default function Dashboard() {
 
     return (
         <div className="flex flex-col md:flex-row">
-            <div className="md:w-[16%]">
+            <div>
                 <DashSidebar />
             </div>
-            <div className="min-h-screen container md:w-[80%] mx-auto">
+            <div className="min-h-screen container md:w-[80%] mx-auto grow">
                 {tab === 'profile' && <DashProfile />}
                 {tab === 'update-profile' && <DashProfileUpdate />}
                 {tab === 'create-blog' && <Editor />}
