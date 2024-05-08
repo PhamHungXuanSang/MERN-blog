@@ -1,5 +1,5 @@
 import Blog from '../models/blog.model.js';
-import RefreshToken from '../models/refreshToken.model.js';
+// import RefreshToken from '../models/refreshToken.model.js';
 import User from '../models/user.model.js';
 import createNoti from '../utils/createNoti.js';
 import { io, userOnline } from '../index.js';
@@ -96,11 +96,11 @@ export const deleteAccount = async (req, res, next) => {
     }
 
     try {
-        const refreshToken = req.cookies.refresh_token;
-        await RefreshToken.deleteOne({ refreshToken });
+        // const refreshToken = req.cookies.refresh_token;
+        // await RefreshToken.deleteOne({ refreshToken });
         await User.findByIdAndDelete(req.params.userId);
         res.clearCookie('access_token');
-        res.clearCookie('refresh_token');
+        // res.clearCookie('refresh_token');
         return res.status(200).json('User has been deleted');
     } catch (error) {
         next(error);

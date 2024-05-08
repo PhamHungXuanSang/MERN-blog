@@ -2,7 +2,7 @@ import User from '../models/user.model.js';
 import bcryptjs from 'bcryptjs';
 import { errorHandler } from '../utils/error.js';
 import jwt from 'jsonwebtoken';
-import RefreshToken from '../models/refreshToken.model.js';
+// import RefreshToken from '../models/refreshToken.model.js';
 import { userOnline } from '../index.js';
 import Transaction from '../models/transaction.model.js';
 import { sendEmailServices } from '../services/emailService.js';
@@ -140,13 +140,13 @@ export const signin = async (req, res, next) => {
             isAdmin: validUser.isAdmin,
         };
 
-        const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: 1 * 60 });
-        const refToken = jwt.sign(payload, process.env.JWT_REFRESH_SECRET, { expiresIn: 1 * 60 * 1440 });
-        const refreshToken = new RefreshToken({
-            refreshToken: refToken,
-        });
+        const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: 1 * 60 * 1440 });
+        // const refToken = jwt.sign(payload, process.env.JWT_REFRESH_SECRET, { expiresIn: 1 * 60 * 1440 });
+        // const refreshToken = new RefreshToken({
+        //     refreshToken: refToken,
+        // });
         try {
-            await refreshToken.save();
+            // await refreshToken.save();
             const newNoti = await Noti.find({ recipient: validUser._id, read: false });
             if (newNoti.length > 0) {
                 validUser._doc.newNotification = true;
@@ -154,8 +154,8 @@ export const signin = async (req, res, next) => {
         } catch (error) {
             next(error);
         }
-        res.cookie('access_token', token);
-        res.cookie('refresh_token', refToken, { httpOnly: true, secure: true, sameSite: 'strict' });
+        res.cookie('access_token', token, { httpOnly: true, secure: true, sameSite: 'strict' });
+        // res.cookie('refresh_token', refToken, { httpOnly: true, secure: true, sameSite: 'strict' });
 
         const { password: secret, ...rest } = validUser._doc;
 
@@ -186,13 +186,13 @@ export const google = async (req, res, next) => {
                 isAdmin: user.isAdmin,
             };
 
-            const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: 1 * 60 });
-            const refToken = jwt.sign(payload, process.env.JWT_REFRESH_SECRET, { expiresIn: 1 * 60 * 1440 });
-            const refreshToken = new RefreshToken({
-                refreshToken: refToken,
-            });
+            const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: 1 * 60 * 1440 });
+            // const refToken = jwt.sign(payload, process.env.JWT_REFRESH_SECRET, { expiresIn: 1 * 60 * 1440 });
+            // const refreshToken = new RefreshToken({
+            //     refreshToken: refToken,
+            // });
             try {
-                await refreshToken.save();
+                // await refreshToken.save();
                 const newNoti = await Noti.find({ recipient: user._id, read: false });
                 if (newNoti.length > 0) {
                     user._doc.newNotification = true;
@@ -200,12 +200,12 @@ export const google = async (req, res, next) => {
             } catch (error) {
                 next(error);
             }
-            res.cookie('access_token', token);
-            res.cookie('refresh_token', refToken, {
-                httpOnly: true,
-                secure: true,
-                sameSite: 'strict',
-            });
+            res.cookie('access_token', token, { httpOnly: true, secure: true, sameSite: 'strict' });
+            // res.cookie('refresh_token', refToken, {
+            //     httpOnly: true,
+            //     secure: true,
+            //     sameSite: 'strict',
+            // });
 
             const { password: secret, ...rest } = user._doc;
             res.status(200).json(rest);
@@ -243,22 +243,22 @@ export const google = async (req, res, next) => {
                     isAdmin: newUser.isAdmin,
                 };
 
-                const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: 1 * 60 });
-                const refToken = jwt.sign(payload, process.env.JWT_REFRESH_SECRET, { expiresIn: 1 * 60 * 1440 });
-                const refreshToken = new RefreshToken({
-                    refreshToken: refToken,
-                });
-                try {
-                    await refreshToken.save();
-                } catch (error) {
-                    next(error);
-                }
-                res.cookie('access_token', token);
-                res.cookie('refresh_token', refToken, {
-                    httpOnly: true,
-                    secure: true,
-                    sameSite: 'strict',
-                });
+                const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: 1 * 60 * 1440 });
+                // const refToken = jwt.sign(payload, process.env.JWT_REFRESH_SECRET, { expiresIn: 1 * 60 * 1440 });
+                // const refreshToken = new RefreshToken({
+                //     refreshToken: refToken,
+                // });
+                // try {
+                //     await refreshToken.save();
+                // } catch (error) {
+                //     next(error);
+                // }
+                res.cookie('access_token', token, { httpOnly: true, secure: true, sameSite: 'strict' });
+                // res.cookie('refresh_token', refToken, {
+                //     httpOnly: true,
+                //     secure: true,
+                //     sameSite: 'strict',
+                // });
 
                 const { password: secret, ...rest } = newUser._doc;
                 res.status(200).json(rest);
@@ -273,10 +273,10 @@ export const google = async (req, res, next) => {
 
 export const signout = async (req, res, next) => {
     try {
-        const refreshToken = req.cookies.refresh_token;
-        await RefreshToken.deleteOne({ refreshToken });
+        // const refreshToken = req.cookies.refresh_token;
+        // await RefreshToken.deleteOne({ refreshToken });
         res.clearCookie('access_token');
-        res.clearCookie('refresh_token');
+        // res.clearCookie('refresh_token');
         res.status(200).json('User has been signed out');
     } catch (error) {
         next(error);
