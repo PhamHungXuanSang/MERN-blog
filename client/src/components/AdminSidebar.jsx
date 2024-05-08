@@ -6,24 +6,11 @@ import { TbBusinessplan } from 'react-icons/tb';
 import { FcStatistics } from 'react-icons/fc';
 import { BiSolidCartAdd } from 'react-icons/bi';
 import { MdCategory } from 'react-icons/md';
+import { FaHistory } from 'react-icons/fa';
 
 export default function AdminSideBar() {
     const location = useLocation();
     const [tab, setTab] = useState('');
-    //const currentUser = useSelector((state) => state.user.currentUser);
-    //const dispatch = useDispatch();
-
-    //   useEffect(() => {
-    //       const setCreatePermission = async () => {
-    //           const rs = await checkCreatePermission(currentUser._id);
-    //           if (rs) {
-    //               // Nếu về data thì gọi hàm set lại currentUser trong redux
-    //               dispatch(setCurrentUser(rs));
-    //           }
-    //       };
-
-    //       setCreatePermission();
-    //   }, []);
 
     useEffect(() => {
         const urlParams = new URLSearchParams(location.search);
@@ -52,6 +39,11 @@ export default function AdminSideBar() {
                             as="div"
                         >
                             Revenue
+                        </Sidebar.Item>
+                    </Link>
+                    <Link to="/admin?tab=transaction-history">
+                        <Sidebar.Item className="mt-1" active={tab === 'transaction-history'} icon={FaHistory} as="div">
+                            History
                         </Sidebar.Item>
                     </Link>
                     <Link to="/admin?tab=new-package">

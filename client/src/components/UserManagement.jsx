@@ -7,6 +7,7 @@ import NotFound from './NotFound.jsx';
 import ModalConfirm from './ModalConfirm.jsx';
 import checkCreatePermission from '../utils/checkCreatePermission.js';
 import toast from 'react-hot-toast';
+import BackToTopButton from './BackToTopButton.jsx';
 
 export default function UserManagement() {
     const [users, setUsers] = useState(null);
@@ -194,6 +195,7 @@ export default function UserManagement() {
                 confirm="Yes I am sure"
                 noConfirm="No, I'm not sure"
             />
+            <BackToTopButton />
         </div>
     );
 }

@@ -173,7 +173,7 @@ export default function Home() {
     }, [activeAuthor]);
 
     return (
-        <section className="h-cover container mx-auto py-8 px-2 md:px-0">
+        <div className="h-cover container mx-auto py-8 px-2 md:px-0">
             <div className="flex justify-center gap-4 min-h-screen">
                 <div className="w-full md:max-w-[68%]">
                     <InPageNavigation routes={['home', 'Propose']} defaultHidden={['Propose']}>
@@ -514,6 +514,6 @@ export default function Home() {
                 </div>
             </FadeInWhenVisible>
             <BackToTopButton />
-        </section>
+        </div>
     );
 }

@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 
 export default function PageNotFound() {
     return (
-        <section
+        <div
             className="h-full relative p-10 flex flex-col items-center gap-20 text-center"
             style={{ animation: 'fadeIn 2s' }}
         >
@@ -29,7 +29,7 @@ export default function PageNotFound() {
                     conversations.
                 </p>
             </div>
-        </section>
+        </div>
     );
 }
 

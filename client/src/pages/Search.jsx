@@ -92,7 +92,7 @@ export default function Search() {
     };
 
     return (
-        <section className="container mx-auto min-h-screen h-fit justify-center gap-10">
+        <div className="container mx-auto min-h-screen h-fit justify-center gap-10">
             {/* Search filter */}
             <div className="w-full flex flex-col md:flex-row gap-4 md:gap-10 pt-12 mb-4">
                 <div className="flex gap-4 items-center">
@@ -220,6 +220,6 @@ export default function Search() {
                     </div>
                 </div>
             </div>
-        </section>
+        </div>
     );
 }

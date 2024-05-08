@@ -6,6 +6,7 @@ import NotFound from './NotFound';
 import { Spinner } from 'flowbite-react';
 import OneByOneAppearEffect from './OneByOneAppearEffect';
 import dateToDateAndTime from '../utils/dateToDateAndTime';
+import BackToTopButton from './BackToTopButton.jsx';
 
 export default function DashRecentlyViewed() {
     const navigate = useNavigate();
@@ -103,6 +104,7 @@ export default function DashRecentlyViewed() {
             ) : (
                 <Spinner className="block mx-auto mt-4" size="xl" />
             )}
+            <BackToTopButton />
         </div>
     );
 }

@@ -96,7 +96,7 @@ export default function Offer() {
     };
 
     return (
-        <section className="container mx-auto min-h-screen h-fit py-12 px-2 md:px-0">
+        <div className="container mx-auto min-h-screen h-fit py-12 px-2 md:px-0">
             <div className="flex flex-col sm:flex-row flex-wrap gap-10 mx-auto">
                 <div className="w-full sm:w-[30%] flex flex-col justify-center gap-12">
                     <i className="text-2xl font-semibold block">
@@ -154,6 +154,6 @@ Usage of the Create Blog function signifies agreement to these condensed terms a
                 confirm="Yes I am sure"
                 noConfirm="No, I'm not sure"
             />
-        </section>
+        </div>
     );
 }

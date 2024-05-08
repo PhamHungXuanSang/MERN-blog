@@ -83,7 +83,7 @@ export default function SuccessfulTransaction() {
     };
 
     return (
-        <section
+        <div
             className="h-full relative p-10 flex flex-col items-center gap-10 text-center"
             style={{ animation: 'fadeIn 2s' }}
         >
@@ -120,7 +120,7 @@ export default function SuccessfulTransaction() {
                     conversations.
                 </p>
             </div>
-        </section>
+        </div>
     );
 }
 

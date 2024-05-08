@@ -413,3 +413,69 @@ export const getPaymentInfo = async (req, res, next) => {
         next(error);
     }
 };
+
+export const adminViewAllTransaction = async (req, res, next) => {
+    if (!req.user.isAdmin) {
+        return next(errorHandler(400, 'You are not allowed to view all transaction'));
+    }
+    let totalMoney = 0;
+    let countRenewal = 0;
+    let countRenewalThisMonth = 0;
+    let countNewPurchases = 0;
+    let countNewPurchasesThisMonth = 0;
+    let thisMonthMoney = 0;
+    const now = new Date();
+    const currentYear = now.getFullYear();
+    const currentMonth = now.getMonth();
+
+    try {
+        const allPayment = await PaymentHistory.find()
+            .populate('userId', 'username email userAvatar')
+            .sort({ paymentDate: -1 });
+        const packages = new Set();
+        const packageCounts = new Map();
+
+        allPayment.forEach((payment) => {
+            totalMoney += payment.packagePrice;
+            packages.add(payment.packageName);
+
+            const paymentYear = payment.paymentDate.getFullYear();
+            const paymentMonth = payment.paymentDate.getMonth();
+            const isPaymentThisMonth = paymentYear === currentYear && paymentMonth === currentMonth;
+
+            if (isPaymentThisMonth) {
+                thisMonthMoney += payment.packagePrice;
+            }
+
+            if (payment.transactionType === 'package renewal') {
+                countRenewal++;
+                if (isPaymentThisMonth) {
+                    countRenewalThisMonth++;
+                }
+            } else {
+                countNewPurchases++;
+                if (isPaymentThisMonth) {
+                    countNewPurchasesThisMonth++;
+                }
+            }
+
+            packageCounts.set(payment.packageName, (packageCounts.get(payment.packageName) || 0) + 1);
+        });
+
+        let totalBuyCountEachPackage = Array.from(packageCounts.values());
+
+        return res.status(200).json({
+            allPayment,
+            packages: Array.from(packages),
+            totalBuyCountEachPackage,
+            totalMoney,
+            thisMonthMoney,
+            countRenewal,
+            countRenewalThisMonth,
+            countNewPurchases,
+            countNewPurchasesThisMonth,
+        });
+    } catch (error) {
+        next(error);
+    }
+};

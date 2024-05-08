@@ -97,7 +97,7 @@ export default function MainBoardManagement() {
                     {users != null ? (
                         <>
                             <div className="flex justify-between">
-                                <div className="">
+                                <div>
                                     <h3 className="text-gray-500 text-lg uppercase">Total Users</h3>
                                     <p className="text-2xl">{totalUsers}</p>
                                 </div>
@@ -120,7 +120,7 @@ export default function MainBoardManagement() {
                     {blogs != null ? (
                         <>
                             <div className="flex justify-between">
-                                <div className="">
+                                <div>
                                     <h3 className="text-gray-500 text-lg uppercase">Total Blogs</h3>
                                     <p className="text-2xl">{totalBlogs}</p>
                                 </div>
@@ -143,7 +143,7 @@ export default function MainBoardManagement() {
                     {comments != null ? (
                         <>
                             <div className="flex justify-between">
-                                <div className="">
+                                <div>
                                     <h3 className="text-gray-500 text-lg uppercase">Total Comments</h3>
                                     <p className="text-2xl">{totalComments}</p>
                                 </div>

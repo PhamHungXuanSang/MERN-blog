@@ -6,6 +6,7 @@ import { signOutSuccess } from '../redux/user/userSlice';
 import { useNavigate } from 'react-router-dom';
 import NotFound from './NotFound';
 import ModalConfirm from './ModalConfirm';
+import BackToTopButton from './BackToTopButton';
 
 export default function CateManagement() {
     const [newCate, setNewCate] = useState(null);
@@ -195,6 +196,7 @@ export default function CateManagement() {
                 confirm="Yes I am sure"
                 noConfirm="No, I'm not sure"
             />
+            <BackToTopButton />
         </div>
     );
 }

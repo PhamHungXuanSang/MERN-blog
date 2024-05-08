@@ -40,7 +40,7 @@ export default function BlogAction() {
 
     const handleLikeBlog = async () => {
         if (!currentUser) {
-            return navigate('/sign-in');
+            return toast.error('Please sign in to like blog');
         }
         setLiked(!liked);
         try {
@@ -66,8 +66,7 @@ export default function BlogAction() {
     };
 
     const handleAddNewFolder = async () => {
-        if (createFolder == '')
-            return toast.error('Please name folder first', { duration: 3000 });
+        if (createFolder == '') return toast.error('Please name folder first', { duration: 3000 });
         try {
             const res = await fetch(`/api/usersFolder/add-new-folder/${currentUser._id}`, {
                 method: 'POST',

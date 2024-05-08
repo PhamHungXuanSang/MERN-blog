@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { FaRegArrowAltCircleUp } from 'react-icons/fa';
 
 export default function BackToTopButton() {
     const [backToTop, setBackToTop] = useState(false);
@@ -25,9 +26,9 @@ export default function BackToTopButton() {
             {backToTop && (
                 <button
                     onClick={scrollUp}
-                    className="fixed bottom-12 right-12 h-12 w-12 text-2xl p-4 dark:bg-slate-800 bg-slate-100 rounded-full"
+                    className="fixed flex justify-center items-center bottom-12 right-12 text-2xl p-3 dark:bg-slate-600 bg-slate-100 rounded-full z-50"
                 >
-                    ^
+                    <FaRegArrowAltCircleUp size={24} />
                 </button>
             )}
         </>

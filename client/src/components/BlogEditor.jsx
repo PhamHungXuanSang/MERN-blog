@@ -231,7 +231,7 @@ export default function BlogEditor() {
 
     return (
         <div className="flex-1 py-4 px-2 md:px-0">
-            <section className="w-full">
+            <div className="w-full">
                 <Textarea
                     defaultValue={title}
                     placeholder="Blog Title"
@@ -308,7 +308,7 @@ export default function BlogEditor() {
                         Publish
                     </Button>
                 </div>
-            </section>
+            </div>
 
             <div className="fixed inset-0 bg-black bg-opacity-50 overflow-y-auto z-50 h-full w-full hidden" id="openAI">
                 <div
@@ -324,7 +324,7 @@ export default function BlogEditor() {
                             &#x2715;
                         </button>
                     </div>
-                    <p className="text-sm mt-4">
+                    <div className="text-sm mt-4">
                         <Select
                             onChange={(e) => {
                                 SetAIType(e.target.value);
@@ -351,14 +351,15 @@ export default function BlogEditor() {
                                 }}
                             />
                         </div>
-                        <section id="images-section" className="w-full flex flex-wrap justify-between p-2"></section>
+                        <div id="images-section" className="w-full flex flex-wrap justify-between p-2"></div>
                         <Textarea
                             placeholder="AI Output"
                             className="mt-1 block w-full rounded-md border-gray-300 p-4 border shadow-lg"
+                            defaultValue={output}
                         >
-                            {output}
+                            {/* {output} */}
                         </Textarea>
-                    </p>
+                    </div>
                 </div>
             </div>
 

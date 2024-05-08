@@ -52,7 +52,7 @@ export default function DashProfile() {
     allAverageRating = allAverageRating / numberBlogsReviewed;
 
     return (
-        <section className="h-cover flex justify-center gap-4 container mx-auto py-8">
+        <div className="h-cover flex justify-center gap-4 container mx-auto py-8">
             <div className="text-center">
                 <img
                     src={currentUser.userAvatar || '/user-profile-icon-vector-avatar.webp'}
@@ -97,6 +97,6 @@ export default function DashProfile() {
                     </Link>
                 </div>
             </div>
-        </section>
+        </div>
     );
 }

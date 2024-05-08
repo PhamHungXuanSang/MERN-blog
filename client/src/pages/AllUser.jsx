@@ -4,6 +4,7 @@ import NotFound from '../components/NotFound';
 import { Link } from 'react-router-dom';
 import { FaFacebookSquare, FaGithubSquare, FaStarHalfAlt, FaTiktok, FaYoutube } from 'react-icons/fa';
 import formatDate from '../utils/formatDate';
+import BackToTopButton from '../components/BackToTopButton';
 
 export default function AllUser() {
     const [users, setUsers] = useState(null);
@@ -195,6 +196,7 @@ export default function AllUser() {
             ) : (
                 <Spinner className="block mx-auto mt-4" size="lg" />
             )}
+            <BackToTopButton />
         </div>
     );
 }

@@ -58,7 +58,7 @@ export default function UserProfile() {
     allAverageRating = allAverageRating / numberBlogsReviewed;
 
     return (
-        <section className="h-cover flex justify-center gap-4 container mx-auto py-8">
+        <div className="h-cover flex justify-center gap-4 container mx-auto py-8">
             <div className="w-full md:max-w-[68%]">
                 <InPageNavigation routes={[`${username} blogs`, 'user profile']} defaultHidden={[`user profile`]}>
                     <>
@@ -179,6 +179,6 @@ export default function UserProfile() {
                     )}
                 </div>
             </div>
-        </section>
+        </div>
     );
 }

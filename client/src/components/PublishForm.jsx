@@ -326,7 +326,7 @@ export default function PublishForm() {
 
     return (
         <div>
-            <section className="w-full container mx-auto min-h-screen grid items-start lg:grid-cols-2 px-2 md:px-0">
+            <div className="w-full container mx-auto min-h-screen grid items-start lg:grid-cols-2 px-2 md:px-0">
                 <Toaster />
                 <div className="max-w-[450px] block mx-auto mb-4">
                     <p className="text-3xl font-semibold py-2 px-4">Preview</p>
@@ -413,7 +413,7 @@ export default function PublishForm() {
                         </Button>
                     </div>
                 </div>
-            </section>
+            </div>
             {showModal && (
                 <Modal
                     show={showModal}

@@ -11,7 +11,7 @@ const router = express.Router();
 
 router.post('/add-new-package', authenToken, addNewPackage);
 router.get('/get-all-packages', authenToken, getAllPackages); // Thêm code test thêm authen coi có sao không
-router.get('/get-all-not-blocked-packages', authenToken, getAllNotBlockedPackages); // Thêm code test thêm authen coi có sao không
+router.get('/get-all-not-blocked-packages', getAllNotBlockedPackages);
 router.post('/block-package/:userId', authenToken, blockPackage);
 
 export default router;

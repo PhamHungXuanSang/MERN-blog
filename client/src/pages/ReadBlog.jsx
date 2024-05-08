@@ -40,6 +40,9 @@ export default function ReadBlog() {
                 return navigate('*');
             }
             const data = await res.json();
+            if (data.blog.isBlocked.status == true) {
+                return navigate('*');
+            }
             const res2 = await fetch(`/api/search/${data.blog.tags}?page=1&&currentSlug=${data.blog.slug}`, {
                 method: 'POST',
             });
@@ -102,7 +105,7 @@ export default function ReadBlog() {
     };
 
     return (
-        <section>
+        <div>
             {blog.title.length && blog != null ? (
                 <BlogContext.Provider
                     value={{
@@ -312,6 +315,6 @@ export default function ReadBlog() {
                 <Spinner className="block mx-auto mt-4" size="xl" />
             )}
             <BackToTopButton />
-        </section>
+        </div>
     );
 }

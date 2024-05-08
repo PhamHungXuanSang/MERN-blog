@@ -18,16 +18,17 @@ export default function DashSidebar() {
     const [tab, setTab] = useState('');
     const currentUser = useSelector((state) => state.user.currentUser);
     const dispatch = useDispatch();
-
     useEffect(() => {
-        const setCreatePermission = async () => {
-            const rs = await checkCreatePermission(currentUser._id);
-            if (rs) {
-                dispatch(setCurrentUser(rs));
-            }
-        };
+        if (!currentUser.isAdmin) {
+            const setCreatePermission = async () => {
+                const rs = await checkCreatePermission(currentUser._id);
+                if (rs) {
+                    dispatch(setCurrentUser(rs));
+                }
+            };
 
-        setCreatePermission();
+            setCreatePermission();
+        }
     }, []);
 
     useEffect(() => {
@@ -89,6 +90,7 @@ export default function DashSidebar() {
                                     className="mt-2"
                                     active={tab === 'create-blog'}
                                     icon={IoCreateSharp}
+                                    as="div"
                                 >
                                     {expanded ? 'Create blog' : ''}
                                 </Sidebar.Item>
@@ -99,6 +101,7 @@ export default function DashSidebar() {
                                     className="mt-1"
                                     active={tab === 'schedule-list'}
                                     icon={AiFillSchedule}
+                                    as="div"
                                 >
                                     {expanded ? 'Schedule list' : ''}
                                 </Sidebar.Item>
@@ -109,6 +112,7 @@ export default function DashSidebar() {
                                     className="mt-1"
                                     active={tab === 'all-blog'}
                                     icon={HiDocumentText}
+                                    as="div"
                                 >
                                     {expanded ? 'All my blog' : ''}
                                 </Sidebar.Item>
@@ -116,7 +120,12 @@ export default function DashSidebar() {
                         </>
                     ) : (
                         <Link to="/offer">
-                            <Sidebar.Item onClick={() => toggleHiddenSidebar()} className="mt-2" icon={MdLocalOffer}>
+                            <Sidebar.Item
+                                onClick={() => toggleHiddenSidebar()}
+                                className="mt-2"
+                                icon={MdLocalOffer}
+                                as="div"
+                            >
                                 {expanded ? 'Create blog offer' : ''}
                             </Sidebar.Item>
                         </Link>
@@ -131,6 +140,7 @@ export default function DashSidebar() {
                                 className="mt-1"
                                 active={tab === 'recently-viewed'}
                                 icon={HiMiniClipboardDocumentCheck}
+                                as="div"
                             >
                                 {expanded ? 'Recently viewed' : ''}
                             </Sidebar.Item>
@@ -141,6 +151,7 @@ export default function DashSidebar() {
                                 className="mt-1"
                                 active={tab === 'saved-blogs'}
                                 icon={MdFolderSpecial}
+                                as="div"
                             >
                                 {expanded ? 'Saved blogs' : ''}
                             </Sidebar.Item>
@@ -156,6 +167,7 @@ export default function DashSidebar() {
                                     onClick={() => toggleHiddenSidebar()}
                                     className="mt-2"
                                     icon={MdLocalOffer}
+                                    as="div"
                                 >
                                     {expanded ? 'Buy package' : ''}
                                 </Sidebar.Item>
@@ -166,6 +178,7 @@ export default function DashSidebar() {
                                     className="mt-2"
                                     active={tab === 'usage'}
                                     icon={FaInfoCircle}
+                                    as="div"
                                 >
                                     {expanded ? 'Account usage' : ''}
                                 </Sidebar.Item>
@@ -176,6 +189,7 @@ export default function DashSidebar() {
                                     className="mt-2"
                                     active={tab === 'transaction'}
                                     icon={AiOutlineTransaction}
+                                    as="div"
                                 >
                                     {expanded ? 'All transaction' : ''}
                                 </Sidebar.Item>

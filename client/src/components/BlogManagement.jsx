@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import ModalConfirm from './ModalConfirm';
 import { signOutSuccess } from '../redux/user/userSlice.js';
 import toast from 'react-hot-toast';
+import BackToTopButton from './BackToTopButton.jsx';
 
 export default function BlogManagement() {
     const [blogs, setBlogs] = useState(null);
@@ -33,7 +34,6 @@ export default function BlogManagement() {
             if (res.ok) {
                 const firstFiveBlogs = data.blogs.slice(0, 5);
                 setBlogs(firstFiveBlogs);
-                console.log(data.blogs.length);
                 if (data.blogs.length <= 5) {
                     setShowMore(false);
                 }
@@ -115,7 +115,6 @@ export default function BlogManagement() {
     };
 
     return (
-        // <div className="py-8 px-4 table-auto overflow-x-scroll md:mx-auto p-3 scrollbar">
         <div className="py-8 px-4">
             {blogs != null ? (
                 blogs?.length > 0 ? (
@@ -146,7 +145,7 @@ export default function BlogManagement() {
                                                     {blog.title}
                                                 </Link>
                                             </Table.Cell>
-                                            <Table.Cell className="">
+                                            <Table.Cell>
                                                 <Link to={`/blog/${blog.slug}`}>
                                                     <img
                                                         src={blog.thumb}
@@ -213,6 +212,7 @@ export default function BlogManagement() {
                 confirm="Yes I am sure"
                 noConfirm="No, I'm not sure"
             />
+            <BackToTopButton />
         </div>
     );
 }
