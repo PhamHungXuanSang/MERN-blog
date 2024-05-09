@@ -10,14 +10,14 @@ import Dashboard from './pages/Dashboard';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import PrivateRoute from './components/PrivateRoute';
-import toast, { Toaster } from 'react-hot-toast';
+import toast, { Toaster, useToaster } from 'react-hot-toast';
 import Search from './pages/Search';
 import PageNotFound from './pages/PageNotFound';
 import UserProfile from './pages/UserProfile';
 import ReadBlog from './pages/ReadBlog';
 import Editor from './pages/Editor';
 import ScrollToTop from './components/ScrollToTop.jsx';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Offer from './pages/Offer.jsx';
 import AdminPrivateRoute from './components/AdminPrivateRoute.jsx';
@@ -36,6 +36,7 @@ import CancelledTransaction from './pages/CancelledTransaction.jsx';
 import SuccessfulTransaction from './pages/SuccessfulTransaction.jsx';
 import AllSubscribedAuthor from './pages/AllSubscribedAuthor.jsx';
 import Chat from './pages/Chat.jsx';
+import useConversation from './zustand/useConversation.js';
 export const socket = io('http://localhost:3000');
 
 export default function App() {
@@ -45,6 +46,7 @@ export default function App() {
         intent: 'capture',
     };
     const currentUser = useSelector((state) => state.user.currentUser);
+    const [onlineUsers, setOnlineUsers] = useState([]);
     const dispatch = useDispatch();
     let { system, like, comment, reply, rate, subscriber, newBlog } = useSelector((state) => state.notiSetting);
     let filterStateMapping = {
@@ -56,6 +58,7 @@ export default function App() {
         subscriber: subscriber,
         rate: rate,
     };
+    const { messages, setMessages } = useConversation();
 
     useEffect(() => {
         filterStateMapping = {
@@ -67,6 +70,15 @@ export default function App() {
             subscriber: subscriber,
             rate: rate,
         };
+        const handleGetOnlineUsers = (users) => {
+            setOnlineUsers(users);
+        };
+
+        const handleNewMessage = (newMessage) => {
+            newMessage.shouldShake = true;
+            setMessages([...messages, newMessage]);
+        };
+
         const handleNewNotification = (data) => {
             dispatch(setCurrentUser({ ...currentUser, newNotification: true }));
             let { userAvatar, thumb, title, message, type } = data;
@@ -121,17 +133,21 @@ export default function App() {
         };
         if (currentUser) {
             socket.emit('refreshBrower', currentUser._id);
+            socket.on('getOnlineUsers', handleGetOnlineUsers);
+            socket.on('newMessage', handleNewMessage);
             socket.on('newNotification', handleNewNotification);
             socket.on('forcedLogout', handleForcedLogout);
         }
 
         return () => {
             if (currentUser) {
+                socket.off('getOnlineUsers', handleGetOnlineUsers);
+                socket.off('newMessage', handleNewMessage);
                 socket.off('newNotification', handleNewNotification);
                 socket.off('forcedLogout', handleForcedLogout);
             }
         };
-    }, [system, like, comment, reply, rate, subscriber, newBlog]);
+    }, [system, like, comment, reply, rate, subscriber, newBlog, messages, setMessages]);
 
     return (
         <PayPalScriptProvider options={initialOptions}>
@@ -159,7 +175,7 @@ export default function App() {
                         <Route path="/order-status-cancel" element={<CancelledTransaction />} />
                         <Route path="/order-status-success" element={<SuccessfulTransaction />} />
                         <Route path="/all-subscribed-author" element={<AllSubscribedAuthor />} />
-                        <Route path="/chat" element={<Chat />} />
+                        <Route path="/chat" element={<Chat onlineUsers={onlineUsers} />} />
                     </Route>
                     <Route element={<AdminPrivateRoute />}>
                         <Route path="/admin" element={<Admin />} />

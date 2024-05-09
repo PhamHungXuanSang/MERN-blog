@@ -72,16 +72,19 @@ io.on('connection', (socket) => {
         removeOnlineUser(userId, null);
         addOnlineUser(userId, socket.id);
         console.log(userOnline);
+        io.emit('getOnlineUsers', [...userOnline.keys()]);
     });
 
     socket.on('disconnect', () => {
         removeOnlineUser(null, socket.id);
         console.log(userOnline);
+        io.emit('getOnlineUsers', [...userOnline.keys()]);
     });
 
     socket.on('signOut', (userId, socketId = null) => {
         removeOnlineUser(userId, null);
         console.log(userOnline);
+        io.emit('getOnlineUsers', [...userOnline.keys()]);
     });
 });
 

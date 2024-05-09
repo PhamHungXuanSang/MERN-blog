@@ -1,3 +1,4 @@
+import { io, userOnline } from '../index.js';
 import Conversation from '../models/conversation.model.js';
 import Message from '../models/message.model.js';
 
@@ -24,6 +25,11 @@ export const sendMessage = async (req, res, next) => {
         }
 
         await Promise.all([conversation.save(), newMessage.save()]);
+
+        const socketId = userOnline.get(receiverId.toString());
+        if (socketId) {
+            io.to(socketId).emit('newMessage', newMessage);
+        }
 
         res.status(201).json(newMessage);
     } catch (error) {

@@ -176,7 +176,11 @@ export const signin = async (req, res, next) => {
         } catch (error) {
             next(error);
         }
-        res.cookie('access_token', token, { httpOnly: true, secure: true, sameSite: 'strict' });
+        res.cookie('access_token', token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV !== 'development',
+            sameSite: 'strict',
+        });
         // res.cookie('refresh_token', refToken, { httpOnly: true, secure: true, sameSite: 'strict' });
 
         const { password: secret, ...rest } = validUser._doc;
@@ -222,7 +226,11 @@ export const google = async (req, res, next) => {
             } catch (error) {
                 next(error);
             }
-            res.cookie('access_token', token, { httpOnly: true, secure: true, sameSite: 'strict' });
+            res.cookie('access_token', token, {
+                httpOnly: true,
+                secure: process.env.NODE_ENV !== 'development',
+                sameSite: 'strict',
+            });
             // res.cookie('refresh_token', refToken, {
             //     httpOnly: true,
             //     secure: true,
@@ -275,7 +283,11 @@ export const google = async (req, res, next) => {
                 // } catch (error) {
                 //     next(error);
                 // }
-                res.cookie('access_token', token, { httpOnly: true, secure: true, sameSite: 'strict' });
+                res.cookie('access_token', token, {
+                    httpOnly: true,
+                    secure: process.env.NODE_ENV !== 'development',
+                    sameSite: 'strict',
+                });
                 // res.cookie('refresh_token', refToken, {
                 //     httpOnly: true,
                 //     secure: true,

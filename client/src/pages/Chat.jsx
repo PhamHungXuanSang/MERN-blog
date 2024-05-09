@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { Button } from 'flowbite-react';
 import Conversations from '../components/Conversations';
 import MessageContainer from '../components/MessageContainer';
@@ -9,7 +10,7 @@ import useConversation from '../zustand/useConversation';
 import useGetConversations from '../hooks/useGetConversations/useGetConversations';
 import toast from 'react-hot-toast';
 
-export default function Chat() {
+export default function Chat({ onlineUsers }) {
     const navigate = useNavigate();
     const [search, setSearch] = useState('');
     const { setSelectedConversation } = useConversation();
@@ -48,7 +49,7 @@ export default function Chat() {
                     </button>
                 </form>
                 <div className="divider px-3"></div>
-                <Conversations />
+                <Conversations onlineUsers={onlineUsers} />
                 <Button className="mt-auto" outline gradientDuoTone={'greenToBlue'} onClick={() => navigate('/')}>
                     <BiLogOut className="w-6 h-6 cursor-pointer" />
                     Back to home
