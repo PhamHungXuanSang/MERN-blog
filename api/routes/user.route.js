@@ -12,6 +12,7 @@ import {
     getTopAuthors,
     getAllUserProfile,
     getUserSubscribeAuthors,
+    getAllNotThisUser,
 } from '../controllers/user.controller.js';
 import { authenToken } from '../utils/authenToken.js';
 
@@ -29,5 +30,6 @@ router.get(`/toggle-subscribe/:authorId/:userId`, authenToken, toggleSubscribe);
 router.post('/get-top-authors', getTopAuthors);
 router.post('/get-all-user-profile', getAllUserProfile);
 router.post('/get-user-subscribe-authors', getUserSubscribeAuthors);
+router.get('/get-all-not-this-user', authenToken, getAllNotThisUser);
 
 export default router;

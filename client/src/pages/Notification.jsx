@@ -10,16 +10,7 @@ import { IoMdSettings } from 'react-icons/io';
 import Switch from '../components/switch';
 import { setNotiTypeSetting } from '../redux/notiSetting/notiSettingSlice';
 
-export default function Notification({
-    filterStateMapping,
-    // setSystemState,
-    // setLikeState,
-    // setCommentState,
-    // setReplyState,
-    // setRateState,
-    // setSubscriberState,
-    // setNewBlogState,
-}) {
+export default function Notification({ filterStateMapping }) {
     const currentUser = useSelector((state) => state.user.currentUser);
     const [filter, setFilter] = useState('all');
     const [notifications, setNotifications] = useState(null);
@@ -60,29 +51,8 @@ export default function Notification({
     const handleSettingNoti = (filter) => {
         if (filter != 'new blog') {
             dispatch(setNotiTypeSetting(filter));
-            // switch (filter) {
-            //     case 'system':
-            //         setSystemState((prev) => !prev);
-            //         break;
-            //     case 'like':
-            //         setLikeState((prev) => !prev);
-            //         break;
-            //     case 'comment':
-            //         setCommentState((prev) => !prev);
-            //         break;
-            //     case 'reply':
-            //         setReplyState((prev) => !prev);
-            //         break;
-            //     case 'rate':
-            //         setRateState((prev) => !prev);
-            //         break;
-            //     case 'subscriber':
-            //         setSubscriberState((prev) => !prev);
-            //         break;
-            // }
         } else {
             dispatch(setNotiTypeSetting('newBlog'));
-            // setNewBlogState((prev) => !prev);
         }
     };
 
@@ -161,7 +131,7 @@ export default function Notification({
                         {filters != null &&
                             filters.slice(1).map((filter, i) => (
                                 <div key={i} className="flex items-center justify-between my-4">
-                                    <div className="capitalize">{filter}</div>
+                                    <div className="capitalize text-black">{filter}</div>
                                     <div onClick={() => handleSettingNoti(filter)}>
                                         <Switch boolean={filterStateMapping[filter]} />
                                     </div>

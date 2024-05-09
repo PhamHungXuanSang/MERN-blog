@@ -35,6 +35,7 @@ import AllUser from './pages/AllUser.jsx';
 import CancelledTransaction from './pages/CancelledTransaction.jsx';
 import SuccessfulTransaction from './pages/SuccessfulTransaction.jsx';
 import AllSubscribedAuthor from './pages/AllSubscribedAuthor.jsx';
+import Chat from './pages/Chat.jsx';
 export const socket = io('http://localhost:3000');
 
 export default function App() {
@@ -46,13 +47,6 @@ export default function App() {
     const currentUser = useSelector((state) => state.user.currentUser);
     const dispatch = useDispatch();
     let { system, like, comment, reply, rate, subscriber, newBlog } = useSelector((state) => state.notiSetting);
-    // const [systemState, setSystemState] = useState(system);
-    // const [likeState, setLikeState] = useState(like);
-    // const [commentState, setCommentState] = useState(comment);
-    // const [replyState, setReplyState] = useState(reply);
-    // const [rateState, setRateState] = useState(rate);
-    // const [subscriberState, setSubscriberState] = useState(subscriber);
-    // const [newBlogState, setNewBlogState] = useState(newBlog);
     let filterStateMapping = {
         'new blog': newBlog,
         system: system,
@@ -154,18 +148,7 @@ export default function App() {
                     <Route element={<PrivateRoute />}>
                         <Route
                             path="/notification"
-                            element={
-                                <Notification
-                                    filterStateMapping={filterStateMapping}
-                                    // setSystemState={setSystemState}
-                                    // setLikeState={setLikeState}
-                                    // setCommentState={setCommentState}
-                                    // setReplyState={setReplyState}
-                                    // setRateState={setRateState}
-                                    // setSubscriberState={setSubscriberState}
-                                    // setNewBlogState={setNewBlogState}
-                                />
-                            }
+                            element={<Notification filterStateMapping={filterStateMapping} />}
                         />
                         <Route path="/dash-board" element={<Dashboard />} />
                         <Route path="/change-password" element={<ChangePassword />} />
@@ -176,6 +159,7 @@ export default function App() {
                         <Route path="/order-status-cancel" element={<CancelledTransaction />} />
                         <Route path="/order-status-success" element={<SuccessfulTransaction />} />
                         <Route path="/all-subscribed-author" element={<AllSubscribedAuthor />} />
+                        <Route path="/chat" element={<Chat />} />
                     </Route>
                     <Route element={<AdminPrivateRoute />}>
                         <Route path="/admin" element={<Admin />} />

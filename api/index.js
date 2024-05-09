@@ -17,6 +17,7 @@ import notificationRoutes from './routes/noti.route.js';
 import usersFolderRoutes from './routes/usersFolder.route.js';
 import scheduleBlogRoutes from './routes/scheduleBlog.route.js';
 import categoryRoutes from './routes/category.route.js';
+import messageRoutes from './routes/message.route.js';
 import cookieParser from 'cookie-parser';
 import { jobAtStartOfHour, jobAtHalfPastHour } from './services/nodeCron.js';
 
@@ -100,6 +101,7 @@ app.use('/api/notification', notificationRoutes);
 app.use('/api/usersFolder', usersFolderRoutes);
 app.use('/api/scheduleBlog', scheduleBlogRoutes);
 app.use('/api/category', categoryRoutes);
+app.use('/api/messages', messageRoutes);
 
 // app.use(express.static(path.join(__dirname, '/client/dist')));
 

@@ -58,33 +58,55 @@ export const signup = async (req, res, next) => {
             user.email,
             'MERN Blog email verify',
             `<!DOCTYPE html>
-  <html>
-    <head>
-      <style>
-        .verify-button {
-          padding: 10px 15px;
-          background-color: #4CAF50;
-          color: white;
-          border: none;
-          border-radius: 5px;
-          text-decoration: none;
-        }
-        .verify-button:hover {
-          background-color: #45a049;
-        }
-      </style>
-    </head>
-    <body>
-      <a 
-        href="http://localhost:3000/api/email/verify?email=${user.email}&token=${hashedEmail}"
-        class="verify-button"
-      >
-        Click here to verify your email
-      </a>
-    </body>
-  </html>`,
+            <html>
+            <head>
+                <style>
+                .email-container {
+                    background-color: #f8f8f8;
+                    padding: 20px;
+                    text-align: center;
+                }
+
+                .verify-button {
+                    padding: 15px 25px;
+                    background-color: #3498db; /* Thay đổi màu nền */
+                    color: white; /* Màu chữ */
+                    border: none; /* Vô hiệu hóa viền */
+                    border-radius: 4px; /* Bán kính viền */
+                    text-decoration: none; /* Loại bỏ gạch chân */
+                    font-weight: bold; /* Độ đậm của chữ */
+                    font-size: 16px; /* Kích thước chữ */
+                    transition: all 0.3s ease; /* Hiệu ứng chuyển đổi mượt */
+                    cursor: pointer; /* Loại con trỏ */
+                    margin-top: 10px; /* Khoảng cách từ đỉnh */
+                    display: inline-block; /* Hiển thị nút ngang */
+                    box-shadow: 0px 2px 3px #ccc; /* Bóng đổ */
+                }
+
+                .verify-button:hover {
+                    background-color: #2e86c1; /* Màu nền khi hover */
+                    box-shadow: 0px 0px 8px #666; /* Bóng đổ khi hover */
+                }
+
+                .email-message {
+                    font-size: 18px; /* Kích thước chữ thông điệp */
+                }
+                </style>
+            </head>
+            <body>
+                <div class="email-container">
+                <div class="email-message">
+                    <p>Please click the button below to verify your email address.</p>
+                </div>
+                <!-- Đường dẫn phải là một link thực tế từ server của bạn -->
+                <a href="http://localhost:3000/api/email/verify?email=${user.email}&token=${hashedEmail}" class="verify-button">
+                    Verify Email
+                </a>
+                </div>
+            </body>
+            </html>`,
         );
-        res.json('Dang ky thanh cong');
+        res.json('Register success');
     } catch (error) {
         next(error);
     }

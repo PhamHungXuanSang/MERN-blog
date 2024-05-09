@@ -13,6 +13,7 @@ import BlogFastSearch from './BlogFastSearch.jsx';
 import UserFastSearch from './UserFastSearch.jsx';
 import toast from 'react-hot-toast';
 import { BiSolidDashboard } from 'react-icons/bi';
+import { FaRocketchat } from 'react-icons/fa6';
 
 export default function Header() {
     const timeoutIdRef = useRef();
@@ -182,12 +183,10 @@ export default function Header() {
                 </Button>
 
                 <div className="flex gap-2 md:order-2">
-                    <Button
-                        className="hidden w-12 h-10 sm:inline"
-                        pill
-                        color="gray"
-                        onClick={() => dispatch(darkModeToogle())}
-                    >
+                    <Button className="w-16 h-10 flex items-center justify-center" pill color="gray" onClick={() => navigate('/chat')}>
+                        <FaRocketchat size={20} />
+                    </Button>
+                    <Button className="w-12 h-10 inline" pill color="gray" onClick={() => dispatch(darkModeToogle())}>
                         {darkModeObj.darkMode === 'light' ? <FaMoon /> : <FaSun />}
                     </Button>
                     {currentUser ? (
