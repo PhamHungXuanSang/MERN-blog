@@ -7,7 +7,7 @@ import NotFound from '../components/NotFound';
 import NotificationCard from '../components/NotificationCard';
 import OneByOneAppearEffect from '../components/OneByOneAppearEffect';
 import { IoMdSettings } from 'react-icons/io';
-import Switch from '../components/switch';
+import Switch from '../components/Switch';
 import { setNotiTypeSetting } from '../redux/notiSetting/notiSettingSlice';
 
 export default function Notification({ filterStateMapping }) {

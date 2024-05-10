@@ -1,8 +1,5 @@
 /* eslint-disable react/prop-types */
-// import { useState } from 'react';
-
 export default function Switch({ boolean }) {
-    //const [isSelected, setIsSelected] = useState(true);
     let isSelected = boolean;
     return (
         <div
