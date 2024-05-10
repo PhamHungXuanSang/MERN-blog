@@ -3,11 +3,7 @@
 export default {
     content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}', 'node_modules/flowbite-react/lib/esm/**/*.js'],
     theme: {
-        extend: {
-            backgroundImage: {
-                parallax: 'url("./aboutUsBackgroundImage.jpg")',
-            },
-        },
+        extend: {},
     },
     plugins: [
         require('daisyui'),

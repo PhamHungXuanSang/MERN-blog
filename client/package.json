@@ -33,6 +33,7 @@
         "flowbite": "^2.3.0",
         "flowbite-react": "^0.7.8",
         "framer-motion": "^11.0.3",
+        "mern-blog": "file:..",
         "react": "^18.2.0",
         "react-chartjs-2": "^5.2.0",
         "react-circular-progressbar": "^2.1.0",

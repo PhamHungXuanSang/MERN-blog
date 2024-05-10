@@ -84,7 +84,7 @@ export default function Introduction() {
                     </div>
                 </div>
             </div>
-            <div className="flex items-center justify-center h-96 bg-fixed bg-parallax bg-cover">
+            <div className="flex items-center justify-center h-96 bg-fixed bg-[url('/aboutUsBackgroundImage.jpg')] bg-cover">
                 <h1 className="text-5xl text-black uppercase font-extrabold bg-orange-500">
                     Please explore our website
                 </h1>
