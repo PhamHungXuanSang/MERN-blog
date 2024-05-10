@@ -34,7 +34,7 @@ export default function Chat({ onlineUsers }) {
     };
 
     return (
-        <div className="flex flex-col md:flex-row sm:h-[450px] md:h-[550px] rounded-lg overflow-hidden bg-gray-400 bg-clip-padding backdrop-filter backdrop-blur-lg bg-opacity-0 container mx-auto py-4">
+        <div className="flex flex-col md:flex-row sm:h-[450px] md:h-[550px] rounded-lg overflow-hidden bg-gray-400 bg-clip-padding backdrop-filter backdrop-blur-lg bg-opacity-0 container mx-auto py-4 max-w-max">
             <div className="border-r border-slate-500 p-4 flex flex-col">
                 <form onSubmit={handleSubmit} className="flex items-center gap-2">
                     <input

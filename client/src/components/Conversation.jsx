@@ -22,7 +22,7 @@ export default function Conversation({ conversation, lastIdx, emoji, onlineUsers
 
                 <div className="flex flex-col flex-1">
                     <div className="flex gap-3 justify-between">
-                        <p className="font-bold">Jonh DOE</p>
+                        <p className="font-bold">{conversation.username}</p>
                         <span className="text-xl">{emoji}</span>
                     </div>
                 </div>
