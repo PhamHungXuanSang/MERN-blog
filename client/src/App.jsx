@@ -37,7 +37,7 @@ import SuccessfulTransaction from './pages/SuccessfulTransaction.jsx';
 import AllSubscribedAuthor from './pages/AllSubscribedAuthor.jsx';
 import Chat from './pages/Chat.jsx';
 import useConversation from './zustand/useConversation.js';
-export const socket = io('http://localhost:3000');
+export const socket = io('https://mern-blog-csov.onrender.com');
 
 export default function App() {
     const initialOptions = {

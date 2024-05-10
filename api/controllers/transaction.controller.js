@@ -393,8 +393,8 @@ export const createPaymentLink = async (req, res, next) => {
             },
         ],
         orderCode: Number(String(new Date().getTime()).slice(-6)),
-        returnUrl: `http://localhost:5173/order-status-success`,
-        cancelUrl: `http://localhost:5173/order-status-cancel`,
+        returnUrl: `https://mern-blog-csov.onrender.com/order-status-success`,
+        cancelUrl: `https://mern-blog-csov.onrender.com/order-status-cancel`,
     };
     const paymentLink = await payos.createPaymentLink(order);
     res.status(200).json({ checkoutUrl: paymentLink.checkoutUrl });
