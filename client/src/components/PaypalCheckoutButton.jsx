@@ -28,7 +28,6 @@ export default function PaypalCheckoutButton(props) {
             if (res.status == 200) {
                 dispatch(successfullyPurchase(data));
                 dispatch(setSelectedPackage(null));
-                toast.success('Successful transaction. Check your email for more detail', { duration: 6000 });
                 return navigate('/order-status-success');
             } else {
                 toast.error(error, { duration: 6000 });
@@ -61,6 +60,7 @@ export default function PaypalCheckoutButton(props) {
             }}
             onCancel={() => {
                 toast.error('Transaction canceled', { duration: 4000 });
+                navigate('/order-status-cancel');
             }}
             onError={(err) => {
                 setError(err);

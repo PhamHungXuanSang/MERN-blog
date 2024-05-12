@@ -63,7 +63,7 @@ export default function AllSubscribedAuthor() {
     return (
         <div className="flex flex-col gap-4 py-8 px-4 md:px-0 container mx-auto">
             <div className="w-full h-fit border-b-2 border-neutral-300">
-                <p className="border-b-2 text-lg w-fit py-2 px-4">All Authors</p>
+                <p className="border-b-2 text-lg w-fit py-2 px-4">All Subscribed Author</p>
             </div>
             {authors != null ? (
                 authors != null && authors.length > 0 ? (

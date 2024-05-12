@@ -116,7 +116,7 @@ export default function Header() {
                         type="text"
                         placeholder="Type to search"
                         rightIcon={LuSearch}
-                        className="hidden lg:inline"
+                        className="hidden md:inline"
                         onKeyDown={handleSearch}
                         onChange={handleTypeSearch}
                         value={searchValue}
@@ -183,7 +183,7 @@ export default function Header() {
                 </Button>
 
                 <div className="flex gap-2 md:order-2">
-                    <Button className="w-16 h-10 flex items-center justify-center" pill color="gray" onClick={() => navigate('/chat')}>
+                    <Button className="w-10 md:w-16 h-10 flex items-center justify-center" pill color="gray" onClick={() => navigate('/chat')}>
                         <FaRocketchat size={20} />
                     </Button>
                     <Button className="w-12 h-10 inline" pill color="gray" onClick={() => dispatch(darkModeToogle())}>

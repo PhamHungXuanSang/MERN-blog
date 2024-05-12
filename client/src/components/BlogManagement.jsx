@@ -58,7 +58,6 @@ export default function BlogManagement() {
             const data = await res.json();
             if (res.ok) {
                 setBlogs((prev) => [...prev, ...data.blogs]);
-                console.log(blogs.length + data.blogs.length, allBlogs);
                 if (blogs.length + data.blogs.length >= allBlogs) {
                     setShowMore(false);
                 }

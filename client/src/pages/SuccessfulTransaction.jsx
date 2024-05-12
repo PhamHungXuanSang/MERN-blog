@@ -19,6 +19,7 @@ export default function SuccessfulTransaction() {
                 params[key] = value;
             });
             // console.log(params.code, params.cancel, params.status, params.id, params.orderCode);
+            console.log(params);
             if (
                 params.code == '00' &&
                 params.cancel == 'false' &&
@@ -27,16 +28,12 @@ export default function SuccessfulTransaction() {
                 params.orderCode != ''
             ) {
                 try {
-                    // Gọi api lấy thông tin thanh toán
                     const res = await fetch(`/api/transaction/get-payment-info/${params.orderCode}`, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                     });
                     const data = await res.json();
                     if (res.status === 200) {
-                        console.log(typeof params.id, typeof data.id);
-                        console.log(params.id, data.id);
-                        // Xem xét dùng toString()
                         if (params.id == data.id) {
                             const res = await fetch('/api/transaction/store-payment', {
                                 method: 'POST',
@@ -69,6 +66,11 @@ export default function SuccessfulTransaction() {
                 } catch (error) {
                     console.log(error);
                 }
+            } else if (Object.keys(params).length === 0) {
+                dispatch(setSelectedPackage(null));
+                toast.success('Successful transaction. Check your email for more detail', {
+                    duration: 6000,
+                });
             } else {
                 console.log('1');
                 navigate('/order-status-cancel');
