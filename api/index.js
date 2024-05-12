@@ -22,7 +22,6 @@ import cookieParser from 'cookie-parser';
 import { jobAtStartOfHour, jobAtHalfPastHour } from './services/nodeCron.js';
 import path from 'path';
 
-
 dotenv.config();
 mongoose
     .connect(process.env.DATABASE)
@@ -32,8 +31,7 @@ const __dirname = path.resolve();
 const app = express();
 app.use(
     cors({
-        origin: 'http://localhost:5173',
-        //methods: ['GET', 'POST'],
+        origin: 'https://mern-blog-csov.onrender.com',
         credentials: true,
     }),
 );
@@ -57,7 +55,7 @@ const removeOnlineUser = (userId, socketId) => {
 };
 export const io = new Server(httpServer, {
     cors: {
-        origin: 'http://localhost:5173',
+        origin: 'https://mern-blog-csov.onrender.com',
         methods: ['GET', 'POST'],
     },
 });
