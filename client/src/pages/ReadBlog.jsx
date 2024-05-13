@@ -122,21 +122,25 @@ export default function ReadBlog() {
                             className="aspect-auto object-cover rounded-[10px] mx-auto max-h-[350px]"
                         />
                         <div className="mt-12">
-                            <i className="block mx-auto w-fit py-1 px-3 my-4 font-semibold capitalize border-2 border-teal-500 dark:bg-slate-800 bg-slate-100 rounded-3xl">
+                            <i className="block mx-auto w-fit py-1 px-3 my-4 font-semibold capitalize border-2 border-teal-500 dark:bg-slate-800 bg-slate-100 rounded-3xl dark:text-teal-100 text-teal-600">
                                 {blog.category}
                             </i>
                             <h1 className="text-3xl text-center font-medium line-clamp-2 break-words">{blog.title}</h1>
                             <div className="flex max-sm:flex-col-reverse justify-between items-center my-8">
-                                <div className="flex flex-col gap-4 items-center border border-teal-500 p-2 rounded-lg">
+                                <div className="flex flex-col md:gap-4 gap-2 items-center border border-teal-500 p-2 rounded-lg">
                                     <Link
                                         to={`/user/${blog.authorId.username}`}
                                         className="flex gap-0 md:gap-4 justify-center items-center max-w-full"
                                     >
-                                        <img src={blog.authorId.userAvatar} className="w-12 h-12 rounded-full" />
-                                        <div>
-                                            @{blog.authorId.username}
-                                            <br />
-                                            <i>{blog.authorId.email}</i>
+                                        <img
+                                            src={blog.authorId.userAvatar}
+                                            className="md:w-12 md:h-12 w-10 h-10 rounded-full"
+                                        />
+                                        <div className="flex-1 min-w-0">
+                                            <span className="block truncate">@{blog.authorId.username}</span>
+                                            <i className="block truncate text-sm text-gray-500">
+                                                {blog.authorId.email}
+                                            </i>
                                         </div>
                                     </Link>
                                     <div>
@@ -200,13 +204,13 @@ export default function ReadBlog() {
                         )}
 
                         {/* Author infor */}
-                        <div className="p-4 my-4 dark:bg-slate-800 bg-slate-50 rounded-xl shadow">
-                            <div className="flex items-center gap-8">
+                        <div className="p-4 my-4 dark:bg-slate-800 bg-slate-50 rounded-xl shadow overflow-hidden">
+                            <div className="flex items-center md:gap-8 gap-2">
                                 <div className="rounded-full max-w-24 max-h-24 border-2 flex justify-center items-center">
                                     <img
                                         alt="Avatar"
                                         src={blog.authorId.userAvatar}
-                                        className="max-w-20 max-h-20 rounded-full shadow-2xl"
+                                        className="md:max-w-20 md:max-h-20 max-w-14 max-h-14 rounded-full shadow-2xl"
                                     />
                                 </div>
                                 <div className="flex flex-col gap-2">

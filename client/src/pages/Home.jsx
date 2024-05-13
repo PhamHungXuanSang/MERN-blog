@@ -480,7 +480,7 @@ export default function Home() {
                             topAuthors.map((author, i) => {
                                 return (
                                     <div
-                                        className="p-4 dark:bg-slate-800 bg-slate-100 md:max-w-[32%] rounded-3xl overflow-hidden hover:scale-105 duration-300"
+                                        className="md:p-4 p-2 dark:bg-slate-800 bg-slate-100 md:max-w-[32%] rounded-3xl overflow-hidden hover:scale-105 duration-300"
                                         key={i}
                                     >
                                         <div className="flex items-center gap-4 xl:gap-8">
@@ -488,7 +488,7 @@ export default function Home() {
                                                 <img
                                                     alt="Avatar"
                                                     src={author.userAvatar}
-                                                    className="max-w-20 max-h-20 rounded-full shadow-2xl"
+                                                    className="md:max-w-20 md:max-h-20 max-w-14 max-h-14 rounded-full shadow-2xl"
                                                 />
                                             </div>
                                             <div className="flex flex-col gap-2">
@@ -496,7 +496,7 @@ export default function Home() {
                                                     @{author.username}
                                                 </p>
                                                 <p className="line-clamp-2 break-words">{author.userDesc}</p>
-                                                <p className="line-clamp-1 break-words flex items-center gap-1">
+                                                <p className="line-clamp-1 break-words flex items-center gap-1 opacity-50">
                                                     <SlNote /> {author.count} Published Blogs
                                                 </p>
                                                 <Link to={`/user/${author.username}`} className="text-teal-600">

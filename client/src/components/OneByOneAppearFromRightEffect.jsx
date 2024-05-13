@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { motion } from 'framer-motion';
 
 export default function OneByOneAppearFromRightEffect({ transition, children }) {
@@ -6,7 +7,6 @@ export default function OneByOneAppearFromRightEffect({ transition, children }) 
             initial={{ opacity: 0, x: 100 }}
             animate={{ opacity: 1, x: 0 }}
             transition={transition}
-            // className="flex-grow"
         >
             {children}
         </motion.div>

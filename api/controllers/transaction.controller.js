@@ -109,7 +109,7 @@ export const getFreeTrial = async (req, res, next) => {
         <p class="main-content">
             You have successfully registered to free trial create blog in <strong>7 days</strong>. We're thrilled to have you onboard and can't wait to see the amazing content you'll create.
         </p>
-        <a href="http://localhost:5173/dash-board?tab=create-blog" class="button">Create your blog here</a>
+        <a href="https://mern-blog-csov.onrender.com/dash-board?tab=create-blog" class="button">Create your blog here</a>
         <p class="main-content">
             If you have any questions, feel free to contact our support team at <a href="mailto:20t1020536@husc.edu.vn" class="support-email">20t1020536@husc.edu.vn</a>. We're here to help!
         </p>
@@ -334,7 +334,7 @@ export const storePayment = async (req, res, next) => {
                 timeZone: 'Asia/Ho_Chi_Minh',
             })}</p>
         </div>
-        <a href="http://localhost:5173/dash-board?tab=create-blog" class="button">Create your blog here</a>
+        <a href="https://mern-blog-csov.onrender.com/dash-board?tab=create-blog" class="button">Create your blog here</a>
         <p class="main-content">
             If you have any questions, feel free to contact our support team at <a href="mailto:20t1020536@husc.edu.vn" class="support-email">20t1020536@husc.edu.vn</a>. We're here to help!
         </p>

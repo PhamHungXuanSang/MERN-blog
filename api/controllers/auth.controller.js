@@ -99,7 +99,7 @@ export const signup = async (req, res, next) => {
                     <p>Please click the button below to verify your email address.</p>
                 </div>
                 <!-- Đường dẫn phải là một link thực tế từ server của bạn -->
-                <a href="http://localhost:3000/api/email/verify?email=${user.email}&token=${hashedEmail}" class="verify-button">
+                <a href="https://mern-blog-csov.onrender.com/api/email/verify?email=${user.email}&token=${hashedEmail}" class="verify-button">
                     Verify Email
                 </a>
                 </div>

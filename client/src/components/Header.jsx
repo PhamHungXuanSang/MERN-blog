@@ -107,7 +107,7 @@ export default function Header() {
         <div className="relative">
             <Navbar className="border-b-2 h-[60px]">
                 <Link to="/" className="seft-center font-semibold text-sm sm:text-xl dark:text-white">
-                    <span className="px-3 py-1 rounded-lg bg-gradient-to-tr from-green-500 to-blue-500 text-white">
+                    <span className="md:px-3 px-1 py-1 rounded-lg bg-gradient-to-tr from-green-500 to-blue-500 text-white">
                         MERN Blog
                     </span>
                 </Link>
@@ -183,7 +183,15 @@ export default function Header() {
                 </Button>
 
                 <div className="flex gap-2 md:order-2">
-                    <Button className="w-10 md:w-16 h-10 flex items-center justify-center" pill color="gray" onClick={() => navigate('/chat')}>
+                    <Button
+                        className="w-10 md:w-16 h-10 flex items-center justify-center"
+                        pill
+                        color="gray"
+                        onClick={() => {
+                            if (!currentUser) return toast.error('Please sign in to chat');
+                            return navigate('/chat');
+                        }}
+                    >
                         <FaRocketchat size={20} />
                     </Button>
                     <Button className="w-12 h-10 inline" pill color="gray" onClick={() => dispatch(darkModeToogle())}>
@@ -246,7 +254,7 @@ export default function Header() {
                     {isDashboard && (
                         <button
                             type="button"
-                            className="-ml-3 mr-1 p-2 md:hidden"
+                            className="-ml-3 md:mr-1 mr-0 md:p-2 p-1 md:hidden"
                             onClick={() => {
                                 document.getElementById('side-bar')?.classList.toggle('hidden');
                             }}
