@@ -302,9 +302,13 @@ export default function BlogEditor() {
                         Create text content with speech
                     </Button>
                     <Button outline gradientDuoTone="redToYellow" onClick={handleShowCreateImage}>
-                        Create images with AI
+                        Create images
                     </Button>
-                    <Button gradientDuoTone="greenToBlue" onClick={handlePublishEditor}>
+                    <Button
+                        gradientDuoTone="greenToBlue"
+                        onClick={handlePublishEditor}
+                        className="flex items-center justify-center"
+                    >
                         Publish
                     </Button>
                 </div>
@@ -372,7 +376,7 @@ export default function BlogEditor() {
                     onClick={(e) => e.stopPropagation()}
                 >
                     <div className="flex justify-between items-center">
-                        <h3 className="text-lg font-bold">Create text content with speech</h3>
+                        <h3 className="text-lg font-bold">Create text with speech</h3>
                         <Select value={lang} onChange={(e) => setLang(e.target.value)} className="w-fit ml-4">
                             <option value={'en-US'}>English</option>
                             <option value={'vi-VN'}>Vietnamese</option>

@@ -55,7 +55,7 @@ export default function Chat({ onlineUsers }) {
                     Back to home
                 </Button>
             </div>
-            <MessageContainer />
+            <MessageContainer onlineUsers={onlineUsers} />
         </div>
     );
 }

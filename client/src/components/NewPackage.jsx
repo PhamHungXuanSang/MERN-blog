@@ -69,10 +69,6 @@ export default function PackageManagement() {
         if (!formData.packageExpiry) {
             return toast.error('Please choose expire time', { duration: 3000 });
         }
-        // console.log('Submitted data: ', {
-        //     ...formData,
-        //     packageDescription: list,
-        // });
         try {
             const res = await fetch(`/api/package/add-new-package`, {
                 method: 'POST',

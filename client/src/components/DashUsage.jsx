@@ -52,22 +52,38 @@ export default function DashUsage() {
                     <div className="w-full h-fit border-b-2 border-neutral-300">
                         <p className="border-b-2 text-lg w-fit py-2 px-4">Account usage</p>
                     </div>
-                    <div className="flex flex-col md:flex-row flex-wrap gap-4 md:gap-16 items-center border border-teal-500 p-4 my-4 rounded-lg">
-                        <p className="flex-1">
-                            Free trial: {userTransactionInfo.isTrialed ? 'Tried' : "Haven't tried"}
+                    <div className="flex flex-col md:flex-row flex-wrap gap-4 md:gap-8 justify-center items-center border border-teal-500 p-4 my-4 rounded-lg">
+                        <p className="font-semibold">
+                            Free trial:{' '}
+                            <p
+                                className={`inline${userTransactionInfo.isTrialed ? ' text-red-600' : ' text-green-600'}`}
+                            >
+                                {userTransactionInfo.isTrialed ? 'Tried' : "Haven't tried"}
+                            </p>
                         </p>
-                        <p className="flex-1">
-                            Permission create a blog: {userTransactionInfo.createPermission ? 'Allow' : 'Not allow'}
+                        <p className="font-semibold">
+                            Permission create blog:{' '}
+                            <p
+                                className={`inline${userTransactionInfo.createPermission ? ' text-green-600' : ' text-red-600'}`}
+                            >
+                                {userTransactionInfo.createPermission ? 'Allow' : 'Not allow'}
+                            </p>
                         </p>
-                        <p className="flex-1">
+                        <p className="font-semibold text-center">
                             Creation expiration:{' '}
-                            {userTransactionInfo.expirationDate
-                                ? new Date(userTransactionInfo.expirationDate).getFullYear() < 2100
-                                    ? dateToDateAndTime(userTransactionInfo.expirationDate)
-                                    : 'Lifetime use'
-                                : 'NaN'}
+                            <p
+                                className={`inline${new Date(userTransactionInfo.expirationDate) > new Date() ? ' text-green-600' : ' text-red-600'}`}
+                            >
+                                {userTransactionInfo.expirationDate
+                                    ? new Date(userTransactionInfo.expirationDate).getFullYear() < 2100
+                                        ? dateToDateAndTime(userTransactionInfo.expirationDate)
+                                        : 'Lifetime use'
+                                    : 'NaN'}
+                            </p>
                         </p>
-                        <p className="flex-1">Total amount: {totalAmount(userTransactions)} $</p>
+                        <p className="font-semibold">
+                            Total amount: <p className="inline text-teal-600">{totalAmount(userTransactions)} $</p>
+                        </p>
                     </div>
                 </>
             ) : null}

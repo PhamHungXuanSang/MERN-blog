@@ -54,7 +54,7 @@ export default function TransactionHistory() {
         datasets: [
             {
                 data: packagesCount,
-                backgroundColor: ['aqua', 'purple', 'green', 'yellow', 'red', 'orange', 'blue', 'gray'],
+                backgroundColor: ['red', 'orange', 'yellow', 'green', 'blue', 'aqua', 'gray'],
             },
         ],
     };

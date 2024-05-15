@@ -48,7 +48,7 @@ export default function AdminSideBar() {
                     </Link>
                     <Link to="/admin?tab=new-package">
                         <Sidebar.Item className="mt-1" active={tab === 'new-package'} icon={BiSolidCartAdd} as="div">
-                            New Package
+                            Package
                         </Sidebar.Item>
                     </Link>
                 </Sidebar.ItemGroup>

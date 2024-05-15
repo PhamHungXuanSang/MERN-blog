@@ -374,7 +374,39 @@ export const getTransactionHistory = async (req, res, next) => {
             Transaction.findOne({ userId }).populate('userId', 'username userAvatar email createdAt'),
         ]);
         const userTransactionHistorys = allUserTransactionHistorys.slice(startIndex, startIndex + limit);
-        return res.status(200).json({ allUserTransactionHistorys, userTransactionHistorys, userTransactionInfo });
+        const packagesName = new Set();
+        const packageCounts = new Map();
+        const packageTotalMoney = new Map();
+        let packageRenewalCount = 0;
+        let packageBuyCount = 0;
+        allUserTransactionHistorys.forEach((pack) => {
+            if (pack.transactionType == 'package renewal') {
+                packageRenewalCount++;
+            } else {
+                packageBuyCount++;
+            }
+            packagesName.add(pack.packageName);
+            packageCounts.set(pack.packageName, (packageCounts.get(pack.packageName) || 0) + 1);
+            packageTotalMoney.set(pack.packageName, (packageTotalMoney.get(pack.packageName) || 0) + pack.packagePrice);
+        });
+
+        let totalBuyCountEachPackage = Array.from(packageCounts.values());
+        let eachPackageTotalMoney = [];
+        eachPackageTotalMoney = Array.from(packageTotalMoney).map(([packageName, packagePrice]) => ({
+            packageName,
+            packagePrice,
+        }));
+
+        return res.status(200).json({
+            allUserTransactionHistorys,
+            packagesName: Array.from(packagesName),
+            totalBuyCountEachPackage,
+            eachPackageTotalMoney,
+            userTransactionHistorys,
+            userTransactionInfo,
+            packageRenewalCount,
+            packageBuyCount,
+        });
     } catch (error) {
         next(error);
     }

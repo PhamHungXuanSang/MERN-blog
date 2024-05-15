@@ -182,7 +182,7 @@ export default function Home() {
                                 <>
                                     <div className="flex flex-col gap-2 my-4 md:hidden">
                                         <div className="flex items-center">
-                                            <h1 className="font-medium text-xl mr-1 text-green-400">
+                                            <h1 className="font-medium text-xl mr-1 text-green-500">
                                                 View by Category
                                             </h1>
                                             <BiSolidCategoryAlt fill="green" />
@@ -283,9 +283,9 @@ export default function Home() {
 
                 <div className="max-w-[30%] border-l border-gray-300 pl-4 max-md:hidden">
                     <div className="flex flex-col">
-                        <div className="flex flex-col gap-2 mb-4 p-4 rounded-3xl dark:bg-slate-800 bg-slate-200">
+                        <div className="flex flex-col gap-2 mb-4 p-4 rounded-3xl dark:bg-slate-800 bg-slate-100">
                             <div className="flex items-center">
-                                <h1 className="font-medium text-xl mr-1 text-green-400">View by Category</h1>
+                                <h1 className="font-medium text-xl mr-1 text-green-500">View by Category</h1>
                                 <BiSolidCategoryAlt fill="green" />
                             </div>
                             <div className="flex gap-2 flex-wrap">
