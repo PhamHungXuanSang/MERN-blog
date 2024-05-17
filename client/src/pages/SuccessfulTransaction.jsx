@@ -18,8 +18,6 @@ export default function SuccessfulTransaction() {
             searchParams.forEach((value, key) => {
                 params[key] = value;
             });
-            // console.log(params.code, params.cancel, params.status, params.id, params.orderCode);
-            console.log(params);
             if (
                 params.code == '00' &&
                 params.cancel == 'false' &&
@@ -72,7 +70,6 @@ export default function SuccessfulTransaction() {
                     duration: 6000,
                 });
             } else {
-                console.log('1');
                 navigate('/order-status-cancel');
             }
         };

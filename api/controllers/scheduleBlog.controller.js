@@ -41,25 +41,6 @@ export const addToSchedule = async (req, res, next) => {
 
         try {
             const savedScheduleBlog = await newScheduleBlog.save();
-            // const author = await User.findById(userId).select('-password');
-            // author.subscribeUsers.forEach((user) => {
-            //     createNoti(
-            //         'new blog',
-            //         user,
-            //         author._id,
-            //         `Author ${author.username} just posted a new blog with the title: ${savedScheduleBlog.title}`,
-            //         { slug: savedScheduleBlog.slug },
-            //     );
-            //     pushNewNoti(
-            //         userOnline.get(user.toString()),
-            //         savedScheduleBlog.thumb,
-            //         savedScheduleBlog.title,
-            //         '',
-            //         '',
-            //         `Author ${author.username} just posted a new blog with the title: ${savedScheduleBlog.title}`,
-            //     );
-            // });
-
             return res.status(200).json(savedScheduleBlog);
         } catch (error) {
             next(error);

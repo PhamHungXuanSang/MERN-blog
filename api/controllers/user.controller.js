@@ -89,20 +89,6 @@ export const updateUserProfile = async (req, res, next) => {
     }
 };
 
-export const deleteAccount = async (req, res, next) => {
-    if (req.user._id !== req.params.userId) {
-        return next(errorHandler(403, 'Unauthorized'));
-    }
-
-    try {
-        await User.findByIdAndDelete(req.params.userId);
-        res.clearCookie('access_token');
-        return res.status(200).json('User has been deleted');
-    } catch (error) {
-        next(error);
-    }
-};
-
 export const getAllUser = async (req, res, next) => {
     const startIndex = parseInt(req.query.startIndex || 0);
     const limit = parseInt(req.query.limit || 2);

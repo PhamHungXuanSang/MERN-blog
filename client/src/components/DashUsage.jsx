@@ -52,7 +52,7 @@ export default function DashUsage() {
                     <div className="w-full h-fit border-b-2 border-neutral-300">
                         <p className="border-b-2 text-lg w-fit py-2 px-4">Account usage</p>
                     </div>
-                    <div className="flex flex-col md:flex-row flex-wrap gap-4 md:gap-8 justify-center items-center border border-teal-500 p-4 my-4 rounded-lg">
+                    <div className="flex flex-col md:flex-row flex-wrap justify-between items-center border border-teal-500 p-4 my-4 rounded-lg">
                         <p className="font-semibold">
                             Free trial:{' '}
                             <p

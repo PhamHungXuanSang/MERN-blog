@@ -7,8 +7,6 @@ import { TiMessages } from 'react-icons/ti';
 
 export default function MessageContainer({ onlineUsers }) {
     const { selectedConversation, setSelectedConversation } = useConversation();
-    console.log(onlineUsers);
-    console.log(selectedConversation);
 
     useEffect(() => {
         // cleanup function (unmounts)
@@ -25,7 +23,7 @@ export default function MessageContainer({ onlineUsers }) {
                     <div className="dark:bg-slate-500 bg-slate-200 px-4 py-2 mb-2">
                         <span className="label-text">To: </span>
                         <span className="font-bold">
-                            {selectedConversation.username + selectedConversation._id == onlineUsers._id
+                            {selectedConversation.username + onlineUsers.includes(selectedConversation._id)
                                 ? ' (Online)'
                                 : ''}
                         </span>

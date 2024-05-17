@@ -38,7 +38,7 @@ export default function PaypalCheckoutButton(props) {
 
     return (
         <PayPalButtons
-            style={{ color: 'silver', height: 48, shape: 'pill' }}
+            style={{ height: 48 }}
             onClick={(data, actions) => {
                 return actions.resolve();
             }}

@@ -21,8 +21,6 @@ export const addComment = async (req, res, next) => {
             blogAuthor,
             content: comment,
             isReply: false,
-            // likes: [],
-            // numberOfLikes: 0,
             commentedBy,
         };
         if (replyingTo) {

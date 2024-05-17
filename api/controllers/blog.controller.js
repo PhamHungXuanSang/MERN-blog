@@ -150,7 +150,7 @@ export const createBlog = async (req, res, next) => {
                     user,
                     author._id,
                     `Author ${author.username} just posted a new blog with the title: ${savedBlog.title}`,
-                    { slug: savedBlog.slug },
+                    { slug: savedBlog.slug, blogId: savedBlog._id }, // Thêm blogId
                 );
                 pushNewNoti(
                     userOnline.get(user.toString()),
@@ -259,6 +259,7 @@ export const updateLikeBlog = async (req, res, next) => {
             if (blog.authorId._id != userId) {
                 createNoti('like', blog.authorId._id, userId, `User ${user.username} like your blog`, {
                     slug: blog.slug,
+                    blogId: blog._id, // Thêm blogId
                 });
                 pushNewNoti(
                     userOnline.get(blog.authorId._id.toString()),
@@ -299,6 +300,7 @@ export const ratingBlog = async (req, res, next) => {
                 blog.authorId._id,
                 user._id,
                 `User ${user.username} rating ${ratingStar} stars for your blog: ${blog.title}`,
+                { slug: blog.slug, blogId: blog._id }, // Thêm blogId và slug
             );
             pushNewNoti(
                 userOnline.get(blog.authorId._id.toString()),
@@ -352,7 +354,6 @@ export const deleteBlog = async (req, res, next) => {
                 return next(errorHandler(400, 'Blog not found'));
             }
             if (blog.authorId.toString() !== userId.toString()) {
-                // Nếu không phải admin và chủ bài viết thì ko cho xóa
                 return next(errorHandler(400, 'You are not allowed to delete this blog'));
             }
         }

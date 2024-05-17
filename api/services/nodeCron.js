@@ -34,7 +34,7 @@ async function publishBlogs() {
                         user,
                         author._id,
                         `Author ${author.username} just posted a new blog with the title: ${blog.title}`,
-                        { slug: blog.slug },
+                        { slug: blog.slug, blogId: blog._id }, // Thêm blogId
                     );
 
                     if (userOnline.has(user.toString())) {
@@ -45,7 +45,7 @@ async function publishBlogs() {
                             '',
                             '',
                             `Author ${author.username} just posted a new blog with the title: ${blog.title}`,
-                            'new blog'
+                            'new blog',
                         );
                     }
                 } catch (notifyError) {

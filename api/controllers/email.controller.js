@@ -48,7 +48,6 @@ export const sendEmailOTP = async (req, res, next) => {
             const newOTP = new UserOTP({
                 email,
                 OTP: hashedOTP,
-                //expiresAt: Date.now() + 300000,
             });
             await newOTP.save();
             sendEmailServices(

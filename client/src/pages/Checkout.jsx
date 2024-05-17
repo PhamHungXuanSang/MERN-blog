@@ -9,7 +9,7 @@ import formatDate from '../utils/formatDate.js';
 import { IoIosArrowBack } from 'react-icons/io';
 import { setSelectedPackage } from '../redux/selectedPackage/selectedPackageSlice.js';
 import toast from 'react-hot-toast';
-import { BsBank2 } from 'react-icons/bs';
+import { BsQrCode } from 'react-icons/bs';
 
 export default function Checkout() {
     const [userTransactionInfo, setUserTransactionInfo] = useState(null);
@@ -166,18 +166,18 @@ export default function Checkout() {
                                     </div>
                                 </div>
                             </div>
-                            <div className="flex flex-col md:flex-row justify-between items-center">
-                                <div className="max-w-[240px] mx-auto mt-6">
+                            <div className="flex flex-col md:flex-row justify-between items-center gap-6 md:gap-8 p-4 md:py-6">
+                                <div className="w-full md:max-w-xs lg:max-w-sm mx-auto">
                                     <PaypalCheckoutButton pack={selectedPackage} />
                                 </div>
                                 <button
-                                    className="mt-6 md:mt-0 bg-gradient-to-r from-green-400 to-blue-500 hover:from-green-500 hover:to-blue-600 text-white font-semibold py-2 px-4 rounded shadow-lg transform transition duration-500 hover:scale-105"
+                                    className="w-full md:w-auto bg-gradient-to-r from-green-400 to-blue-500 hover:from-green-500 hover:to-blue-600 text-white font-semibold py-3 px-6 md:px-8 rounded-xl shadow transition-all duration-300 ease-in-out transform hover:scale-105"
                                     onClick={handleBankTransferPayment}
                                 >
-                                    <h4 className="text-lg flex items-center gap-2">
-                                        <BsBank2 size={28} />
-                                        Bank Transfer Payment
-                                    </h4>
+                                    <div className="flex items-center justify-center gap-2">
+                                        <BsQrCode size={32} />
+                                        <span className="text-xl">Scan QR Code</span>
+                                    </div>
                                 </button>
                             </div>
                         </>
