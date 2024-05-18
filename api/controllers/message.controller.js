@@ -1,6 +1,7 @@
 import { io, userOnline } from '../index.js';
 import Conversation from '../models/conversation.model.js';
 import Message from '../models/message.model.js';
+import { GoogleGenerativeAI, HarmCategory, HarmBlockThreshold } from '@google/generative-ai';
 
 export const sendMessage = async (req, res, next) => {
     try {
@@ -51,6 +52,26 @@ export const getMessages = async (req, res, next) => {
         const messages = conversation.messages;
 
         res.status(200).json(messages);
+    } catch (error) {
+        next(error);
+    }
+};
+
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+export const gemini = async (req, res, next) => {
+    try {
+        async function run() {
+            const model = genAI.getGenerativeModel({ model: 'gemini-pro' });
+
+            const chat = model.startChat({
+                history: req.body.history,
+            });
+            const result = await chat.sendMessage(req.body.message);
+            const response = await result.response;
+            res.json(response.text());
+        }
+
+        run();
     } catch (error) {
         next(error);
     }
