@@ -20,6 +20,8 @@
 
 .dark .ce-block.ce-block--selected .cdx-block,
 .dark .ce-block.ce-block--selected .ce-block__content,
+.dark .tc-cell.tc-cell--selected,
+.dark .tc-row.tc-row--selected,
 .dark .ce-block.ce-block--focused .cdx-block {
     background: #2a2a2a;
     color: #e0e0e0;
@@ -42,6 +44,8 @@
 .dark .cdx-search-field,
 .dark .cdx-button,
 .dark .image-tool__image,
+.dark .tc-popover,
+.dark .tc-popover__item-icon,
 .dark .ce-conversion-toolbar {
     /* color: #fff; */
     background: #242424;

@@ -130,8 +130,6 @@ export default function PublishForm() {
             ỷ: 'y',
             ỹ: 'y',
             ỵ: 'y',
-
-            // Add the capital letter accents
             Á: 'A',
             À: 'A',
             Ả: 'A',
@@ -208,7 +206,7 @@ export default function PublishForm() {
             .toLowerCase();
     }
 
-    const handleAddTopic = (e) => {
+    const handleAddTag = (e) => {
         if (e.keyCode == 13 || e.keyCode == 188) {
             e.preventDefault();
             if (tags.length < 10) {
@@ -379,14 +377,12 @@ export default function PublishForm() {
                             </option>
                         ))}
                     </Select>
-
-                    <p className="my-2">Topics - Usefull for searching your blog</p>
-
+                    <p className="my-2">Tags - Usefull for searching your blog</p>
                     <div className="relative w-[100%] rounded-md p-4 border border-gray-300 focus:bg-transparent pl-2 py-2 pb-4">
                         <input
-                            onKeyDown={handleAddTopic}
+                            onKeyDown={handleAddTag}
                             type="text"
-                            placeholder="Topic"
+                            placeholder="Name tag and press Enter"
                             className="sticky w-[100%] rounded-md px-4 dark:bg-[#374151] dark:text-gray-400 border border-gray-300 focus:bg-transparent bg-white top-0 left-0 pl-4 mb-3 focus:bg-white"
                         />
                         {tags.map((tag, i) => {

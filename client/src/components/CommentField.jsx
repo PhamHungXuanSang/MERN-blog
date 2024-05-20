@@ -108,7 +108,7 @@ export default function CommentField({ action, index = undefined, replyingTo = u
                     <form onSubmit={handleSubmit}>
                         <Textarea
                             placeholder="Add a comment..."
-                            rows={3}
+                            rows={2}
                             maxLength={200}
                             onChange={(e) => setComment(e.target.value)}
                             value={comment}

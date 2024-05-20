@@ -12,6 +12,7 @@ import Marker from '@editorjs/marker';
 import InlineCode from '@editorjs/inline-code';
 import RawTool from '@editorjs/raw';
 import CodeTool from '@editorjs/code';
+import Table from '@editorjs/table';
 import { getDownloadURL, getStorage, ref, uploadBytesResumable } from 'firebase/storage';
 import { app } from '../firebase';
 import toast from 'react-hot-toast';
@@ -145,6 +146,15 @@ export const tools = {
             ],
             defaultColor: '#FF1300',
             customPicker: true,
+        },
+    },
+    table: {
+        class: Table,
+        inlineToolbar: true,
+        config: {
+            rows: 2,
+            cols: 3,
+            withHeadings: true,
         },
     },
 };

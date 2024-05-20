@@ -172,7 +172,6 @@ export default function Header() {
                         ''
                     )}
                 </div>
-                {/* Bấm vô xuất hiện hộp thoại nhập key search xong bấm search thì navigate qua với params đã nhập */}
                 <Button
                     className="md:hidden w-10 h-10"
                     pill
@@ -182,7 +181,7 @@ export default function Header() {
                     <LuSearch />
                 </Button>
 
-                <div className="flex gap-2 md:order-2">
+                <div className="flex md:gap-2 gap-1 md:order-2 items-center">
                     <Button
                         className="w-10 md:w-16 h-10 flex items-center justify-center"
                         pill
@@ -245,21 +244,20 @@ export default function Header() {
                         </div>
                     ) : (
                         <Link to={'/sign-in'}>
-                            <Button outline gradientDuoTone="greenToBlue">
+                            <button className="border-2 border-orange-500 rounded-lg p-1 md:p-2 font-semibold hover:bg-orange-500 text-orange-200 hover:text-white text-sm md:text-base">
                                 Sign in
-                            </Button>
+                            </button>
                         </Link>
                     )}
-                    {/* <Navbar.Toggle/> */}
                     {isDashboard && (
                         <button
                             type="button"
-                            className="-ml-3 md:mr-1 mr-0 md:p-2 p-1 md:hidden"
+                            className="-ml-2 px-[2px] py-2 md:hidden"
                             onClick={() => {
                                 document.getElementById('side-bar')?.classList.toggle('hidden');
                             }}
                         >
-                            <BiSolidDashboard />
+                            <BiSolidDashboard size={20}/>
                         </button>
                     )}
                 </div>

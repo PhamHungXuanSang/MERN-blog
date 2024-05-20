@@ -108,4 +108,65 @@ export default function ContentItem({ type, block }) {
     if (type == 'code') {
         return <CopyBlock text={block.data.code} showLineNumbers={true} theme={dracula} codeBlock />;
     }
+
+    if (type === 'table' && block.data.withHeadings) {
+        const numCols = block.data.content[0].length;
+        return (
+            <table style={{ border: '1px solid', width: '100%', tableLayout: 'fixed' }}>
+                <colgroup>
+                    {Array.from({ length: numCols }, (_, index) => (
+                        <col key={index} style={{ width: `${100 / numCols}%` }} />
+                    ))}
+                </colgroup>
+                <thead style={{ border: '1px solid' }}>
+                    {block.data.content.map((row, idx) =>
+                        idx === 0 ? (
+                            <tr key={idx} style={{ border: '1px solid' }}>
+                                {row.map((col, i) => (
+                                    <th key={i} style={{ border: '1px solid' }}>
+                                        {col}
+                                    </th>
+                                ))}
+                            </tr>
+                        ) : null,
+                    )}
+                </thead>
+                <tbody style={{ border: '1px solid' }}>
+                    {block.data.content.map((row, idx) =>
+                        idx > 0 ? (
+                            <tr key={idx} style={{ border: '1px solid' }}>
+                                {row.map((col, i) => (
+                                    <td key={i} style={{ border: '1px solid' }}>
+                                        {col}
+                                    </td>
+                                ))}
+                            </tr>
+                        ) : null,
+                    )}
+                </tbody>
+            </table>
+        );
+    } else {
+        const numCols = block.data.content[0].length;
+        return (
+            <table style={{ border: '1px solid', width: '100%', tableLayout: 'fixed' }}>
+                <colgroup>
+                    {Array.from({ length: numCols }, (_, index) => (
+                        <col key={index} style={{ width: `${100 / numCols}%` }} />
+                    ))}
+                </colgroup>
+                <tbody style={{ border: '1px solid' }}>
+                    {block.data.content.map((row, idx) => (
+                        <tr key={idx} style={{ border: '1px solid' }}>
+                            {row.map((col, i) => (
+                                <td key={i} style={{ border: '1px solid' }}>
+                                    {col}
+                                </td>
+                            ))}
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
+        );
+    }
 }

@@ -11,6 +11,7 @@ import BackToTopButton from './BackToTopButton.jsx';
 
 export default function UserManagement() {
     const [users, setUsers] = useState(null);
+    const [allUsers, setAllUsers] = useState(0);
     const [showMore, setShowMore] = useState(true);
     const [showModal, setShowModal] = useState(false);
     const [titleModal, setTitleModal] = useState('');
@@ -34,6 +35,7 @@ export default function UserManagement() {
             }
             if (res.ok) {
                 setUsers(data.users);
+                setAllUsers(data.totalUsers);
                 if (data.users.length < 2) {
                     setShowMore(false);
                 }
@@ -63,7 +65,7 @@ export default function UserManagement() {
             }
             if (res.ok) {
                 setUsers((prev) => [...prev, ...data.users]);
-                if (data.users.length < 2) {
+                if (users.length + data.users.length >= allUsers) {
                     setShowMore(false);
                 }
             } else {

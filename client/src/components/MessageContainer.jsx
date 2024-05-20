@@ -5,7 +5,7 @@ import MessageInput from './MessageInput';
 import Messages from './Messages';
 import { TiMessages } from 'react-icons/ti';
 
-export default function MessageContainer({ onlineUsers }) {
+export default function MessageContainer() {
     const { selectedConversation, setSelectedConversation } = useConversation();
 
     useEffect(() => {
@@ -19,16 +19,10 @@ export default function MessageContainer({ onlineUsers }) {
                 <NoChatSelected />
             ) : (
                 <>
-                    {/* Hearder chat */}
                     <div className="dark:bg-slate-500 bg-slate-200 px-4 py-2 mb-2">
                         <span className="label-text">To: </span>
-                        <span className="font-bold">
-                            {selectedConversation.username + onlineUsers.includes(selectedConversation._id)
-                                ? ' (Online)'
-                                : ''}
-                        </span>
+                        <span className="font-bold">{selectedConversation.username}</span>
                     </div>
-                    {/* Messages */}
                     <Messages />
                     <MessageInput />
                 </>

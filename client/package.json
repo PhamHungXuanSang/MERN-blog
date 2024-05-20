@@ -23,6 +23,7 @@
         "@editorjs/paragraph": "^2.11.3",
         "@editorjs/quote": "^2.6.0",
         "@editorjs/raw": "^2.5.0",
+        "@editorjs/table": "^2.3.0",
         "@paypal/react-paypal-js": "^8.2.0",
         "@reduxjs/toolkit": "^2.1.0",
         "@types/dom-speech-recognition": "^0.0.4",
