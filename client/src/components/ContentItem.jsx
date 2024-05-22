@@ -206,6 +206,7 @@ export default function ContentItem({ type, block }) {
                         width={block.data.width}
                         height={block.data.height}
                         allowFullScreen={true}
+                        style={{ maxWidth: '100%', maxHeight: '100%' }}
                     ></iframe>
                 </div>
                 <i className="mt-2 text-md block" dangerouslySetInnerHTML={{ __html: block.data.caption }}></i>

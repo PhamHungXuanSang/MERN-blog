@@ -244,7 +244,7 @@ export default function Header() {
                         </div>
                     ) : (
                         <Link to={'/sign-in'}>
-                            <button className="border-2 border-orange-500 rounded-lg p-0.5 md:px-2 md:py-1 font-semibold hover:bg-orange-500 text-orange-200 hover:text-white text-sm md:text-base">
+                            <button className="border-2 border-orange-500 rounded-lg p-0.5 md:px-2 md:py-1 font-semibold hover:bg-orange-500 dark:text-orange-200 text-orange-500 hover:text-white text-sm md:text-base">
                                 Sign in
                             </button>
                         </Link>
