@@ -101,7 +101,8 @@ export default function ContentItem({ type, block }) {
             <>
                 <blockquote
                     className={'text-' + block.data.alignment + ' text-xl leading-10 md:text-2xl'}
-                >{`“${block.data.text}”`}</blockquote>
+                    dangerouslySetInnerHTML={{ __html: `“${block.data.text}”` }}
+                ></blockquote>
                 {block.data.caption.length && (
                     <i
                         className={'text-' + block.tunes.textAlignment.alignment + ' mt-2 text-md block'}
@@ -147,9 +148,11 @@ export default function ContentItem({ type, block }) {
                         idx === 0 ? (
                             <tr key={idx} style={{ border: '1px solid' }}>
                                 {row.map((col, i) => (
-                                    <th key={i} style={{ border: '1px solid' }}>
-                                        {col}
-                                    </th>
+                                    <th
+                                        key={i}
+                                        style={{ border: '1px solid' }}
+                                        dangerouslySetInnerHTML={{ __html: col }}
+                                    ></th>
                                 ))}
                             </tr>
                         ) : null,
@@ -160,9 +163,11 @@ export default function ContentItem({ type, block }) {
                         idx > 0 ? (
                             <tr key={idx} style={{ border: '1px solid' }}>
                                 {row.map((col, i) => (
-                                    <td key={i} style={{ border: '1px solid' }}>
-                                        {col}
-                                    </td>
+                                    <td
+                                        key={i}
+                                        style={{ border: '1px solid' }}
+                                        dangerouslySetInnerHTML={{ __html: col }}
+                                    ></td>
                                 ))}
                             </tr>
                         ) : null,
@@ -186,9 +191,11 @@ export default function ContentItem({ type, block }) {
                     {block.data.content.map((row, idx) => (
                         <tr key={idx} style={{ border: '1px solid' }}>
                             {row.map((col, i) => (
-                                <td key={i} style={{ border: '1px solid' }}>
-                                    {col}
-                                </td>
+                                <td
+                                    key={i}
+                                    style={{ border: '1px solid' }}
+                                    dangerouslySetInnerHTML={{ __html: col }}
+                                ></td>
                             ))}
                         </tr>
                     ))}
@@ -234,9 +241,10 @@ export default function ContentItem({ type, block }) {
         const alignment = alignClass[block.data.align] || alignClass.left;
 
         return (
-            <div className={`p-[10px] rounded-[5px] mb-[10px] border ${alertType} ${alignment}`}>
-                {block.data.message}
-            </div>
+            <div
+                className={`p-[10px] rounded-[5px] mb-[10px] border ${alertType} ${alignment}`}
+                dangerouslySetInnerHTML={{ __html: block.data.message }}
+            ></div>
         );
     }
 

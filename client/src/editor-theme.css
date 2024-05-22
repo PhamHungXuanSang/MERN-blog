@@ -18,7 +18,7 @@
     background-color: #414141 !important;
 }
 
-.tooltip-tool__input {
+.tooltip-tool__input, .ce-inline-tool-input {
     color: #000;
     background: #fff;
 }
@@ -27,8 +27,7 @@
 .dark .ce-block.ce-block--selected .ce-block__content,
 .dark .tc-cell.tc-cell--selected,
 .dark .tc-row.tc-row--selected,
-.dark .tooltip-tool__input,
-.dark .ce-block.ce-block--focused .cdx-block {
+.dark .tooltip-tool__input {
     background: #2a2a2a;
     color: #e0e0e0;
 }
@@ -85,9 +84,6 @@
     border-color: #333 transparent transparent transparent;
     opacity: 0 !important;
     visibility: hidden;
-    transition:
-        opacity 0.6s,
-        visibility 0.01s;
 }
 
 .cdx-tooltip::after {
@@ -105,9 +101,6 @@
     white-space: nowrap;
     opacity: 0 !important;
     visibility: hidden;
-    transition:
-        opacity 0.3s,
-        visibility 0.3s;
 }
 
 .cdx-tooltip:hover::after,
