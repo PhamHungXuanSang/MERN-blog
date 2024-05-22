@@ -68,7 +68,7 @@ export default function MainBoardManagement() {
         const fetchComments = async () => {
             try {
                 const res = await fetch(`/api/comment/get-all-comment?limit=5&&sort=desc`, {
-                    method: 'GET',
+                    method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                 });
                 const data = await res.json();
@@ -230,10 +230,10 @@ export default function MainBoardManagement() {
                                                 <img
                                                     src={blog.thumb}
                                                     alt="avatar"
-                                                    className="max-w-20 rounded-sm bg-gray-500 mx-auto"
+                                                    className="max-w-20 rounded-sm bg-gray-500 mx-auto max-h-24 object-cover"
                                                 />
                                             </Table.Cell>
-                                            <Table.Cell className="p-1 max-w-[360px] break-words line-clamp-2">
+                                            <Table.Cell className="p-1 max-w-[360px] break-words">
                                                 {blog.title}
                                             </Table.Cell>
                                             <Table.Cell className="p-2">{blog.authorId.username}</Table.Cell>
@@ -253,6 +253,9 @@ export default function MainBoardManagement() {
                 <div className="flex flex-col w-full md:w-auto shadow-md p-2 rounded-md dark:bg-gray-800">
                     <div className="flex justify-between p-3 text-sm font-semibold">
                         <h3 className="text-center p-2">RECENT COMMENTS</h3>
+                        <Button outline gradientMonochrome="success">
+                            <Link to={'/admin?tab=comment-management'}>See all</Link>
+                        </Button>
                     </div>
                     <Table hoverable>
                         <Table.Head>
@@ -275,7 +278,7 @@ export default function MainBoardManagement() {
                                                 />
                                             </Table.Cell>
                                             <Table.Cell className="p-2">{comment.commentedBy.username}</Table.Cell>
-                                            <Table.Cell className="p-2 max-w-[360px] break-words line-clamp-2">
+                                            <Table.Cell className="p-2 max-w-[360px] break-words">
                                                 {comment.content}
                                             </Table.Cell>
                                             <Table.Cell className="p-2">

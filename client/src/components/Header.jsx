@@ -107,7 +107,7 @@ export default function Header() {
         <div className="relative">
             <Navbar className="border-b-2 h-[60px]">
                 <Link to="/" className="seft-center font-semibold text-sm sm:text-xl dark:text-white">
-                    <span className="md:px-3 px-1 py-1 rounded-lg bg-gradient-to-tr from-green-500 to-blue-500 text-white">
+                    <span className="md:px-3 px-0.5 py-1 rounded-lg bg-gradient-to-tr from-green-500 to-blue-500 text-white">
                         MERN Blog
                     </span>
                 </Link>
@@ -181,7 +181,7 @@ export default function Header() {
                     <LuSearch />
                 </Button>
 
-                <div className="flex md:gap-2 gap-1 md:order-2 items-center">
+                <div className="flex md:gap-2 gap-0.5 md:order-2 items-center">
                     <Button
                         className="w-10 md:w-16 h-10 flex items-center justify-center"
                         pill
@@ -193,7 +193,7 @@ export default function Header() {
                     >
                         <FaRocketchat size={20} />
                     </Button>
-                    <Button className="w-12 h-10 inline" pill color="gray" onClick={() => dispatch(darkModeToogle())}>
+                    <Button className="w-[46px] h-10 inline" pill color="gray" onClick={() => dispatch(darkModeToogle())}>
                         {darkModeObj.darkMode === 'light' ? <FaMoon /> : <FaSun />}
                     </Button>
                     {currentUser ? (
@@ -244,7 +244,7 @@ export default function Header() {
                         </div>
                     ) : (
                         <Link to={'/sign-in'}>
-                            <button className="border-2 border-orange-500 rounded-lg p-1 md:p-2 font-semibold hover:bg-orange-500 text-orange-200 hover:text-white text-sm md:text-base">
+                            <button className="border-2 border-orange-500 rounded-lg p-0.5 md:px-2 md:py-1 font-semibold hover:bg-orange-500 text-orange-200 hover:text-white text-sm md:text-base">
                                 Sign in
                             </button>
                         </Link>
@@ -252,7 +252,7 @@ export default function Header() {
                     {isDashboard && (
                         <button
                             type="button"
-                            className="-ml-2 px-[2px] py-2 md:hidden"
+                            className="-ml-1 px-[2px] py-2 md:hidden"
                             onClick={() => {
                                 document.getElementById('side-bar')?.classList.toggle('hidden');
                             }}

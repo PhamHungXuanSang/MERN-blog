@@ -178,10 +178,10 @@ export default function PackageManagement() {
                             </div>
                         ))}
                     </div>
-                    <Button outline type="button" onClick={handleAdd}>
+                    <Button outline gradientDuoTone="pinkToOrange" type="button" onClick={handleAdd}>
                         Add desc
                     </Button>
-                    <Button onClick={handleSubmit} outline type="submit">
+                    <Button onClick={handleSubmit} outline gradientDuoTone={'greenToBlue'} type="submit">
                         Create new package
                     </Button>
                 </div>

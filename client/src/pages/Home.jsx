@@ -34,6 +34,13 @@ export default function Home() {
     const [authors, setAuthors] = useState([]);
     const [authorBlogs, setAuthorBlogs] = useState(null);
     const [activeAuthor, setActiveAuthor] = useState(null);
+    const [settings, setSettings] = useState({
+        className: 'center',
+        centerMode: true,
+        infinite: true,
+        slidesToShow: 3,
+        speed: 500,
+    });
     const limit = 5;
 
     const navigate = useNavigate();
@@ -102,6 +109,14 @@ export default function Home() {
             console.log(error);
         }
     };
+    
+    const handleResize = () => {
+        if (window.innerWidth < 768) {
+            setSettings((prevSettings) => ({ ...prevSettings, slidesToShow: 1 }));
+        } else {
+            setSettings((prevSettings) => ({ ...prevSettings, slidesToShow: 3 }));
+        }
+    };
 
     useEffect(() => {
         if (activeTab == 'all category') {
@@ -117,6 +132,9 @@ export default function Home() {
         if (currentUser) {
             handleGetUserSubscribeAuthor();
         }
+        window.addEventListener('resize', handleResize);
+        handleResize();
+        return () => window.removeEventListener('resize', handleResize);
     }, []);
 
     const loadBlogByCategory = async (e) => {
@@ -139,14 +157,6 @@ export default function Home() {
     const onPageChange = (page) => {
         setBlogs(null);
         setCurrentPage(page);
-    };
-
-    const settings = {
-        className: 'center',
-        centerMode: true,
-        infinite: true,
-        slidesToShow: 3,
-        speed: 500,
     };
 
     const handleFetchAuthorBlog = async (username) => {

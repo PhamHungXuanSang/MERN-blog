@@ -7,6 +7,7 @@ import { FcStatistics } from 'react-icons/fc';
 import { BiSolidCartAdd } from 'react-icons/bi';
 import { MdCategory } from 'react-icons/md';
 import { FaHistory } from 'react-icons/fa';
+import { LiaComments } from "react-icons/lia";
 
 export default function AdminSideBar() {
     const location = useLocation();
@@ -83,6 +84,19 @@ export default function AdminSideBar() {
                             className="mt-2"
                         >
                             User Management
+                        </Sidebar.Item>
+                    </Link>
+                </Sidebar.ItemGroup>
+                <Sidebar.ItemGroup>
+                    <span className="text-2xl font-semibold pl-2">Comment</span>
+                    <Link to="/admin?tab=comment-management">
+                        <Sidebar.Item
+                            active={tab === 'comment-management'}
+                            icon={LiaComments}
+                            as="div"
+                            className="mt-2"
+                        >
+                            Cmt Management
                         </Sidebar.Item>
                     </Link>
                 </Sidebar.ItemGroup>

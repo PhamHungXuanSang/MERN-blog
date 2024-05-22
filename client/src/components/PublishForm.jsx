@@ -1,4 +1,4 @@
-import { Button, Modal, Select, Spinner, TextInput, Textarea } from 'flowbite-react';
+import { Button, Modal, Select, Spinner, Textarea } from 'flowbite-react';
 import { useContext, useEffect, useState } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
 import { EditorContext } from '../pages/Editor';
@@ -28,15 +28,20 @@ export default function PublishForm() {
         setEditorState,
     } = useContext(EditorContext);
 
+    const getAllCategory = async () => {
+        const res = await fetch(`/api/category/get-all-not-blocked-category`, {
+            method: 'GET',
+        });
+        const data = await res.json();
+        setAllCate(data.allCates);
+    };
+    
     useEffect(() => {
-        const getAllCategory = async () => {
-            const res = await fetch(`/api/category/get-all-not-blocked-category`, {
-                method: 'GET',
-            });
-            const data = await res.json();
-            setAllCate(data.allCates);
-        };
         getAllCategory();
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth',
+        });
     }, []);
 
     const handleClosePreview = () => {
@@ -324,9 +329,9 @@ export default function PublishForm() {
 
     return (
         <div>
-            <div className="w-full container mx-auto min-h-screen grid items-start lg:grid-cols-2 px-2 md:px-0">
+            <div className="w-full container mx-auto min-h-screen grid items-start lg:grid-cols-2 px-2 md:px-0 max-sm:max-w-[96vw]">
                 <Toaster />
-                <div className="max-w-[450px] block mx-auto mb-4">
+                <div className="md:max-w-[450px] block mx-auto mb-4">
                     <p className="text-3xl font-semibold py-2 px-4">Preview</p>
                     <div className="w-full aspect-auto rounded-lg overflow-hidden mt-4">
                         <img
@@ -335,20 +340,25 @@ export default function PublishForm() {
                                     ? thumb
                                     : 'https://expeditionmeister.com/oc-content/plugins/blog/img/blog/blog-default.png'
                             }
-                            className="aspect-auto object-cover"
+                            className="aspect-auto object-cover max-h-72"
                         />
                     </div>
-                    <h1 className="text-3xl font-medium mt-2 leading-tight line-clamp-2">{title}</h1>
-                    <p className="line-clamp-2 text-xl leading-7 mt-4">{description}</p>
+                    <h1 className="md:text-3xl text-xl font-medium mt-2 leading-tight break-words overflow-hidden">
+                        {title}
+                    </h1>
+                    <i className="line-clamp-2 md:text-xl text-base text-white/70 leading-7 mt-4 break-words">
+                        {description}
+                    </i>
                 </div>
                 <div className="border-gray-300 lg:border-1 lg:pl-8">
                     <p className="my-2">Blog Title</p>
-                    <TextInput
+                    <Textarea
                         onChange={handleTitleChange}
                         type="text"
                         placeholder="Blog Title"
                         defaultValue={title}
-                        className="w-[100%] rounded-md focus:bg-transparent"
+                        className="w-[100%] rounded-md focus:bg-transparent font-medium outline-none resize-none placeholder:opacity-40 mx-auto"
+                        rows={1}
                     />
 
                     <p className="my-2">Description about your blog</p>

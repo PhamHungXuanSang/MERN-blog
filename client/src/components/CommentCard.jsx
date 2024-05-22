@@ -39,7 +39,6 @@ export default function CommentCard({ index, leftVal, commentData }) {
         if (!currentUser) {
             return toast.error('Please sign in to reply', { duration: 3000 });
         }
-
         setIsReplying((preVal) => !preVal);
     };
 
@@ -53,7 +52,6 @@ export default function CommentCard({ index, leftVal, commentData }) {
         } catch {
             startingPoint = undefined;
         }
-
         return startingPoint;
     };
 
@@ -86,26 +84,22 @@ export default function CommentCard({ index, leftVal, commentData }) {
             commentsArr.splice(index, 1);
             blog.commentCount = blog.commentCount - (count + 1);
         }
-
         // Nếu cmt delete là cmt cha ngoài cùng
         // if (commentData.childrenLevel == 0 && isDelete == true) {
         //     blog.commentCount = blog.commentCount - 1;
         // }
-
         setBlog({ ...blog, comments: { results: commentsArr } });
     };
 
     const loadReplies = async ({ skip = 0, currentIndex = index }) => {
         if (commentsArr[currentIndex].children.length) {
             hideReplies();
-
             try {
                 const data = await fetch('/api/comment/get-blog-replies', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ _id: commentsArr[currentIndex]._id, skip }),
                 });
-
                 let rs = await data.json();
                 let replies = rs.replies;
                 commentsArr[currentIndex].isReplyLoaded = true;
@@ -113,7 +107,6 @@ export default function CommentCard({ index, leftVal, commentData }) {
                     replies[i].childrenLevel = commentsArr[currentIndex].childrenLevel + 1;
                     commentsArr.splice(currentIndex + 1 + i + skip, 0, replies[i]);
                 }
-
                 setBlog({ ...blog, comments: { ...comments, results: commentsArr } });
             } catch (error) {
                 console.log(error);
@@ -123,7 +116,6 @@ export default function CommentCard({ index, leftVal, commentData }) {
 
     const hideReplies = () => {
         commentData.isReplyLoaded = false;
-
         removeCommentsCards(index + 1);
     };
 
@@ -135,12 +127,11 @@ export default function CommentCard({ index, leftVal, commentData }) {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ _id }),
             });
-            const rs = await res.json();
+            await res.json();
             if (res.status === 403) {
                 dispatch(signOutSuccess());
                 return navigate('/sign-in');
             }
-
             removeCommentsCards(index + 1, true);
         } catch (error) {
             console.log(error);

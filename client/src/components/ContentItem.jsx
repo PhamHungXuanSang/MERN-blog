@@ -1,5 +1,6 @@
 /* eslint-disable react/prop-types */
 import { CopyBlock, dracula } from 'react-code-blocks';
+import { IoIosWarning } from 'react-icons/io';
 
 export default function ContentItem({ type, block }) {
     if (type == 'header') {
@@ -74,10 +75,20 @@ export default function ContentItem({ type, block }) {
     if (type == 'image') {
         return (
             <>
-                <img src={block.data.file.url} className="aspect-video object-cover" />
+                {/* #cdd1e0 */}
+                <div className={block.data.withBackground ? 'w-full bg-[#cdd1e0]' : 'w-fit'}>
+                    <img
+                        src={block.data.file.url}
+                        className={
+                            (block.data.withBorder ? 'border dark:border-white border-slate-700 ' : '') +
+                            'aspect-video object-cover mx-auto' +
+                            (block.data.stretched ? ' w-full' : '')
+                        }
+                    />
+                </div>
                 {block.data.caption.length && (
                     <i
-                        className="mt-2 text-md text-gray-500 block text-center"
+                        className={'text-' + block.tunes.textAlignment.alignment + ' mt-2 text-md block'}
                         dangerouslySetInnerHTML={{ __html: block.data.caption }}
                     ></i>
                 )}
@@ -89,11 +100,11 @@ export default function ContentItem({ type, block }) {
         return (
             <>
                 <blockquote
-                    className={'text-' + block.data.alignment + ` text-xl leading-10 md:text-2xl`}
+                    className={'text-' + block.data.alignment + ' text-xl leading-10 md:text-2xl'}
                 >{`“${block.data.text}”`}</blockquote>
                 {block.data.caption.length && (
                     <i
-                        className="mt-2 text-md text-gray-500 block text-right"
+                        className={'text-' + block.tunes.textAlignment.alignment + ' mt-2 text-md block'}
                         dangerouslySetInnerHTML={{ __html: block.data.caption }}
                     ></i>
                 )}
@@ -109,10 +120,23 @@ export default function ContentItem({ type, block }) {
         return <CopyBlock text={block.data.code} showLineNumbers={true} theme={dracula} codeBlock />;
     }
 
+    if (type == 'warning') {
+        return (
+            <div className="flex gap-2 dark:bg-slate-800 bg-slate-100 md:p-4 p-1 rounded-xl shadow-md">
+                <IoIosWarning size={32} fill="yellow" className="min-w-8" />
+                <b dangerouslySetInnerHTML={{ __html: block.data.title }} className="text-lg min-w-20 w-fit"></b>
+                <p dangerouslySetInnerHTML={{ __html: block.data.message }} className="text-base"></p>
+            </div>
+        );
+    }
+
     if (type === 'table' && block.data.withHeadings) {
         const numCols = block.data.content[0].length;
         return (
-            <table style={{ border: '1px solid', width: '100%', tableLayout: 'fixed' }}>
+            <table
+                style={{ border: '1px solid', width: '100%', tableLayout: 'fixed' }}
+                className={'text-' + block.tunes.textAlignment.alignment}
+            >
                 <colgroup>
                     {Array.from({ length: numCols }, (_, index) => (
                         <col key={index} style={{ width: `${100 / numCols}%` }} />
@@ -146,10 +170,13 @@ export default function ContentItem({ type, block }) {
                 </tbody>
             </table>
         );
-    } else {
+    } else if (type === 'table') {
         const numCols = block.data.content[0].length;
         return (
-            <table style={{ border: '1px solid', width: '100%', tableLayout: 'fixed' }}>
+            <table
+                style={{ border: '1px solid', width: '100%', tableLayout: 'fixed' }}
+                className={'text-' + block.tunes.textAlignment.alignment}
+            >
                 <colgroup>
                     {Array.from({ length: numCols }, (_, index) => (
                         <col key={index} style={{ width: `${100 / numCols}%` }} />
@@ -168,5 +195,66 @@ export default function ContentItem({ type, block }) {
                 </tbody>
             </table>
         );
+    }
+
+    if (type == 'embed') {
+        return (
+            <div className={`text-${block.tunes.textAlignment.alignment}`}>
+                <div className="inline-block">
+                    <iframe
+                        src={block.data.embed}
+                        width={block.data.width}
+                        height={block.data.height}
+                        allowFullScreen={true}
+                    ></iframe>
+                </div>
+                <i className="mt-2 text-md block" dangerouslySetInnerHTML={{ __html: block.data.caption }}></i>
+            </div>
+        );
+    }
+
+    if (type === 'alert') {
+        const alertTypes = {
+            primary: 'border-[#4299e1] bg-[#ebf8ff] text-[#2b6cb0]',
+            secondary: 'border-[#cbd5e0] bg-[#f7fafc] text-[#222731]',
+            info: 'border-[#4cd4ce] bg-[#e6fdff] text-[#00727c]',
+            success: 'border-[#68d391] bg-[#f0fff4] text-[#2f855a]',
+            warning: 'border-[#ed8936] bg-[#fffaf0] text-[#c05621]',
+            danger: 'border-[#fc8181] bg-[#fff5f5] text-[#c53030]',
+            light: 'border-[#edf2f7] bg-[#fff] text-[#1a202c]',
+            dark: 'border-[#1a202c] bg-[#2d3748] text-[#d3d3d3]',
+        };
+        const alignClass = {
+            left: 'text-left',
+            center: 'text-center',
+            right: 'text-right',
+        };
+        const alertType = alertTypes[block.data.type] || alertTypes.primary;
+        const alignment = alignClass[block.data.align] || alignClass.left;
+
+        return (
+            <div className={`p-[10px] rounded-[5px] mb-[10px] border ${alertType} ${alignment}`}>
+                {block.data.message}
+            </div>
+        );
+    }
+
+    if (type == 'checklist') {
+        let listItems = '';
+        block.data.items.forEach((item) => {
+            listItems += `
+                <li class='list-group-item'>
+                    <input
+                        class='form-check-input me-2'
+                        type='checkbox'
+                        ${item.checked && 'checked'}
+                    />
+                    <label class='form-check-label'>
+                        ${item.text}
+                    </label>
+                </li>
+            `;
+        });
+        return <ul className="list-group mb-3" dangerouslySetInnerHTML={{ __html: listItems }}></ul>;
     }
 }

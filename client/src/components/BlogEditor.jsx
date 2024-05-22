@@ -69,7 +69,7 @@ export default function BlogEditor() {
                 new EditorJS({
                     holder: 'textEditor',
                     data: Array.isArray(content) ? content[0] : content,
-                    inlineToolbar: ['link', 'marker', 'bold', 'italic'],
+                    inlineToolbar: true,
                     tools: tools,
                     placeholder: 'Write your new blog ...',
                 }),
@@ -78,7 +78,7 @@ export default function BlogEditor() {
             setTextEditor(
                 new EditorJS({
                     holder: 'textEditor',
-                    inlineToolbar: ['link', 'marker', 'bold', 'italic'],
+                    inlineToolbar: true,
                     tools: tools,
                     placeholder: 'Write your new blog ...',
                 }),
@@ -221,14 +221,14 @@ export default function BlogEditor() {
                 <Textarea
                     defaultValue={title}
                     placeholder="Blog Title"
-                    className="text-3xl text-center font-medium h-16 outline-none resize-none placeholder:opacity-40 mx-auto w-[60%]"
+                    className="text-3xl text-center font-medium h-16 outline-none resize-none placeholder:opacity-40 mx-auto md:w-[60%] w-[90%]"
                     onKeyDown={handleTitleKeyDown}
                     onChange={handleTitleChange}
                 ></Textarea>
-                <div className="mx-auto mt-4 w-[60%]">
+                <div className="mx-auto mt-4 md:w-[60%] w-[90%]">
                     <Label
                         htmlFor="dropzone-file"
-                        className="flex w-full aspect-auto cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 hover:bg-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:border-gray-500 dark:hover:bg-gray-600"
+                        className="flex w-full aspect-auto cursor-pointer flex-col items-center justify-center rounded-[10px] border-2 border-dashed border-gray-300 bg-gray-50 hover:bg-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:border-gray-500 dark:hover:bg-gray-600"
                     >
                         {thumb ? (
                             <img
@@ -237,7 +237,7 @@ export default function BlogEditor() {
                                 onClick={() => hiddenElementRef.current.click()}
                                 src={thumb}
                                 alt="Ảnh blog thumbnail"
-                                className={`w-full h-full object-cover border-[lightgray]`}
+                                className={`h-full aspect-auto object-cover rounded-[10px] mx-auto max-h-96 border-[lightgray]`}
                             />
                         ) : (
                             <div className="flex flex-col items-center justify-center pb-6 pt-5">

@@ -10,6 +10,7 @@ import RevenuePackage from '../components/RevenuePackage';
 import AdminSideBar from '../components/AdminSidebar';
 import CateManagement from '../components/CateManagement';
 import TransactionHistory from '../components/TransactionHistory';
+import CommentManagement from '../components/CommentManagement';
 
 export default function Admin() {
     const [tab, setTab] = useState('');
@@ -38,6 +39,7 @@ export default function Admin() {
                 {tab === 'cate-management' && <CateManagement />}
                 {tab === 'blog-management' && <BlogManagement />}
                 {tab === 'user-management' && <UserManagement />}
+                {tab === 'comment-management' && <CommentManagement />}
             </div>
         </div>
     );

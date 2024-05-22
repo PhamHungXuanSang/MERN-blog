@@ -232,21 +232,49 @@ export const getAllComment = async (req, res, next) => {
         const startIndex = parseInt(req.query.startIndex) || 0;
         const limit = parseInt(req.query.limit) || 9;
         const sortDirection = req.query.sort === 'desc' ? -1 : 1;
+        const filterData = req.body.filterData;
 
-        const now = new Date();
-        const oneMonthAgo = new Date(now.getFullYear(), now.getMonth() - 1, now.getDate());
+        if (filterData) {
+            const totalCommentDisplayed = req.body.totalCommentDisplayed;
+            const from = new Date(filterData.startDate);
+            const to = new Date(filterData.endDate);
 
-        const [comments, lastMonthComments, totalComments] = await Promise.all([
-            Comment.find()
-                .sort({ createdAt: sortDirection })
-                .skip(startIndex)
-                .limit(limit)
-                .populate('commentedBy', 'username userAvatar'),
-            Comment.countDocuments({ createdAt: { $gte: oneMonthAgo } }).exec(),
-            Comment.countDocuments(),
-        ]);
+            const [comments, totalComments] = await Promise.all([
+                Comment.find({
+                    createdAt: {
+                        $gte: from,
+                        $lte: to,
+                    },
+                })
+                    .sort({ createdAt: filterData.sort == 'desc' ? -1 : 1 })
+                    .skip(totalCommentDisplayed ? 0 : startIndex)
+                    .limit(totalCommentDisplayed ? totalCommentDisplayed : limit)
+                    .populate('commentedBy', '_id username userAvatar'),
+                Comment.countDocuments({
+                    createdAt: {
+                        $gte: from,
+                        $lte: to,
+                    },
+                }),
+            ]);
 
-        return res.status(200).json({ comments, lastMonthComments, totalComments });
+            return res.status(200).json({ comments, totalComments });
+        } else {
+            const now = new Date();
+            const oneMonthAgo = new Date(now.getFullYear(), now.getMonth() - 1, now.getDate());
+
+            const [comments, lastMonthComments, totalComments] = await Promise.all([
+                Comment.find()
+                    .sort({ createdAt: sortDirection })
+                    .skip(startIndex)
+                    .limit(limit)
+                    .populate('commentedBy', '_id username userAvatar'),
+                Comment.countDocuments({ createdAt: { $gte: oneMonthAgo } }).exec(),
+                Comment.countDocuments(),
+            ]);
+
+            return res.status(200).json({ comments, lastMonthComments, totalComments });
+        }
     } catch (error) {
         next(error);
     }
