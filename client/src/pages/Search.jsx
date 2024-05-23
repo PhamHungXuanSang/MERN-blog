@@ -2,12 +2,11 @@
 import { Button, Label, Pagination, Select, Spinner } from 'flowbite-react';
 import { useEffect, useState } from 'react';
 import { FaUser } from 'react-icons/fa';
-import { useLocation, useParams } from 'react-router-dom';
+import { Link, useLocation, useParams } from 'react-router-dom';
 import Blog from '../components/Blog';
 import OneByOneAppearEffect from '../components/OneByOneAppearEffect';
 import NotFound from '../components/NotFound';
 import OneByOneAppearFromRightEffect from '../components/OneByOneAppearFromRightEffect';
-import User from '../components/User';
 import InPageNavigation from '../components/InPageNavigation';
 
 export default function Search() {
@@ -166,7 +165,7 @@ export default function Search() {
                                 <h1 className="font-medium text-xl mr-1">Search result for User</h1>
                                 <FaUser />
                             </div>
-                            <div className="flex gap-2 flex-wrap">
+                            <div className="flex gap-2 flex-wrap overflow-hidden">
                                 {users != null ? (
                                     users.length == 0 ? (
                                         <NotFound object={`Not found user by ${query} search value`} />
@@ -177,7 +176,18 @@ export default function Search() {
                                                     transition={{ duration: 1, delay: i * 0.15 }}
                                                     key={i}
                                                 >
-                                                    <User user={user} />
+                                                    <Link
+                                                        to={`/user/${user.username}`}
+                                                        className="flex gap-4 items-center justify-start overflow-hidden border-b mb-1 p-2 dark:hover:bg-slate-600 hover:bg-gray-200 rounded"
+                                                    >
+                                                        <img src={user.userAvatar} className="w-14 h-14 rounded-full" />
+                                                        <div>
+                                                            <p className="font-medium text-lg line-clamp-2">
+                                                                @{user.username}
+                                                            </p>
+                                                            <i className="text-gray-500">{user.email}</i>
+                                                        </div>
+                                                    </Link>
                                                 </OneByOneAppearFromRightEffect>
                                             ))}
                                         </>
@@ -197,7 +207,7 @@ export default function Search() {
                             <h1 className="font-medium text-xl mr-1">Search result for User</h1>
                             <FaUser />
                         </div>
-                        <div className="flex gap-2 flex-wrap">
+                        <div className="flex gap-2 flex-wrap overflow-x-hidden overflow-y-scroll max-h-[350px]">
                             {users != null ? (
                                 users.length == 0 ? (
                                     <NotFound object={`Not found user by ${query} search value`} />
@@ -208,7 +218,18 @@ export default function Search() {
                                                 transition={{ duration: 1, delay: i * 0.15 }}
                                                 key={i}
                                             >
-                                                <User user={user} />
+                                                <Link
+                                                    to={`/user/${user.username}`}
+                                                    className="flex gap-4 items-center justify-start overflow-hidden border-b mb-1 p-2 dark:hover:bg-slate-600 hover:bg-gray-200 rounded"
+                                                >
+                                                    <img src={user.userAvatar} className="w-12 h-12 rounded-full" />
+                                                    <div>
+                                                        <p className="font-medium text-lg line-clamp-2">
+                                                            @{user.username}
+                                                        </p>
+                                                        <i className="text-gray-500">{user.email}</i>
+                                                    </div>
+                                                </Link>
                                             </OneByOneAppearFromRightEffect>
                                         ))}
                                     </>

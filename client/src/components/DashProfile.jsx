@@ -84,10 +84,12 @@ export default function DashProfile() {
                         {dashProfile?.user?.subscribeUsers.length} Subscriber
                     </i>
                     <i className="border border-gray-500 py-1 px-2 rounded-3xl opacity-70">{totalLike} Likes</i>
-                    <i className="flex items-center gap-1 border border-gray-500 py-1 px-2 rounded-3xl opacity-70">
-                        {Number(allAverageRating.toFixed(1))} <FaStarHalfAlt />
-                        Average Rating
-                    </i>
+                    {!isNaN(Number(allAverageRating.toFixed(1))) && (
+                        <i className="flex items-center gap-1 border border-gray-500 py-1 px-2 rounded-3xl opacity-70">
+                            {Number(allAverageRating.toFixed(1))} <FaStarHalfAlt />
+                            Average Rating
+                        </i>
+                    )}
                 </span>
                 <div className="block text-center">
                     <Link to="/dash-board?tab=update-profile" className="block w-fit mx-auto text-center">

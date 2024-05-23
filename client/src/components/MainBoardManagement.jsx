@@ -210,7 +210,7 @@ export default function MainBoardManagement() {
                 <div className="flex flex-col w-full md:w-auto shadow-md p-2 rounded-md dark:bg-gray-800">
                     <div className="flex justify-between p-3 text-sm font-semibold">
                         <h3 className="text-center p-2">RECENT BLOGS</h3>
-                        <Button outline gradientMonochrome="success">
+                        <Button outline gradientMonochrome="lime">
                             <Link to={'/admin?tab=blog-management'}>See all</Link>
                         </Button>
                     </div>
@@ -253,7 +253,7 @@ export default function MainBoardManagement() {
                 <div className="flex flex-col w-full md:w-auto shadow-md p-2 rounded-md dark:bg-gray-800">
                     <div className="flex justify-between p-3 text-sm font-semibold">
                         <h3 className="text-center p-2">RECENT COMMENTS</h3>
-                        <Button outline gradientMonochrome="success">
+                        <Button outline gradientDuoTone="purpleToPink">
                             <Link to={'/admin?tab=comment-management'}>See all</Link>
                         </Button>
                     </div>

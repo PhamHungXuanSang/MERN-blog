@@ -147,7 +147,7 @@ export default function RevenueManagement() {
                             <div className="flex justify-between items-center">
                                 <h3 className="text-gray-500 text-lg uppercase">Revenue for each package</h3>
                                 <Link to="/admin?tab=revenue-each-package">
-                                    <Button outline gradientDuoTone="greenToBlue">
+                                    <Button outline gradientDuoTone="purpleToPink">
                                         View
                                     </Button>
                                 </Link>

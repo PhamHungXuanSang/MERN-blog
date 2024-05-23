@@ -109,7 +109,7 @@ export default function Home() {
             console.log(error);
         }
     };
-    
+
     const handleResize = () => {
         if (window.innerWidth < 768) {
             setSettings((prevSettings) => ({ ...prevSettings, slidesToShow: 1 }));
@@ -461,7 +461,7 @@ export default function Home() {
                                 </i>
                             )
                         ) : (
-                            ''
+                            <Spinner aria-label="Spinner button example" size="lg" className="mx-auto block mt-4" />
                         )}
                     </FadeInWhenVisible>
                 </>

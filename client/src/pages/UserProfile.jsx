@@ -1,21 +1,26 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Pagination, Spinner } from 'flowbite-react';
+import { Button, Pagination, Spinner } from 'flowbite-react';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import AboutUser from '../components/AboutUser';
 import NotFound from '../components/NotFound';
 import OneByOneAppearEffect from '../components/OneByOneAppearEffect';
 import Blog from '../components/Blog';
-import { FaStarHalfAlt } from 'react-icons/fa';
+import { FaStarHalfAlt, FaUserMinus, FaUserPlus } from 'react-icons/fa';
 import InPageNavigation from '../components/InPageNavigation';
+import { useDispatch, useSelector } from 'react-redux';
+import { signOutSuccess } from '../redux/user/userSlice';
+import toast from 'react-hot-toast';
 
 export default function UserProfile() {
+    const dispatch = useDispatch();
     const navigate = useNavigate();
-    const [userProfile, setUserProfile] = useState(null);
     const [blogs, setBlogs] = useState(null);
     let { username } = useParams();
     const [currentPage, setCurrentPage] = useState(1);
     const [dashProfile, setDashProfile] = useState(null);
+    const currentUser = useSelector((state) => state.user.currentUser);
+    const [isSubscribed, setIsSubscribed] = useState(false);
 
     const handleGetUserProfile = async () => {
         try {
@@ -26,7 +31,6 @@ export default function UserProfile() {
                 return navigate('*');
             }
             const userProfile = await res.json();
-            setUserProfile(userProfile.user);
             setBlogs(userProfile.blogs);
             setDashProfile(userProfile);
         } catch (error) {
@@ -34,8 +38,33 @@ export default function UserProfile() {
         }
     };
 
+    const getSubscribedStatus = async () => {
+        try {
+            const res = await fetch(`/api/user/get-subscribed-status`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ userId: currentUser._id, authorName: username }),
+            });
+            const data = await res.json();
+            if (res.status === 403) {
+                dispatch(signOutSuccess());
+                navigate('/sign-in');
+            }
+            if (res.status == 200) {
+                setIsSubscribed(data);
+            } else {
+                toast.error(data.message);
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
     useEffect(() => {
         handleGetUserProfile();
+        if (currentUser) {
+            getSubscribedStatus();
+        }
     }, [currentPage]);
 
     const onPageChange = (page) => {
@@ -57,6 +86,29 @@ export default function UserProfile() {
         }
     });
     allAverageRating = allAverageRating / numberBlogsReviewed;
+
+    const handleToggleSubscribe = async () => {
+        isSubscribed
+            ? toast.success('Unsubscribed', { duration: 1000 })
+            : toast.success('Subscribed', { duration: 1000 });
+        setIsSubscribed((prev) => !prev);
+        try {
+            const res = await fetch(`/api/user/toggle-subscribe/${dashProfile?.user._id}/${currentUser._id}`, {
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json' },
+            });
+            const data = await res.json();
+            if (res.status === 403) {
+                dispatch(signOutSuccess());
+                navigate('/sign-in');
+            }
+            if (res.status !== 200) {
+                console.log(data.message);
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    };
 
     return (
         <div className="h-cover flex justify-center gap-4 container mx-auto py-8">
@@ -90,28 +142,52 @@ export default function UserProfile() {
                     </>
 
                     <div className="text-center">
-                        {userProfile == null ? (
+                        {dashProfile?.user == null ? (
                             <Spinner className="block mx-auto mt-4" size="xl" />
                         ) : (
                             <>
                                 <img
-                                    src={userProfile.userAvatar}
+                                    src={dashProfile?.user.userAvatar}
                                     alt="Ảnh profile"
                                     className="rounded-full w-32 h-32 object-cover block mx-auto"
                                 />
-                                <b className="text-xl font-medium break-words">@{userProfile.username}</b>
+                                <b className="text-xl font-medium break-words">@{dashProfile?.user.username}</b>
                                 <span className="block mb-4 leading-2 line-clamp-3 break-words">
-                                    {userProfile.email}
+                                    {dashProfile?.user.email}
                                 </span>
                                 <AboutUser
                                     className="max-md:text-center"
-                                    userDesc={userProfile.userDesc}
-                                    youtubeLink={userProfile.youtubeLink}
-                                    facebookLink={userProfile.facebookLink}
-                                    tiktokLink={userProfile.tiktokLink}
-                                    githubLink={userProfile.githubLink}
-                                    createdAt={userProfile.createdAt}
+                                    userDesc={dashProfile?.user.userDesc}
+                                    youtubeLink={dashProfile?.user.youtubeLink}
+                                    facebookLink={dashProfile?.user.facebookLink}
+                                    tiktokLink={dashProfile?.user.tiktokLink}
+                                    githubLink={dashProfile?.user.githubLink}
+                                    createdAt={dashProfile?.user.createdAt}
                                 />
+                                <>
+                                    {currentUser && username != currentUser.username ? (
+                                        !isSubscribed ? (
+                                            <Button
+                                                gradientMonochrome="lime"
+                                                onClick={handleToggleSubscribe}
+                                                className="mx-auto my-2"
+                                            >
+                                                <FaUserPlus className="mr-2 h-5 w-5" />
+                                                Subscribe
+                                            </Button>
+                                        ) : (
+                                            <Button
+                                                gradientMonochrome="failure"
+                                                outline
+                                                onClick={handleToggleSubscribe}
+                                                className="opacity-50 mx-auto my-2"
+                                            >
+                                                <FaUserMinus className="mr-2 h-5 w-5" />
+                                                Unsubscribe
+                                            </Button>
+                                        )
+                                    ) : null}
+                                </>
                                 <div className="flex flex-wrap gap-2 mt-6">
                                     <i className="border border-gray-500 py-1 px-2 rounded-3xl opacity-70">
                                         {dashProfile?.allBlogs.length} Blogs
@@ -125,10 +201,12 @@ export default function UserProfile() {
                                     <i className="border border-gray-500 py-1 px-2 rounded-3xl opacity-70">
                                         {totalLike} Likes
                                     </i>
-                                    <i className="flex items-center gap-1 border border-gray-500 py-1 px-2 rounded-3xl opacity-70">
-                                        {Number(allAverageRating.toFixed(1))} <FaStarHalfAlt />
-                                        Average Rating
-                                    </i>
+                                    {!isNaN(Number(allAverageRating.toFixed(1))) && (
+                                        <i className="flex items-center gap-1 border border-gray-500 py-1 px-2 rounded-3xl opacity-70">
+                                            {Number(allAverageRating.toFixed(1))} <FaStarHalfAlt />
+                                            Average Rating
+                                        </i>
+                                    )}
                                 </div>
                             </>
                         )}
@@ -138,26 +216,52 @@ export default function UserProfile() {
 
             <div className="max-w-[30%] border-l border-gray-300 pl-4 pt-3 max-md:hidden">
                 <div className="text-center">
-                    {userProfile == null ? (
+                    {dashProfile?.user == null ? (
                         <Spinner className="block mx-auto mt-4" size="xl" />
                     ) : (
                         <>
                             <img
-                                src={userProfile.userAvatar}
+                                src={dashProfile?.user.userAvatar}
                                 alt="Ảnh profile"
                                 className="rounded-full w-32 h-32 object-cover block mx-auto"
                             />
-                            <b className="text-xl font-medium break-words">@{userProfile.username}</b>
-                            <span className="block mb-4 leading-2 line-clamp-3 break-words">{userProfile.email}</span>
+                            <b className="text-xl font-medium break-words">@{dashProfile?.user.username}</b>
+                            <span className="block mb-4 leading-2 line-clamp-3 break-words">
+                                {dashProfile?.user.email}
+                            </span>
                             <AboutUser
                                 className="max-md:hidden"
-                                userDesc={userProfile.userDesc}
-                                youtubeLink={userProfile.youtubeLink}
-                                facebookLink={userProfile.facebookLink}
-                                tiktokLink={userProfile.tiktokLink}
-                                githubLink={userProfile.githubLink}
-                                createdAt={userProfile.createdAt}
+                                userDesc={dashProfile?.user.userDesc}
+                                youtubeLink={dashProfile?.user.youtubeLink}
+                                facebookLink={dashProfile?.user.facebookLink}
+                                tiktokLink={dashProfile?.user.tiktokLink}
+                                githubLink={dashProfile?.user.githubLink}
+                                createdAt={dashProfile?.user.createdAt}
                             />
+                            <>
+                                {currentUser && username != currentUser.username ? (
+                                    !isSubscribed ? (
+                                        <Button
+                                            gradientMonochrome="lime"
+                                            onClick={handleToggleSubscribe}
+                                            className="mx-auto my-2"
+                                        >
+                                            <FaUserPlus className="mr-2 h-5 w-5" />
+                                            Subscribe
+                                        </Button>
+                                    ) : (
+                                        <Button
+                                            gradientMonochrome="failure"
+                                            outline
+                                            onClick={handleToggleSubscribe}
+                                            className="opacity-50 mx-auto my-2"
+                                        >
+                                            <FaUserMinus className="mr-2 h-5 w-5" />
+                                            Unsubscribe
+                                        </Button>
+                                    )
+                                ) : null}
+                            </>
                             <div className="flex flex-wrap gap-2 mt-6">
                                 <i className="border border-gray-500 py-1 px-2 rounded-3xl opacity-70">
                                     {dashProfile?.allBlogs.length} Blogs
@@ -171,10 +275,12 @@ export default function UserProfile() {
                                 <i className="border border-gray-500 py-1 px-2 rounded-3xl opacity-70">
                                     {totalLike} Likes
                                 </i>
-                                <i className="flex items-center gap-1 border border-gray-500 py-1 px-2 rounded-3xl opacity-70">
-                                    {Number(allAverageRating.toFixed(1))} <FaStarHalfAlt />
-                                    Average Rating
-                                </i>
+                                {!isNaN(Number(allAverageRating.toFixed(1))) && (
+                                    <i className="flex items-center gap-1 border border-gray-500 py-1 px-2 rounded-3xl opacity-70">
+                                        {Number(allAverageRating.toFixed(1))} <FaStarHalfAlt />
+                                        Average Rating
+                                    </i>
+                                )}
                             </div>
                         </>
                     )}

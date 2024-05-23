@@ -35,7 +35,7 @@ export default function PublishForm() {
         const data = await res.json();
         setAllCate(data.allCates);
     };
-    
+
     useEffect(() => {
         getAllCategory();
         window.scrollTo({
@@ -256,9 +256,7 @@ export default function PublishForm() {
             } else if (res.status === 200) {
                 toast.dismiss(loadingToast);
                 toast.success('Published 👍', { duration: 6000 });
-                setTimeout(() => {
-                    navigate(`/blog/${rs.slug}`);
-                }, 500);
+                navigate(`/blog/${rs.slug}`);
             } else if (rs.success === false) {
                 toast.dismiss(loadingToast);
                 setLoading(false);
@@ -310,9 +308,7 @@ export default function PublishForm() {
                 } else if (res.status === 200) {
                     toast.dismiss(loadingToast);
                     toast.success('Added to schedule 👍', { duration: 6000 });
-                    setTimeout(() => {
-                        return navigate(`/dash-board?tab=schedule-list`);
-                    }, 500);
+                    return navigate(`/dash-board?tab=schedule-list`);
                 } else if (rs.success === false) {
                     toast.dismiss(loadingToast);
                     setLoading(false);
@@ -354,6 +350,7 @@ export default function PublishForm() {
                     <p className="my-2">Blog Title</p>
                     <Textarea
                         onChange={handleTitleChange}
+                        onKeyDown={handleTitleKeyDown}
                         type="text"
                         placeholder="Blog Title"
                         defaultValue={title}

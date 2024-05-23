@@ -188,42 +188,82 @@ export const getBlogReplies = async (req, res, next) => {
     }
 };
 
-const deleteCommentAndNoti = (_id) => {
-    Comment.findOneAndDelete({ _id })
-        .then((comment) => {
-            // Nếu cmt này là children (reply) của một cmt khác
-            if (comment.parent) {
-                Comment.findOneAndUpdate({ _id: comment.parent }, { $pull: { children: _id } })
-                    .then((cmt) => {})
-                    .catch((error) => console.log(error));
-            }
-            Noti.findOneAndDelete({ commentId: _id }) // Xóa cái thông báo về cmt
-                .then((noti) => {})
-                .catch((error) => console.log(error));
+// const deleteCommentAndNoti = (_id) => {
+//     Comment.findOneAndDelete({ _id })
+//         .then((comment) => {
+//             if (comment) {
+//                 // Nếu cmt này là children (reply) của một cmt khác
+//                 if (comment.parent) {
+//                     Comment.findOneAndUpdate({ _id: comment.parent }, { $pull: { children: _id } })
+//                         .then((cmt) => {})
+//                         .catch((error) => console.log(error));
+//                 }
+//                 Noti.findOneAndDelete({ commentId: _id }) // Xóa cái thông báo về cmt
+//                     .then((noti) => {})
+//                     .catch((error) => console.log(error));
 
-            Blog.findOneAndUpdate({ _id: comment.blogId }, { $pull: { comments: comment._id } }, { new: true }) // Xóa cái id của cmt lưu trong blog.comments
-                .then((blog) => {
-                    // Nếu cmt đang xóa có reply thì lặp qua xóa luôn các reply
-                    if (comment.children.length) {
-                        comment.children.map((replies) => {
-                            deleteCommentAndNoti(replies); // Gọi lại hàm deleteCommentAndNoti để thực hiện xóa các cmt là reply của cmt
-                        });
-                    }
-                })
-                .catch((error) => console.log(error));
-        })
-        .catch((error) => console.log(error));
+//                 Blog.findOneAndUpdate({ _id: comment.blogId }, { $pull: { comments: comment._id } }, { new: true }) // Xóa cái id của cmt lưu trong blog.comments
+//                     .then((blog) => {
+//                         // Nếu cmt đang xóa có reply thì lặp qua xóa luôn các reply
+//                         if (comment.children.length) {
+//                             comment.children.map((replies) => {
+//                                 deleteCommentAndNoti(replies); // Gọi lại hàm deleteCommentAndNoti để thực hiện xóa các cmt là reply của cmt
+//                             });
+//                         }
+//                     })
+//                     .catch((error) => console.log(error));
+//                 if (comment.children.length) {
+//                     // Thêm code test xóa cmt lồng nhau nhiều cấp
+//                     comment.children.map((replies) => {
+//                         deleteCommentAndNoti(replies);
+//                     });
+//                 }
+//             }
+//         })
+//         .catch((error) => console.log(error));
+// };
+
+const deleteCommentAndNoti = async (_id) => {
+    try {
+        const comment = await Comment.findOneAndDelete({ _id });
+        if (comment) {
+            const tasks = [];
+
+            if (comment.parent) {
+                tasks.push(Comment.findOneAndUpdate({ _id: comment.parent }, { $pull: { children: _id } }));
+            }
+
+            tasks.push(Noti.findOneAndDelete({ commentId: _id }));
+            tasks.push(
+                Blog.findOneAndUpdate({ _id: comment.blogId }, { $pull: { comments: comment._id } }, { new: true }),
+            );
+
+            await Promise.all(tasks);
+
+            if (comment.children.length) {
+                for (const reply of comment.children) {
+                    await deleteCommentAndNoti(reply);
+                }
+            }
+        }
+    } catch (error) {
+        console.error(error);
+    }
 };
 
 export const deleteComment = async (req, res, next) => {
-    let userId = req.user._id;
-    let { _id } = req.body;
-    const comment = await Comment.findOne({ _id });
-    if (req.user.isAdmin == true || userId == comment.blogAuthor || userId == comment.commentedBy) {
-        deleteCommentAndNoti(_id);
-        return res.status(200).json({ status: 'OK' });
-    } else {
-        return next(errorHandler(403, "You can't delete this comment"));
+    try {
+        let userId = req.user._id;
+        let { _id } = req.body;
+        const comment = await Comment.findOne({ _id });
+        if (req.user.isAdmin == true || userId == comment.blogAuthor || userId == comment.commentedBy) {
+            await deleteCommentAndNoti(_id);
+            return res.status(200).json({ status: 'OK' });
+        } else {
+            return next(errorHandler(403, "You can't delete this comment"));
+        }
+    } catch (error) {
+        return next(error);
     }
 };
 

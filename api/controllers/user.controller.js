@@ -10,25 +10,24 @@ export const getUserProfile = async (req, res, next) => {
     const username = req.params.username;
     const page = parseInt(req.query.page || 1);
     const limit = parseInt(req.query.limit || 2);
-    const user = await User.findOne({ username }).select('-password');
-    if (!user) {
-        return next(errorHandler(404, 'User not found'));
-    }
     try {
+        const user = await User.findOne({ username }).select(
+            '-password -viewedBlogsHistory -emailVerified -createPermission -transaction'
+        );
+        if (!user) {
+            return next(errorHandler(404, 'User not found'));
+        }
         let blogs = await Blog.find({ authorId: user._id, 'isBlocked.status': false })
             .populate('authorId', '_id username email userAvatar createdAt')
             .sort({ createdAt: -1, title: 1 });
 
-        let totalViews = 0;
-        blogs.forEach((blog) => {
-            totalViews += blog.viewed;
-        });
+        const totalViews = blogs.reduce((acc, blog) => acc + blog.viewed, 0);
 
         let allBlogs = blogs;
 
         blogs = blogs.slice(page != 1 ? (page - 1) * limit : 0, page != 1 ? (page - 1) * limit + limit : 0 + limit);
 
-        return res.status(200).json({ user, blogs, allBlogs, totalViews }); // đoạn này có thể tối ưu
+        return res.status(200).json({ user, blogs, allBlogs, totalViews });
     } catch (error) {
         next(error);
     }
@@ -169,25 +168,21 @@ export const changePassword = async (req, res, next) => {
         const newPassword = req.body.newPassword;
         const confirmNewPassword = req.body.confirmNewPassword;
 
-        // Retrieve the user from the database
         const user = await User.findOne({ email });
 
         if (!user) {
             return next(errorHandler(400, 'User not found'));
         }
 
-        // Check if the oldPassword is correct
         const isMatch = await bcryptjs.compare(oldPassword, user.password);
         if (!isMatch) {
             return next(errorHandler(400, 'Old password is not correct'));
         }
 
-        // Check if newPassword and confirmNewPassword match
         if (newPassword !== confirmNewPassword) {
             return next(errorHandler(400, 'New password and confirmation do not match'));
         }
 
-        // Encrypt the new password and update the database
         const hashedNewPassword = await bcryptjs.hash(newPassword, 10);
         const updateResult = await User.findOneAndUpdate(
             { email },
@@ -195,7 +190,6 @@ export const changePassword = async (req, res, next) => {
             { new: true },
         );
 
-        // Check if the password update was successful
         if (updateResult) {
             return res.status(200).json({ message: 'Password has been reset successfully' });
         } else {
@@ -411,6 +405,23 @@ export const getAllNotThisUser = async (req, res, next) => {
         const filteredUsers = await User.find({ _id: { $ne: loggedInUserId } }).select('-password');
 
         res.status(200).json(filteredUsers);
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const getSubscribedStatus = async (req, res, next) => {
+    try {
+        const { userId, authorName } = req.body;
+        if (req.user._id !== userId) {
+            return next(errorHandler(403, 'Unauthorized'));
+        }
+        const user = await User.findOne({ username: authorName });
+        if (!user) {
+            return next(errorHandler(404, 'User not found'));
+        }
+        const isSubscribed = user.subscribeUsers.includes(userId);
+        return res.status(200).json(isSubscribed);
     } catch (error) {
         next(error);
     }

@@ -77,7 +77,7 @@ export default function Header() {
                 } catch (error) {
                     console.log(error);
                 }
-            }, 500);
+            }, 100);
             return () => {
                 if (timeoutIdRef.current) {
                     clearTimeout(timeoutIdRef.current);

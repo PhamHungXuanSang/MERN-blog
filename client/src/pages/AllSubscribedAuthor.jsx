@@ -120,7 +120,7 @@ export default function AllSubscribedAuthor() {
                                         alt="blogThumb"
                                         className="w-full aspect-video object-cover mx-auto rounded-3xl"
                                     />
-                                    <p className="my-2 text-xl font-semibold line-clamp-2 break-words duration-100 group-hover:scale-105 w-fit relative before:content-[''] before:absolute before:top-[6%] before:right-[-1px] before:w-0 before:h-[93%] before:rounded-sm before:bg-gradient-to-r before:from-indigo-500 before:from-10% before:via-sky-500 before:via-30% before:to-emerald-500 before:to-90% before:-z-10 before:transition-[0.5s] group-hover:before:left-[1px] group-hover:before:right-auto group-hover:before:w-full">
+                                    <p className="text-left my-2 text-xl font-semibold line-clamp-2 break-words duration-100 group-hover:scale-105 w-fit relative before:content-[''] before:absolute before:top-[6%] before:right-[-1px] before:w-0 before:h-[93%] before:rounded-sm before:bg-gradient-to-r before:from-indigo-500 before:from-10% before:via-sky-500 before:via-30% before:to-emerald-500 before:to-90% before:-z-10 before:transition-[0.5s] group-hover:before:left-[1px] group-hover:before:right-auto group-hover:before:w-full">
                                         {blog.title}
                                     </p>
                                     <span className="my-2 block w-fit px-4 whitespace-nowrap rounded-full capitalize border border-teal-500 font-semibold">
@@ -139,7 +139,7 @@ export default function AllSubscribedAuthor() {
                     </i>
                 )
             ) : (
-                ''
+                <Spinner aria-label="Spinner button example" size="lg" className="mx-auto block mt-4" />
             )}
         </div>
     );

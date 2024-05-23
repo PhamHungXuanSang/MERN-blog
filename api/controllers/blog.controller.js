@@ -417,7 +417,6 @@ export const blockBlog = async (req, res, next) => {
         if (!blog) {
             return next(errorHandler(400, 'Blog not found'));
         }
-        // Nếu bài viết chưa bị khóa thì khóa
         if (blog.isBlocked.status == false) {
             if (!req.user.isAdmin && blog.authorId.toString() !== userId) {
                 return next(errorHandler(403, 'You are not allowed to block this blog'));
@@ -431,6 +430,12 @@ export const blockBlog = async (req, res, next) => {
             // Nếu bài viết đã bị khóa thì kiểm tra xem ai đã khóa và xem có quyền mở khóa không
             if (blog.isBlocked.blockedBy === 'admin' && !req.user.isAdmin) {
                 return next(errorHandler(400, 'Only an admin can unblock this blog'));
+            } else if (
+                blog.isBlocked.blockedBy === 'user' &&
+                blog.authorId.toString() !== userId.toString() &&
+                !req.user.isAdmin
+            ) {
+                return next(errorHandler(403, 'Only the author or an admin can unblock this blog'));
             } else {
                 await Blog.findByIdAndUpdate(blogId, {
                     $set: { 'isBlocked.status': false, 'isBlocked.blockedBy': null },

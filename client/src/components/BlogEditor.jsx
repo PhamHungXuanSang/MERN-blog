@@ -179,6 +179,7 @@ export default function BlogEditor() {
             setLoading(false);
             return;
         }
+        let timeoutId;
         try {
             const options = {
                 method: 'POST',
@@ -200,7 +201,7 @@ export default function BlogEditor() {
             setLoading(false);
             const scrollElement = document.querySelector('#scrollElement');
             if (data.length > 0) {
-                setTimeout(() => {
+                timeoutId = setTimeout(() => {
                     scrollElement.scrollTo({
                         top: scrollElement.scrollHeight,
                         behavior: 'smooth',
@@ -211,6 +212,7 @@ export default function BlogEditor() {
             console.log(error);
             setError('Something went wrong!');
         }
+        return () => clearTimeout(timeoutId);
     };
 
     const regex = /\\n|\\r\\n|\\n\\r|\\r/g;
@@ -329,6 +331,11 @@ export default function BlogEditor() {
                                 disabled={loading}
                                 className="flex-1 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
                                 onChange={(e) => setValue(e.target.value)}
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter' && !loading) {
+                                        getGeminiAnswer();
+                                    }
+                                }}
                             />
                             {!error &&
                                 (!loading ? (
@@ -339,7 +346,7 @@ export default function BlogEditor() {
                                         <IoSend />
                                     </button>
                                 ) : (
-                                    <Spinner className="block mx-auto mt-4" size="sm" />
+                                    <Spinner className="block mx-auto mt-4" size="md" />
                                 ))}
                             {error && (
                                 <button

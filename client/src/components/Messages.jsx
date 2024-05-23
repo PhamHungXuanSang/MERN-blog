@@ -8,14 +8,18 @@ export default function Messages() {
 
     useEffect(() => {
         const scrollElement = document.querySelector('#scrollElement');
+        let timeoutId;
+
         if (messages.length > 0) {
-            setTimeout(() => {
+            timeoutId = setTimeout(() => {
                 scrollElement.scrollTo({
                     top: scrollElement.scrollHeight,
                     behavior: 'smooth',
                 });
             }, 500);
         }
+
+        return () => clearTimeout(timeoutId);
     }, [messages]);
 
     return (

@@ -117,10 +117,7 @@ export default function ReadBlog() {
                 >
                     <CommentsContainer />
                     <div className="max-w-[900px] block mx-auto py-10 max-lg:px-[5vw]">
-                        <img
-                            src={blog.thumb}
-                            className="aspect-auto object-cover rounded-[10px] mx-auto max-h-96"
-                        />
+                        <img src={blog.thumb} className="aspect-auto object-cover rounded-[10px] mx-auto max-h-96" />
                         <div className="mt-12">
                             <i className="block mx-auto w-fit py-1 px-3 my-4 font-semibold capitalize border-2 border-teal-500 dark:bg-slate-800 bg-slate-100 rounded-3xl dark:text-teal-100 text-teal-600">
                                 {blog.category}
@@ -143,28 +140,26 @@ export default function ReadBlog() {
                                             </i>
                                         </div>
                                     </Link>
-                                    <div>
+                                    <>
                                         {currentUser && blog.authorId._id !== currentUser._id ? (
-                                            <>
-                                                {!isSubscribed ? (
-                                                    <Button gradientMonochrome="lime" onClick={handleToggleSubscribe}>
-                                                        <FaUserPlus className="mr-2 h-5 w-5" />
-                                                        Subscribe
-                                                    </Button>
-                                                ) : (
-                                                    <Button
-                                                        gradientMonochrome="failure"
-                                                        outline
-                                                        onClick={handleToggleSubscribe}
-                                                        className="opacity-50"
-                                                    >
-                                                        <FaUserMinus className="mr-2 h-5 w-5" />
-                                                        Unsubscribe
-                                                    </Button>
-                                                )}
-                                            </>
+                                            !isSubscribed ? (
+                                                <Button gradientMonochrome="lime" onClick={handleToggleSubscribe}>
+                                                    <FaUserPlus className="mr-2 h-5 w-5" />
+                                                    Subscribe
+                                                </Button>
+                                            ) : (
+                                                <Button
+                                                    gradientMonochrome="failure"
+                                                    outline
+                                                    onClick={handleToggleSubscribe}
+                                                    className="opacity-50"
+                                                >
+                                                    <FaUserMinus className="mr-2 h-5 w-5" />
+                                                    Unsubscribe
+                                                </Button>
+                                            )
                                         ) : null}
-                                    </div>
+                                    </>
                                 </div>
                                 <div className="flex flex-col items-end">
                                     <p className="opacity-75 max-sm:mt-6 max-sm:ml-12 max-sm:pl-5">
