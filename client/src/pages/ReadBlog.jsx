@@ -265,8 +265,8 @@ export default function ReadBlog() {
                                 }
                             >
                                 {suggest != null && suggest.length ? (
-                                    <div className="max-w-[330px] md:max-w-[430px] mx-auto">
-                                        <h1 className="text-2xl mt-32 mb-10 font-medium text-center">
+                                    <div className="max-w-[280px] md:max-w-[430px] mx-auto">
+                                        <h1 className="text-xl mt-32 mb-10 font-medium text-center">
                                             Similar content
                                         </h1>
                                         <div className="mt-4">
@@ -286,8 +286,8 @@ export default function ReadBlog() {
                                     ''
                                 )}
                                 {similarAuthorBlogs != null && similarAuthorBlogs.length ? (
-                                    <div className="max-w-[330px] md:max-w-[430px] mx-auto">
-                                        <h1 className="text-2xl mt-32 mb-10 font-medium text-center">
+                                    <div className="max-w-[280px] md:max-w-[430px] mx-auto">
+                                        <h1 className="text-xl mt-32 mb-10 font-medium text-center">
                                             Written by @{blog.authorId.username}
                                         </h1>
                                         <div className="mt-4">

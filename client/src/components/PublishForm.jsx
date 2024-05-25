@@ -28,21 +28,44 @@ export default function PublishForm() {
         setEditorState,
     } = useContext(EditorContext);
 
-    const getAllCategory = async () => {
-        const res = await fetch(`/api/category/get-all-not-blocked-category`, {
-            method: 'GET',
-        });
-        const data = await res.json();
-        setAllCate(data.allCates);
-    };
-
     useEffect(() => {
+        const getAllCategory = async () => {
+            try {
+                const res = await fetch('/api/category/get-all-not-blocked-category', {
+                    method: 'GET',
+                });
+                if (!res.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                const data = await res.json();
+                setAllCate(data.allCates);
+            } catch (error) {
+                console.error('Failed to fetch categories:', error);
+            }
+        };
+
+        const handleScrollToTop = () => {
+            const isSmoothScrollSupported = 'scrollBehavior' in document.documentElement.style;
+            const scrollToTop = () => {
+                if (isSmoothScrollSupported) {
+                    window.scrollTo({
+                        top: 0,
+                        behavior: 'smooth',
+                    });
+                } else {
+                    window.scrollTo(0, 0);
+                }
+            };
+            const timeoutId = setTimeout(scrollToTop, 100);
+            return () => {
+                clearTimeout(timeoutId);
+            };
+        };
         getAllCategory();
-        window.scrollTo({
-            top: 0,
-            behavior: 'smooth',
-        });
+        const cleanup = handleScrollToTop();
+        return cleanup;
     }, []);
+
 
     const handleClosePreview = () => {
         setEditorState('editor');
@@ -342,7 +365,7 @@ export default function PublishForm() {
                     <h1 className="md:text-3xl text-xl font-medium mt-2 leading-tight break-words overflow-hidden">
                         {title}
                     </h1>
-                    <i className="line-clamp-2 md:text-xl text-base text-white/70 leading-7 mt-4 break-words">
+                    <i className="line-clamp-2 md:text-xl text-base dark:text-white/70 leading-7 mt-4 break-words">
                         {description}
                     </i>
                 </div>

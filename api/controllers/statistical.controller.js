@@ -49,7 +49,7 @@ export const getStatistical = async (req, res, next) => {
         // console.log(userCountForEachPackageInThisMonth); // Lấy số người đăng ký mới/gia hạn gói của mỗi gói trong tháng hiện tại
 
         let startDate;
-        startDate = new Date(year, month - 1, day); // Nếu không nhập day, month, year thì lấy doanh thu toàn bộ thời gian
+        startDate = new Date(year, month - 1, day + 1); // Nếu không nhập day, month, year thì lấy doanh thu toàn bộ thời gian
         var matchCondition = {};
         if (startDate) {
             matchCondition = {

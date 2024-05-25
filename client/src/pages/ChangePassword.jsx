@@ -98,7 +98,7 @@ export default function ChangePassword() {
                                     className={`transition-opacity duration-300 transform ${
                                         showPasswordValidation
                                             ? 'opacity-100 translate-y-0'
-                                            : 'opacity-0 translate-y-96'
+                                            : 'opacity-0 translate-y-[-1000px]'
                                     } password-checklist absolute top-20 w-full z-10 py-2 px-4 dark:bg-slate-500 bg-slate-100 rounded-3xl`}
                                 >
                                     <i className="checklist-title text-lg">Password should be</i>

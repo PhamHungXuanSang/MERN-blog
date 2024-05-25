@@ -72,3 +72,19 @@
         transform: translate3d(4px, 0, 0);
     }
 }
+
+.slick-slider {
+    max-width: 90% !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+}
+
+.slick-prev:before,
+.slick-next:before {
+    color: #64748b;
+}
+
+.dark .slick-prev:before,
+.dark .slick-next:before {
+    color: white;
+}

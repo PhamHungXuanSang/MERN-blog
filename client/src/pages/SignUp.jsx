@@ -1,5 +1,5 @@
 import { Alert, Button, Label, Spinner, TextInput } from 'flowbite-react';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { HiInformationCircle } from 'react-icons/hi';
 import { FaTimes, FaCheck } from 'react-icons/fa';
@@ -16,7 +16,17 @@ export default function SignUp() {
     const [showPasswordValidation, setShowPasswordValidation] = useState(false);
     const [arrValid, setArrValid] = useState([false, false, false, false, false]);
     const { darkMode } = useSelector((state) => state.darkMode);
+    const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
     const reRef = useRef();
+
+    const handleResize = () => {
+        setIsMobile(window.innerWidth <= 768);
+    };
+
+    useEffect(() => {
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
 
     const navigate = useNavigate();
 
@@ -102,7 +112,7 @@ export default function SignUp() {
                     </MoveFromTopEffect>
                 </div>
                 {/*Right */}
-                <div className="flex-1 dark:bg-slate-800 bg-slate-300 py-4 px-8 rounded-xl shadow-xl mt-4 md:mt-0">
+                <div className="flex-1 dark:bg-slate-800 bg-slate-300 md:py-4 py-4 md:px-8 px-4 rounded-xl shadow-xl mt-4 md:mt-0">
                     <MoveFromTopEffect>
                         <i className="text-2xl lg:text-4xl text-center block text-gray-500">Join us now!</i>
                     </MoveFromTopEffect>
@@ -133,7 +143,9 @@ export default function SignUp() {
                             />
                             <div
                                 className={`transition-opacity duration-300 transform ${
-                                    showPasswordValidation ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-96'
+                                    showPasswordValidation
+                                        ? 'opacity-100 translate-y-0'
+                                        : 'opacity-0 translate-y-[-1000px]'
                                 } password-checklist absolute top-20 w-full z-10 py-2 px-4 dark:bg-slate-500 bg-slate-100 rounded-3xl`}
                             >
                                 <i className="checklist-title text-lg">Password should be</i>
@@ -180,11 +192,14 @@ export default function SignUp() {
                                 onChange={handleChange}
                             />
                         </div>
-                        <ReCAPTCHA
-                            sitekey={import.meta.env.VITE_REACT_GG_RECAPTCHA_SITE_KEY}
-                            ref={reRef}
-                            theme={darkMode}
-                        />
+                        <div className="mx-auto">
+                            <ReCAPTCHA
+                                sitekey={import.meta.env.VITE_REACT_GG_RECAPTCHA_SITE_KEY}
+                                ref={reRef}
+                                theme={darkMode}
+                                size={isMobile ? 'compact' : 'normal'}
+                            />
+                        </div>
                         <Button gradientDuoTone="greenToBlue" type="submit">
                             {loading ? (
                                 <>

@@ -18,7 +18,8 @@
     background-color: #414141 !important;
 }
 
-.tooltip-tool__input, .ce-inline-tool-input {
+.tooltip-tool__input,
+.ce-inline-tool-input {
     color: #000;
     background: #fff;
 }
@@ -107,4 +108,18 @@
 .cdx-tooltip:hover::before {
     opacity: 1 !important;
     visibility: visible;
+}
+
+@media (max-width: 767px) {
+    .ce-inline-toolbar.ce-inline-toolbar--showed {
+        position: fixed !important;
+        top: 50% !important;
+        left: 26% !important;
+        transform: translate(-50%, -50%) !important;
+        height: -moz-fit-content !important;
+        height: fit-content !important;
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        z-index: 9999;
+        scale: 0.7 !important;
+    }
 }

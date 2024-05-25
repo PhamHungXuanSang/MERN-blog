@@ -307,7 +307,7 @@ export default function BlogEditor() {
                 id="geminiAI"
             >
                 <div
-                    className="relative p-5 border w-11/12 max-w-4xl max-h-[80vh] shadow-lg rounded-md bg-white overflow-hidden mx-auto"
+                    className="relative md:p-5 p-4 border w-11/12 max-w-4xl max-h-[80vh] shadow-lg rounded-md bg-white overflow-hidden mx-auto"
                     onClick={(e) => e.stopPropagation()}
                 >
                     <div className="flex justify-between items-center">
@@ -393,7 +393,7 @@ export default function BlogEditor() {
                 id="speechToText"
             >
                 <div
-                    className="relative top-20 mx-auto p-5 border w-[98vw] md:w-[60vw] shadow-lg rounded-md bg-white text-black"
+                    className="relative top-20 mx-auto md:p-5 p-4 border w-[98vw] md:w-[60vw] shadow-lg rounded-md bg-white text-black"
                     onClick={(e) => e.stopPropagation()}
                 >
                     <div className="flex justify-between items-center">
@@ -423,7 +423,7 @@ export default function BlogEditor() {
                                 onChange={(e) => setTextInput(e.target.value)}
                                 className="my-8 w-[98%] md:w-[90%] mx-auto"
                             />
-                            <div className="flex flex-col md:flex-row flex-wrap gap-4 md:gap-0 items-center justify-evenly">
+                            <div className="flex flex-row flex-wrap gap-4 md:gap-0 items-center justify-evenly">
                                 <Button onClick={setCopied} gradientDuoTone="cyanToBlue">
                                     {isCopied ? 'Copied 👍' : 'Copy to Clipboard'}
                                 </Button>

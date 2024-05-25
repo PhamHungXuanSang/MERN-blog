@@ -26,6 +26,7 @@ export default function RevenuePackage() {
         const firstDayOfMonth = new Date(date.getFullYear(), date.getMonth(), 1);
         return firstDayOfMonth;
     });
+
     useEffect(() => {
         const getStatistical = async () => {
             const year = startDate.getFullYear();

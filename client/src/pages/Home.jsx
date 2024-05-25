@@ -385,13 +385,15 @@ export default function Home() {
                                         className="mx-auto w-fit dark:bg-white bg-slate-800 p-1 rounded-full cursor-pointer"
                                         onClick={() => handleFetchAuthorBlog(authors[0].username)}
                                     >
-                                        <div className="flex gap-2 items-center">
+                                        <div className="flex gap-1 items-center truncate">
                                             <img
                                                 src={authors[0].userAvatar}
                                                 className="w-10 h-10 rounded-full"
                                                 alt="userAvatar"
                                             />
-                                            <span className="dark:text-black text-white">@{authors[0].username}</span>
+                                            <span className="dark:text-black text-white break-words">
+                                                @{authors[0].username}
+                                            </span>
                                         </div>
                                     </div>
                                 ) : (
@@ -399,10 +401,10 @@ export default function Home() {
                                         {authors.map((author, i) => (
                                             <div
                                                 key={i}
-                                                className="!w-fit dark:bg-white bg-slate-800 p-1 rounded-full cursor-pointer"
+                                                className="!w-fit dark:bg-white bg-gray-400 p-1 rounded-full cursor-pointer"
                                                 onClick={() => handleFetchAuthorBlog(author.username)}
                                             >
-                                                <div className="flex gap-2 items-center">
+                                                <div className="flex gap-1 items-center truncate">
                                                     <img
                                                         src={author.userAvatar}
                                                         className="w-10 h-10 rounded-full"

@@ -9,7 +9,7 @@ export default function Message({ message }) {
     const fromMe = message.senderId === authUser._id;
     const chatClassName = fromMe ? 'chat-end' : 'chat-start';
     const userAvatar = fromMe ? authUser.userAvatar : selectedConversation?.userAvatar;
-    const bubbleBgColor = fromMe ? 'bg-blue-500' : '';
+    const bubbleBgColor = fromMe ? 'bg-blue-500' : 'bg-gray-400';
     const formattedTime = extractTime(message.createdAt);
     const shakeClassName = message.shouldShake ? 'shake' : '';
 

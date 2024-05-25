@@ -9,7 +9,7 @@ import BackToTopButton from '../components/BackToTopButton';
 export default function AllUser() {
     const [users, setUsers] = useState(null);
     const [showMore, setShowMore] = useState(true);
-    const limit = 2;
+    const limit = 3;
 
     const handleGetAllUserProfile = async () => {
         try {

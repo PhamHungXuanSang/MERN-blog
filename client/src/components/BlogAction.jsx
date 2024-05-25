@@ -136,9 +136,9 @@ export default function BlogAction() {
     return !loading ? (
         <>
             <hr className="border-gray-300 my-2" />
-            <div className="flex gap-6 justify-between">
-                <div className="flex gap-6">
-                    <div className="flex gap-3 items-center">
+            <div className="flex justify-between">
+                <div className="flex md:gap-6 gap-2 items-center">
+                    <div className="flex md:gap-3 gap-1 items-center">
                         <button
                             onClick={handleLikeBlog}
                             className="w-10 h-10 rounded-full flex items-center justify-center dark:bg-gray-700 bg-gray-300"
@@ -148,7 +148,7 @@ export default function BlogAction() {
                         <p className="text-xl">{blog.likeCount}</p>
                     </div>
 
-                    <div className="flex gap-3 items-center">
+                    <div className="flex md:gap-3 gap-1 items-center">
                         <button
                             onClick={() => setCommentsWrapper((preValue) => !preValue)}
                             className="w-10 h-10 rounded-full flex items-center justify-center dark:bg-gray-700 bg-gray-300"
@@ -158,22 +158,20 @@ export default function BlogAction() {
                         <p className="text-xl">{blog.commentCount}</p>
                     </div>
 
-                    {currentUser && blog.authorId._id != currentUser?._id && (
-                        <div className="flex gap-3 items-center">
-                            <button
-                                onClick={handleShowFolders}
-                                className="w-10 h-10 rounded-full flex items-center justify-center dark:bg-gray-700 bg-gray-300"
-                            >
-                                <IoSaveSharp />
-                            </button>
-                        </div>
+                    {currentUser && (
+                        <button
+                            onClick={handleShowFolders}
+                            className="w-10 h-10 rounded-full flex items-center justify-center dark:bg-gray-700 bg-gray-300"
+                        >
+                            <IoSaveSharp />
+                        </button>
                     )}
 
                     {blog.authorId._id == currentUser?._id && (
                         <Link to={`/editor/${blog.slug}`}>
-                            <Button gradientDuoTone="greenToBlue" outline>
+                            <button className="opacity-80 border-2 border-orange-500 rounded-lg p-0.5 md:px-2 md:py-1 font-semibold hover:bg-orange-500 dark:text-orange-200 text-orange-500 hover:text-white text-sm md:text-base">
                                 Edit blog
-                            </Button>
+                            </button>
                         </Link>
                     )}
                 </div>

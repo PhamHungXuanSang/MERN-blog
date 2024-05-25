@@ -12,7 +12,7 @@ export const getUserProfile = async (req, res, next) => {
     const limit = parseInt(req.query.limit || 2);
     try {
         const user = await User.findOne({ username }).select(
-            '-password -viewedBlogsHistory -emailVerified -createPermission -transaction'
+            '-password -viewedBlogsHistory -emailVerified -createPermission -transaction',
         );
         if (!user) {
             return next(errorHandler(404, 'User not found'));
@@ -289,7 +289,7 @@ export const getViewedBlogsHistory = async (req, res, next) => {
 
 export const getTopAuthors = async (req, res, next) => {
     const limit = parseInt(req.body.limit, 10) || 3;
-    //const startIndex = parseInt(req.body.startIndex, 10) || 0;
+    // const startIndex = parseInt(req.body.startIndex, 10) || 0;
     try {
         // Bước 1: Lấy ra danh sách authors đã viết blog và không bị khóa
         let authorsWithBlogs = await Blog.aggregate([
@@ -301,7 +301,7 @@ export const getTopAuthors = async (req, res, next) => {
                 },
             },
             { $sort: { count: -1, createdAt: 1 } },
-            //{ $skip: startIndex },
+            // { $skip: startIndex },
             {
                 $lookup: {
                     from: 'users',
@@ -332,7 +332,7 @@ export const getTopAuthors = async (req, res, next) => {
         // Bước 2: Nếu số lượng không đủ, lấy thêm users dựa trên createdAt.
         const authorsNeeded = limit - authorsWithBlogs.length;
         const additionalAuthors = await User.find({
-            _id: { $nin: authorsWithBlogs.map((a) => a.authorId) }, // Loại bỏ những người dùng đã có blog
+            _id: { $nin: authorsWithBlogs.map((a) => a.authorId) },
         })
             .sort({ createdAt: 1 })
             .limit(authorsNeeded)

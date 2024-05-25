@@ -13,6 +13,13 @@ export default function AllSubscribedAuthor() {
     const [activeAuthor, setActiveAuthor] = useState(null);
     const currentUser = useSelector((state) => state.user.currentUser);
     const navigate = useNavigate();
+    const [settings, setSettings] = useState({
+        className: 'center',
+        centerMode: true,
+        infinite: true,
+        slidesToShow: 3,
+        speed: 500,
+    });
 
     const handleGetUserSubscribeAuthor = async () => {
         const res = await fetch('/api/user/get-user-subscribe-authors', {
@@ -23,14 +30,6 @@ export default function AllSubscribedAuthor() {
         const data = await res.json();
         setAuthors(data.authors);
         setActiveAuthor(data.authors[0].username);
-    };
-
-    const settings = {
-        className: 'center',
-        centerMode: true,
-        infinite: true,
-        slidesToShow: 3,
-        speed: 500,
     };
 
     const handleFetchAuthorBlog = async (username) => {
@@ -50,8 +49,19 @@ export default function AllSubscribedAuthor() {
         }
     };
 
+    const handleResize = () => {
+        if (window.innerWidth < 768) {
+            setSettings((prevSettings) => ({ ...prevSettings, slidesToShow: 1 }));
+        } else {
+            setSettings((prevSettings) => ({ ...prevSettings, slidesToShow: 3 }));
+        }
+    };
+
     useEffect(() => {
         handleGetUserSubscribeAuthor();
+        window.addEventListener('resize', handleResize);
+        handleResize();
+        return () => window.removeEventListener('resize', handleResize);
     }, []);
 
     useEffect(() => {
@@ -72,7 +82,7 @@ export default function AllSubscribedAuthor() {
                             className="mx-auto w-fit dark:bg-white bg-slate-800 p-1 rounded-full cursor-pointer"
                             onClick={() => handleFetchAuthorBlog(authors[0].username)}
                         >
-                            <div className="flex gap-2 items-center">
+                            <div className="flex gap-1 items-center truncate">
                                 <img src={authors[0].userAvatar} className="w-10 h-10 rounded-full" alt="userAvatar" />
                                 <span className="dark:text-black text-white">@{authors[0].username}</span>
                             </div>
@@ -85,7 +95,7 @@ export default function AllSubscribedAuthor() {
                                     className="!w-fit dark:bg-white bg-slate-800 p-1 rounded-full cursor-pointer"
                                     onClick={() => handleFetchAuthorBlog(author.username)}
                                 >
-                                    <div className="flex gap-2 items-center">
+                                    <div className="flex gap-1 items-center truncate">
                                         <img
                                             src={author.userAvatar}
                                             className="w-10 h-10 rounded-full"
