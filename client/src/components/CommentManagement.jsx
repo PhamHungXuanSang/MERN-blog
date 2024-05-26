@@ -9,6 +9,7 @@ import { signOutSuccess } from '../redux/user/userSlice';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import toast from 'react-hot-toast';
+import { extractTime } from '../utils/extractTime';
 
 export default function CommentManagement() {
     const [comments, setComments] = useState(null);
@@ -21,6 +22,7 @@ export default function CommentManagement() {
         endDate: new Date(),
         sort: 'desc',
     });
+    const [totalComment, setTotalComment] = useState(0);
 
     const navigate = useNavigate();
     const dispatch = useDispatch();
@@ -35,7 +37,8 @@ export default function CommentManagement() {
             const data = await res.json();
             if (res.ok) {
                 setComments(data.comments);
-                if (comments?.length + data.comments.length >= data.totalComments) {
+                setTotalComment(data.totalComments);
+                if (comments?.length || 0 + data.comments.length >= data.totalComments) {
                     setShowMore(false);
                 }
             } else {
@@ -65,10 +68,12 @@ export default function CommentManagement() {
             }
             toast.success('Comment deleted');
             setComments(comments.filter((comment) => comment._id != commentIdToDelete));
+            setTotalComment((prev) => prev - 1);
         } catch (error) {
             console.log(error);
         }
     };
+
     const handleShowMore = async () => {
         const startIndex = comments.length;
         try {
@@ -100,6 +105,7 @@ export default function CommentManagement() {
             const data = await res.json();
             if (res.ok) {
                 setComments(data.comments);
+                setTotalComment(data.totalComments);
                 if (data.comments.length >= data.totalComments) {
                     setShowMore(false);
                 }
@@ -113,8 +119,14 @@ export default function CommentManagement() {
 
     return (
         <div className="py-8 px-4">
+            <div className="flex items-center justify-between w-full h-fit border-b-2 border-neutral-300">
+                <p className="border-b-2 text-lg w-fit py-2 px-4">Comment Management</p>
+                <p>
+                    Rows <b>{comments?.length}</b> of <b>{totalComment}</b>
+                </p>
+            </div>
             {/* Filter */}
-            <div className="flex items-center gap-4 pb-4">
+            <div className="flex items-center gap-4 pb-4 mt-4">
                 <div>
                     <Label>From: </Label>
                     <DatePicker
@@ -178,9 +190,7 @@ export default function CommentManagement() {
                                             <Table.Cell className="p-2">
                                                 {comment.isReply ? 'Reply' : 'Comment'}
                                             </Table.Cell>
-                                            <Table.Cell className="p-2">
-                                                {new Date(comment.createdAt).toLocaleDateString()}
-                                            </Table.Cell>
+                                            <Table.Cell className="p-2">{extractTime(comment.createdAt)}</Table.Cell>
                                             <Table.Cell>
                                                 <span
                                                     onClick={() => {

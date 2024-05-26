@@ -451,22 +451,53 @@ export const blockBlog = async (req, res, next) => {
 export const adminBlogManagement = async (req, res, next) => {
     try {
         const page = req.query.page;
-        const startIndex = req.query.startIndex;
-        const limit = req.query.limit;
+        const startIndex = parseInt(req.query.startIndex) || 0;
+        const limit = parseInt(req.query.limit) || 5;
+        const filterData = req.body.filterData;
 
-        const now = new Date();
-        const oneMonthAgo = new Date(now.getFullYear(), now.getMonth() - 1, now.getDate());
+        if (filterData) {
+            const totalBlogDisplayed = req.body.totalBlogDisplayed;
+            const from = new Date(filterData.startDate);
+            const to = new Date(filterData.endDate);
+            const search = filterData.search;
 
-        const [latestBlogs, lastMonthBlogs, totalBlogs] = await Promise.all([
-            Blog.find()
-                .populate('authorId', '_id username email userAvatar')
-                .sort({ createdAt: -1, title: 1 })
-                .skip(startIndex ? startIndex : page != 1 ? (page - 1) * limit : 0)
-                .limit(limit),
-            Blog.countDocuments({ createdAt: { $gte: oneMonthAgo } }).exec(),
-            Blog.countDocuments(),
-        ]);
-        return res.status(200).json({ blogs: latestBlogs, lastMonthBlogs, total: totalBlogs });
+            let searchConditions = {
+                createdAt: {
+                    $gte: from,
+                    $lte: to,
+                },
+            };
+
+            if (search) {
+                searchConditions.$or = [
+                    { title: { $regex: search, $options: 'i' } },
+                ];
+            }
+
+            const [latestBlogs, totalBlogs] = await Promise.all([
+                Blog.find(searchConditions)
+                    .populate('authorId', '_id username email userAvatar')
+                    .sort({ createdAt: filterData.sort == 'desc' ? -1 : 1, title: 1 })
+                    .skip(totalBlogDisplayed ? 0 : startIndex ? startIndex : page != 1 ? (page - 1) * limit : 0)
+                    .limit(totalBlogDisplayed ? totalBlogDisplayed : limit),
+                Blog.countDocuments(searchConditions),
+            ]);
+            return res.status(200).json({ blogs: latestBlogs, total: totalBlogs });
+        } else {
+            const now = new Date();
+            const oneMonthAgo = new Date(now.getFullYear(), now.getMonth() - 1, now.getDate());
+
+            const [latestBlogs, lastMonthBlogs, totalBlogs] = await Promise.all([
+                Blog.find()
+                    .populate('authorId', '_id username email userAvatar')
+                    .sort({ createdAt: -1, title: 1 })
+                    .skip(startIndex ? startIndex : page != 1 ? (page - 1) * limit : 0)
+                    .limit(limit),
+                Blog.countDocuments({ createdAt: { $gte: oneMonthAgo } }).exec(),
+                Blog.countDocuments(),
+            ]);
+            return res.status(200).json({ blogs: latestBlogs, lastMonthBlogs, total: totalBlogs });
+        }
     } catch (error) {
         next(error);
     }

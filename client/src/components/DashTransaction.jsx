@@ -19,6 +19,7 @@ export default function DashTransaction() {
     const [packageRenewalCount, setPackageRenewalCount] = useState(0);
     const [packageBuyCount, setPackageBuyCount] = useState(0);
     const [eachPackageTotalMoney, setEachPackageTotalMoney] = useState(null);
+    const [totalTransactions, setTotalTransactions] = useState(0);
     const currentUser = useSelector((state) => state.user.currentUser);
 
     const navigate = useNavigate();
@@ -43,6 +44,7 @@ export default function DashTransaction() {
                     setEachPackageTotalMoney(data.eachPackageTotalMoney);
                     setPackageRenewalCount(data.packageRenewalCount);
                     setPackageBuyCount(data.packageBuyCount);
+                    setTotalTransactions(data.allUserTransactionHistorys.length);
                     if (
                         userTransactions != null &&
                         data.userTransactionHistorys.length + userTransactions.length >=
@@ -107,44 +109,58 @@ export default function DashTransaction() {
 
     return (
         <div className="py-8 px-4">
-            <div className="w-full h-fit border-b-2 border-neutral-300 mb-4">
+            <div className="flex items-center justify-between w-full h-fit border-b-2 border-neutral-300 mb-4">
                 <p className="border-b-2 text-lg w-fit py-2 px-4">All transaction</p>
+                <p>
+                    Rows <b>{userTransactions?.length}</b> of <b>{totalTransactions}</b>
+                </p>
             </div>
             <div className="border rounded-lg border-teal-500 mb-4 p-4">
                 {eachPackageTotalMoney != null ? (
                     <div className="flex flex-col md:flex-row gap-4 justify-center items-center">
                         <div className="flex flex-wrap gap-2">
-                            {eachPackageTotalMoney.map((pack) => (
-                                <div key={pack} className="w-fit h-min p-4 dark:bg-slate-800 rounded-md shadow-md">
+                            {eachPackageTotalMoney.map((pack, idx) => (
+                                <div
+                                    key={idx}
+                                    className="w-fit h-min md:p-4 p-2 dark:bg-slate-800 rounded-md shadow-md"
+                                >
                                     <div className="flex justify-between gap-2">
                                         <div>
-                                            <h3 className="text-gray-500 text-lg uppercase">{pack.packageName}</h3>
-                                            <p className="text-2xl text-teal-600">{pack.packagePrice} $</p>
+                                            <h3 className="text-gray-500 md:text-lg text-base uppercase">
+                                                {pack.packageName}
+                                            </h3>
+                                            <p className="md:text-2xl text-lg text-teal-600">{pack.packagePrice} $</p>
                                         </div>
                                     </div>
                                 </div>
                             ))}
-                            <div className="w-fit h-min p-4 dark:bg-slate-800 rounded-md shadow-md">
+                            <div className="w-fit h-min md:p-4 p-2 dark:bg-slate-800 rounded-md shadow-md">
                                 <div className="flex justify-between gap-2">
                                     <div>
-                                        <h3 className="text-gray-500 text-lg uppercase">Package Renewal Count</h3>
-                                        <p className="text-2xl text-teal-600">{packageRenewalCount}</p>
+                                        <h3 className="text-gray-500 md:text-lg text-base uppercase">
+                                            Package Renewal Count
+                                        </h3>
+                                        <p className="md:text-2xl text-lg text-teal-600">{packageRenewalCount}</p>
                                     </div>
                                 </div>
                             </div>
-                            <div className="w-fit h-min p-4 dark:bg-slate-800 rounded-md shadow-md">
+                            <div className="w-fit h-min md:p-4 p-2 dark:bg-slate-800 rounded-md shadow-md">
                                 <div className="flex justify-between gap-2">
                                     <div>
-                                        <h3 className="text-gray-500 text-lg uppercase">Package Buy Count</h3>
-                                        <p className="text-2xl text-teal-600">{packageBuyCount}</p>
+                                        <h3 className="text-gray-500 md:text-lg text-base uppercase">
+                                            Package Buy Count
+                                        </h3>
+                                        <p className="md:text-2xl text-lg text-teal-600">{packageBuyCount}</p>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div className="w-[300px] text-center mx-auto">
-                            <p>Chart of package purchase rate</p>
-                            <Pie data={data} options={options}></Pie>
-                        </div>
+                        {data.labels.length > 0 && (
+                            <div className="max-w-[280px] text-center mx-auto">
+                                <p>Chart of package purchase rate</p>
+                                <Pie data={data} options={options}></Pie>
+                            </div>
+                        )}
                     </div>
                 ) : (
                     <Spinner className="block mx-auto mt-4" size="md" />
@@ -153,17 +169,17 @@ export default function DashTransaction() {
             {userTransactions != null ? (
                 userTransactions?.length > 0 ? (
                     <>
-                        <Table hoverable className="shadow-md text-center" striped>
-                            <Table.Head>
-                                <Table.HeadCell>Package Name</Table.HeadCell>
-                                <Table.HeadCell>Package Duration</Table.HeadCell>
-                                <Table.HeadCell>Package Price</Table.HeadCell>
-                                <Table.HeadCell>Date Of Payment</Table.HeadCell>
-                                <Table.HeadCell>Transaction Type</Table.HeadCell>
-                            </Table.Head>
-                            <Table.Body className="divide-y">
-                                {userTransactions.map((tran, i) => {
-                                    return (
+                        <div className="overflow-x-auto">
+                            <Table hoverable className="shadow-md text-center w-full min-w-[600px]" striped>
+                                <Table.Head>
+                                    <Table.HeadCell>Package Name</Table.HeadCell>
+                                    <Table.HeadCell>Package Duration</Table.HeadCell>
+                                    <Table.HeadCell>Package Price</Table.HeadCell>
+                                    <Table.HeadCell>Date Of Payment</Table.HeadCell>
+                                    <Table.HeadCell>Transaction Type</Table.HeadCell>
+                                </Table.Head>
+                                <Table.Body className="divide-y">
+                                    {userTransactions.map((tran, i) => (
                                         <Table.Row key={i} className="bg-white dark:border-gray-700 dark:bg-gray-800">
                                             <Table.Cell>{tran.packageName}</Table.Cell>
                                             <Table.Cell>
@@ -173,10 +189,10 @@ export default function DashTransaction() {
                                             <Table.Cell>{dateToDateAndTime(tran.paymentDate)}</Table.Cell>
                                             <Table.Cell>{tran.transactionType.toUpperCase()}</Table.Cell>
                                         </Table.Row>
-                                    );
-                                })}
-                            </Table.Body>
-                        </Table>
+                                    ))}
+                                </Table.Body>
+                            </Table>
+                        </div>
                         {showMore && (
                             <button onClick={handleShowMore} className="w-full text-teal-500 self-center text-sm py-7">
                                 Show more

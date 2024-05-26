@@ -1,12 +1,15 @@
 import { useEffect, useState } from 'react';
 import NotFound from './NotFound';
-import { Spinner, Table } from 'flowbite-react';
+import { Button, Label, Select, Spinner, Table, TextInput } from 'flowbite-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import ModalConfirm from './ModalConfirm';
 import { signOutSuccess } from '../redux/user/userSlice.js';
 import toast from 'react-hot-toast';
 import BackToTopButton from './BackToTopButton.jsx';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
+import { extractTime } from '../utils/extractTime.js';
 
 export default function BlogManagement() {
     const [blogs, setBlogs] = useState(null);
@@ -16,6 +19,14 @@ export default function BlogManagement() {
     const [blogIdToDelete, setBlogIdToDelete] = useState('');
     const [showBlockModal, setShowBlockModal] = useState(false);
     const [blogIdToBlock, setBlogIdToBlock] = useState('');
+    const limit = 5;
+    const date = new Date();
+    const [filterData, setFilterData] = useState({
+        search: null,
+        startDate: new Date(date.getFullYear(), date.getMonth(), 1),
+        endDate: new Date(),
+        sort: 'desc',
+    });
 
     const currentUser = useSelector((state) => state.user.currentUser);
 
@@ -27,13 +38,14 @@ export default function BlogManagement() {
             const res = await fetch(`/api/blog/admin-blog-management?page=${1}&&limit=${999999}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ userId: currentUser._id }),
+                body: JSON.stringify({ userId: currentUser._id, filterData }),
             });
             const data = await res.json();
             setAllBlogs(data.total);
             if (res.ok) {
                 const firstFiveBlogs = data.blogs.slice(0, 5);
                 setBlogs(firstFiveBlogs);
+                setAllBlogs(data.total);
                 if (data.blogs.length <= 5) {
                     setShowMore(false);
                 }
@@ -47,17 +59,24 @@ export default function BlogManagement() {
         handleGetAdminBlogManagement();
     }, []);
 
+    useEffect(() => {
+        if (blogs?.length >= allBlogs) {
+            setShowMore(false);
+        }
+    }, [blogs]);
+
     const handleShowMore = async () => {
         const startIndex = blogs.length;
         try {
-            const res = await fetch(`/api/blog/admin-blog-management?startIndex=${startIndex}&&limit=${5}`, {
+            const res = await fetch(`/api/blog/admin-blog-management?startIndex=${startIndex}&&limit=${limit}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ userId: currentUser._id }),
+                body: JSON.stringify({ userId: currentUser._id, filterData }),
             });
             const data = await res.json();
             if (res.ok) {
                 setBlogs((prev) => [...prev, ...data.blogs]);
+                setAllBlogs(data.total);
                 if (blogs.length + data.blogs.length >= allBlogs) {
                     setShowMore(false);
                 }
@@ -83,6 +102,7 @@ export default function BlogManagement() {
                 toast.error(data.message, { duration: 6000 });
             } else {
                 setBlogs((prev) => prev.filter((blog) => blog._id !== blogIdToDelete));
+                setAllBlogs((prev) => prev - 1);
             }
         } catch (error) {
             console.log(error);
@@ -113,11 +133,82 @@ export default function BlogManagement() {
         }
     };
 
+    const handleFilterBlog = async () => {
+        setShowMore(true);
+        try {
+            const res = await fetch(`/api/blog/admin-blog-management`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ filterData, totalBlogDisplayed: blogs?.length }),
+            });
+            const data = await res.json();
+            if (res.ok) {
+                setBlogs(data.blogs);
+                setAllBlogs(data.total);
+                if (data.blogs.length >= data.totalBlogs) {
+                    setShowMore(false);
+                }
+            } else {
+                console.log(data.message);
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    const handleSearchChange = (event) => {
+        const { value } = event.target;
+        setFilterData((prev) => ({
+            ...prev,
+            search: value,
+        }));
+    };
+
     return (
         <div className="py-8 px-4">
+            <div className="flex items-center justify-between w-full h-fit border-b-2 border-neutral-300">
+                <p className="border-b-2 text-lg w-fit py-2 px-4">Blog Management</p>
+                <p>
+                    Rows <b>{blogs?.length}</b> of <b>{allBlogs}</b>
+                </p>
+            </div>
+            {/* Filter */}
+            <div className="flex items-center gap-4 pb-4 mt-4">
+                <div className='flex items-center gap-1'>
+                    <Label>Title: </Label>
+                    <TextInput value={filterData.search} onChange={handleSearchChange} placeholder="Enter title" />
+                </div>
+                <div>
+                    <Label>From: </Label>
+                    <DatePicker
+                        className="rounded-md dark:bg-[#1f2937]"
+                        selected={filterData.startDate}
+                        onChange={(date) => setFilterData({ ...filterData, startDate: date })}
+                        dateFormat={'dd/MM/yyyy'}
+                        maxDate={new Date()}
+                    />
+                </div>
+                <div>
+                    <Label>To: </Label>
+                    <DatePicker
+                        className="rounded-md dark:bg-[#1f2937]"
+                        selected={filterData.endDate}
+                        onChange={(date) => setFilterData({ ...filterData, endDate: date })}
+                        dateFormat={'dd/MM/yyyy'}
+                        maxDate={new Date()}
+                    />
+                </div>
+                <Select id="sort" required onChange={(e) => setFilterData({ ...filterData, sort: e.target.value })}>
+                    <option value={'desc'}>Latest</option>
+                    <option value={'asc'}>Oldest</option>
+                </Select>
+                <Button gradientMonochrome="success" onClick={handleFilterBlog}>
+                    Filter
+                </Button>
+            </div>
             {blogs != null ? (
                 blogs?.length > 0 ? (
-                    <>
+                    <div className="mt-4">
                         <Table hoverable className="shadow-md" striped>
                             <Table.Head>
                                 <Table.HeadCell>Username</Table.HeadCell>
@@ -153,7 +244,7 @@ export default function BlogManagement() {
                                                     />
                                                 </Link>
                                             </Table.Cell>
-                                            <Table.Cell>{new Date(blog.updatedAt).toLocaleDateString()}</Table.Cell>
+                                            <Table.Cell>{extractTime(blog.createdAt)}</Table.Cell>
                                             <Table.Cell>
                                                 <span
                                                     onClick={() => {
@@ -171,7 +262,7 @@ export default function BlogManagement() {
                                                         setShowBlockModal(true);
                                                         setBlogIdToBlock(blog._id);
                                                     }}
-                                                    className="text-teal-300 font-medium hover:underline cursor-pointer"
+                                                    className={`${blog.isBlocked.status ? 'text-teal-300' : 'text-yellow-300'} font-medium hover:underline cursor-pointer`}
                                                 >
                                                     {blog.isBlocked.status ? 'Unlock' : 'Block'}
                                                 </span>
@@ -186,7 +277,7 @@ export default function BlogManagement() {
                                 Show more
                             </button>
                         )}
-                    </>
+                    </div>
                 ) : (
                     <NotFound object={'No blogs found'} />
                 )

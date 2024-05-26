@@ -112,8 +112,11 @@ export default function CateManagement() {
 
     return (
         <div className="py-8 px-4">
-            <div className="w-full h-fit border-b-2 border-neutral-300">
+            <div className="flex items-center justify-between w-full h-fit border-b-2 border-neutral-300">
                 <p className="border-b-2 text-lg w-fit py-2 px-4">Category Management</p>
+                <p>
+                    Rows <b>{allCate?.length}</b> of <b>{allCate?.length}</b>
+                </p>
             </div>
             <form className="mt-4 px-4">
                 <div className="flex gap-10">
@@ -150,7 +153,7 @@ export default function CateManagement() {
                                                         setShowBlockModal(true);
                                                         setCateIdToBlock(cate._id);
                                                     }}
-                                                    className="text-teal-300 font-medium hover:underline cursor-pointer"
+                                                    className={`${cate.isBlocked ? 'text-teal-300' : 'text-yellow-300'} font-medium hover:underline cursor-pointer`}
                                                 >
                                                     {cate.isBlocked ? 'UnBlocked' : 'Block'}
                                                 </span>

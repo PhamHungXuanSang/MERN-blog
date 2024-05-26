@@ -9,10 +9,10 @@ export const authenToken = async (req, res, next) => {
     const user = await User.findById(userId).select('-password');
     if (user) {
         if (user.isBlocked) {
-            const socketId = userOnline.get(userId.toString());
+            const socketId = userOnline.get(userId?.toString());
             if (socketId) {
                 io.to(socketId).emit('forcedLogout', 'Forced Logout');
-                userOnline.delete(userId.toString());
+                userOnline.delete(userId?.toString());
             }
         }
 

@@ -430,7 +430,7 @@ export default function PublishForm() {
                         <Button disabled={loading} onClick={handlePublishBlog} gradientDuoTone="greenToBlue">
                             {loading ? (
                                 <>
-                                    <Spinner aria-label="Spinner button example" size="sm" />
+                                    <Spinner size="sm" />
                                     <span className="ml-3">Publishing ...</span>
                                 </>
                             ) : (

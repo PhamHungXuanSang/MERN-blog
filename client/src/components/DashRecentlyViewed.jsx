@@ -14,6 +14,7 @@ export default function DashRecentlyViewed() {
     const [recentlyBlogs, setRecentlyBlogs] = useState(null);
     const currentUser = useSelector((state) => state.user.currentUser);
     const [showMore, setShowMore] = useState(true);
+    const [totalBlog, setTotalBlog] = useState(0);
 
     useEffect(() => {
         const getViewedBlogsHistory = async () => {
@@ -30,6 +31,7 @@ export default function DashRecentlyViewed() {
                 }
                 if (res.ok) {
                     setRecentlyBlogs(data.viewedBlogsHistory);
+                    setTotalBlog(data.total);
                 } else {
                     console.log(data.message);
                 }
@@ -68,8 +70,11 @@ export default function DashRecentlyViewed() {
 
     return (
         <div className="py-8 px-4">
-            <div className="w-full h-fit border-b-2 border-neutral-300">
+            <div className="flex items-center justify-between w-full h-fit border-b-2 border-neutral-300">
                 <p className="border-b-2 text-lg w-fit py-2 px-4">Recently Viewed Blogs</p>
+                <p>
+                    Rows <b>{recentlyBlogs?.length}</b> of <b>{totalBlog}</b>
+                </p>
             </div>
             {recentlyBlogs != null ? (
                 recentlyBlogs.length == 0 ? (

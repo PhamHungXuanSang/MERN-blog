@@ -18,7 +18,7 @@ export default function Conversations({ onlineUsers }) {
                     onlineUsers={onlineUsers}
                 />
             ))}
-            {loading ? <Spinner aria-label="Spinner button example" size="sm" className="mx-auto block" /> : null}
+            {loading ? <Spinner size="sm" className="mx-auto block" /> : null}
         </div>
     );
 }

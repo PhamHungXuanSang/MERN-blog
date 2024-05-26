@@ -29,7 +29,9 @@ export default function AllSubscribedAuthor() {
         });
         const data = await res.json();
         setAuthors(data.authors);
-        setActiveAuthor(data.authors[0].username);
+        if (data.authors.length > 0) {
+            setActiveAuthor(data.authors[0].username);
+        }
     };
 
     const handleFetchAuthorBlog = async (username) => {
@@ -79,7 +81,7 @@ export default function AllSubscribedAuthor() {
                 authors != null && authors.length > 0 ? (
                     authors.length == 1 ? (
                         <div
-                            className="mx-auto w-fit dark:bg-white bg-slate-800 p-1 rounded-full cursor-pointer"
+                            className="mx-auto w-fit dark:bg-white bg-gray-400 p-1 rounded-full cursor-pointer"
                             onClick={() => handleFetchAuthorBlog(authors[0].username)}
                         >
                             <div className="flex gap-1 items-center truncate">
@@ -92,7 +94,7 @@ export default function AllSubscribedAuthor() {
                             {authors.map((author, i) => (
                                 <div
                                     key={i}
-                                    className="!w-fit dark:bg-white bg-slate-800 p-1 rounded-full cursor-pointer"
+                                    className="!w-fit dark:bg-white bg-gray-400 p-1 rounded-full cursor-pointer"
                                     onClick={() => handleFetchAuthorBlog(author.username)}
                                 >
                                     <div className="flex gap-1 items-center truncate">
@@ -113,7 +115,7 @@ export default function AllSubscribedAuthor() {
                     </i>
                 )
             ) : (
-                <Spinner aria-label="Spinner button example" size="xl" className="mx-auto block" />
+                <Spinner size="xl" className="mx-auto block" />
             )}
             {authorBlogs != null ? (
                 authorBlogs.length > 0 ? (
@@ -148,8 +150,10 @@ export default function AllSubscribedAuthor() {
                         Author {activeAuthor != null ? '@' + activeAuthor : ''} not publish any blogs.
                     </i>
                 )
+            ) : authors.length > 0 ? (
+                <Spinner size="lg" className="mx-auto block mt-4" />
             ) : (
-                <Spinner aria-label="Spinner button example" size="lg" className="mx-auto block mt-4" />
+                ''
             )}
         </div>
     );

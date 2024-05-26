@@ -52,7 +52,7 @@ export default function DashUsage() {
                     <div className="w-full h-fit border-b-2 border-neutral-300">
                         <p className="border-b-2 text-lg w-fit py-2 px-4">Account usage</p>
                     </div>
-                    <div className="flex flex-col md:flex-row flex-wrap justify-between items-center border border-teal-500 p-4 my-4 rounded-lg">
+                    <div className="flex flex-col md:flex-row flex-wrap md:justify-between md:items-center border border-teal-500 p-4 my-4 rounded-lg">
                         <p className="font-semibold">
                             Free trial:{' '}
                             <p
@@ -69,7 +69,7 @@ export default function DashUsage() {
                                 {userTransactionInfo.createPermission ? 'Allow' : 'Not allow'}
                             </p>
                         </p>
-                        <p className="font-semibold text-center">
+                        <p className="font-semibold">
                             Creation expiration:{' '}
                             <p
                                 className={`inline${new Date(userTransactionInfo.expirationDate) > new Date() ? ' text-green-600' : ' text-red-600'}`}

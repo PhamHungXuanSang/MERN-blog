@@ -5,6 +5,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { signOutSuccess } from '../redux/user/userSlice.js';
 import { HiAnnotation, HiArrowNarrowUp, HiDocumentText, HiOutlineUserGroup } from 'react-icons/hi';
 import { Button, Spinner, Table } from 'flowbite-react';
+import { extractTime } from '../utils/extractTime.js';
 
 export default function MainBoardManagement() {
     const [users, setUsers] = useState(null);
@@ -194,9 +195,7 @@ export default function MainBoardManagement() {
                                             <Table.Cell className="p-2">
                                                 <Link to={`/user/${user.username}`}>{user.username}</Link>
                                             </Table.Cell>
-                                            <Table.Cell className="p-2">
-                                                {new Date(user.createdAt).toLocaleDateString()}
-                                            </Table.Cell>
+                                            <Table.Cell className="p-2">{extractTime(user.createdAt)}</Table.Cell>
                                         </Table.Row>
                                     </Table.Body>
                                 );
@@ -237,9 +236,7 @@ export default function MainBoardManagement() {
                                                 {blog.title}
                                             </Table.Cell>
                                             <Table.Cell className="p-2">{blog.authorId.username}</Table.Cell>
-                                            <Table.Cell className="p-2">
-                                                {new Date(blog.createdAt).toLocaleDateString()}
-                                            </Table.Cell>
+                                            <Table.Cell className="p-2">{extractTime(blog.createdAt)}</Table.Cell>
                                         </Table.Row>
                                     </Table.Body>
                                 );
@@ -284,9 +281,7 @@ export default function MainBoardManagement() {
                                             <Table.Cell className="p-2">
                                                 {comment.isReply ? 'Reply' : 'Comment'}
                                             </Table.Cell>
-                                            <Table.Cell className="p-2">
-                                                {new Date(comment.createdAt).toLocaleDateString()}
-                                            </Table.Cell>
+                                            <Table.Cell className="p-2">{extractTime(comment.createdAt)}</Table.Cell>
                                         </Table.Row>
                                     </Table.Body>
                                 );

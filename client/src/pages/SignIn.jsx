@@ -117,7 +117,7 @@ export default function SignIn() {
                         <Button gradientDuoTone="greenToBlue" type="submit">
                             {loading ? (
                                 <>
-                                    <Spinner aria-label="Spinner button example" size="sm" />
+                                    <Spinner size="sm" />
                                     <span className="ml-3">Loading ...</span>
                                 </>
                             ) : (

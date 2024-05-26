@@ -26,7 +26,7 @@ export default function MessageInput() {
                 />
                 <button type="submit" className="absolute inset-y-0 end-0 flex items-center pe-3">
                     {loading ? (
-                        <Spinner aria-label="Spinner button example" size="sm" className="mx-auto block" />
+                        <Spinner size="sm" className="mx-auto block" />
                     ) : (
                         <BsSendFill />
                     )}

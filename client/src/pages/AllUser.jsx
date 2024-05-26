@@ -10,6 +10,7 @@ export default function AllUser() {
     const [users, setUsers] = useState(null);
     const [showMore, setShowMore] = useState(true);
     const limit = 3;
+    const [totalUser, setTotalUser] = useState(0);
 
     const handleGetAllUserProfile = async () => {
         try {
@@ -21,6 +22,7 @@ export default function AllUser() {
             const data = await res.json();
             if (res.ok) {
                 setUsers(data.paginationUsers);
+                setTotalUser(data.allUsers);
                 if (users?.length || 0 + data.paginationUsers.length >= data.allUsers) {
                     setShowMore(false);
                 }
@@ -60,8 +62,11 @@ export default function AllUser() {
 
     return (
         <div className="flex flex-col gap-4 py-8 px-4 md:px-0 container mx-auto">
-            <div className="w-full h-fit border-b-2 border-neutral-300">
+            <div className="flex items-center justify-between w-full h-fit border-b-2 border-neutral-300">
                 <p className="border-b-2 text-lg w-fit py-2 px-4">All Authors</p>
+                <p>
+                    Rows <b>{users?.length}</b> of <b>{totalUser}</b>
+                </p>
             </div>
             {users != null ? (
                 users.length == 0 ? (

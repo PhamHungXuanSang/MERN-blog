@@ -95,7 +95,7 @@ export default function Notification({ filterStateMapping }) {
                 })}
             </div>
             {notifications == null ? (
-                <Spinner aria-label="Spinner button example" size="xl" className="mx-auto block" />
+                <Spinner size="xl" className="mx-auto block" />
             ) : (
                 <>
                     {notifications.length ? (

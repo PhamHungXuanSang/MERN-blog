@@ -328,7 +328,7 @@ export default function DashProfileUpdate() {
                             >
                                 {loading ? (
                                     <>
-                                        <Spinner aria-label="Spinner button example" size="sm" />
+                                        <Spinner size="sm" />
                                         <span className="ml-3">Updating Profile ...</span>
                                     </>
                                 ) : (

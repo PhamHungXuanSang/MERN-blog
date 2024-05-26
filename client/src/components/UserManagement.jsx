@@ -8,6 +8,7 @@ import ModalConfirm from './ModalConfirm.jsx';
 import checkCreatePermission from '../utils/checkCreatePermission.js';
 import toast from 'react-hot-toast';
 import BackToTopButton from './BackToTopButton.jsx';
+import { extractTime } from '../utils/extractTime.js';
 
 export default function UserManagement() {
     const [users, setUsers] = useState(null);
@@ -109,6 +110,12 @@ export default function UserManagement() {
 
     return (
         <div className="py-8 px-4 table-auto overflow-x-scroll md:mx-auto p-3 scrollbar">
+            <div className="flex items-center justify-between w-full h-fit border-b-2 border-neutral-300 mb-4">
+                <p className="border-b-2 text-lg w-fit py-2 px-4">User Management</p>
+                <p>
+                    Rows <b>{users?.length}</b> of <b>{allUsers}</b>
+                </p>
+            </div>
             {users != null ? (
                 users?.length > 0 ? (
                     <>
@@ -125,7 +132,7 @@ export default function UserManagement() {
                                 {users.map((user, i) => {
                                     return (
                                         <Table.Row key={i} className="bg-white dark:border-gray-700 dark:bg-gray-800">
-                                            <Table.Cell>{new Date(user.createdAt).toLocaleDateString()}</Table.Cell>
+                                            <Table.Cell>{extractTime(user.createdAt)}</Table.Cell>
                                             <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white px-1">
                                                 <Link to={`/user/${user.username}`}>{user.username}</Link>
                                             </Table.Cell>
