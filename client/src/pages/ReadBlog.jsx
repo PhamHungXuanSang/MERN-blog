@@ -16,6 +16,7 @@ import { FaUserPlus, FaUserMinus } from 'react-icons/fa';
 import toast from 'react-hot-toast';
 import { signOutSuccess } from '../redux/user/userSlice.js';
 import BackToTopButton from '../components/BackToTopButton.jsx';
+import { BsListNested } from 'react-icons/bs';
 
 export const BlogContext = createContext({});
 
@@ -27,6 +28,9 @@ export default function ReadBlog() {
     const [similarAuthorBlogs, setSimilarAuthorBlogs] = useState(null);
     const [commentsWrapper, setCommentsWrapper] = useState(false);
     const [isSubscribed, setIsSubscribed] = useState(false);
+    const [outline, setOutline] = useState([]);
+    const [showOutline, setShowOutLine] = useState(true); // đổi thành true cho dễ dev
+    const [rotate, setRotate] = useState(false);
 
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -67,6 +71,76 @@ export default function ReadBlog() {
         handleReadBlog();
     }, [slug]);
 
+    function extractTextFromHTML(htmlString) {
+        let textContent = htmlString.replace(/<\/?[^>]+(>|$)/g, ' ').trim();
+        textContent = textContent.replace(/\s+/g, ' ');
+        return textContent;
+    }
+
+    useEffect(() => {
+        if (blog != null && blog.title.length) {
+            blog.content[0].blocks.map((block, i) => {
+                switch (block.type) {
+                    case 'header':
+                        setOutline((prev) => [
+                            ...prev,
+                            {
+                                index: i,
+                                type: 'header',
+                                level: block.data.level,
+                                content: extractTextFromHTML(block.data.text),
+                            },
+                        ]);
+                        break;
+                    case 'image':
+                        setOutline((prev) => [
+                            ...prev,
+                            {
+                                index: i,
+                                type: 'image',
+                                content: block.data.caption.length
+                                    ? extractTextFromHTML(block.data.caption)
+                                    : extractTextFromHTML(block.data.file.url),
+                            },
+                        ]);
+                        break;
+                    case 'quote':
+                        setOutline((prev) => [
+                            ...prev,
+                            {
+                                index: i,
+                                type: 'quote',
+                                content: block.data.caption.length
+                                    ? extractTextFromHTML(block.data.caption)
+                                    : extractTextFromHTML(block.data.text),
+                            },
+                        ]);
+                        break;
+                    case 'warning':
+                        setOutline((prev) => [
+                            ...prev,
+                            { index: i, type: 'warning', content: extractTextFromHTML(block.data.message) },
+                        ]);
+                        break;
+                    case 'embed':
+                        setOutline((prev) => [
+                            ...prev,
+                            { index: i, type: 'embed', content: extractTextFromHTML(block.data.caption) },
+                        ]);
+                        break;
+                    case 'alert':
+                        setOutline((prev) => [
+                            ...prev,
+                            { index: i, type: 'alert', content: extractTextFromHTML(block.data.message) },
+                        ]);
+                        break;
+                }
+            });
+        }
+    }, [blog]);
+
+    console.log(outline);
+
     const handleGetRatingOfXStar = (star) => {
         const totalRatingCount = blog.rating.length;
 
@@ -102,6 +176,21 @@ export default function ReadBlog() {
         } catch (error) {
             console.log(error);
         }
+    };
+
+    const handleShowOutline = () => {
+        setShowOutLine((prev) => !prev);
+        setRotate(true);
+        setTimeout(() => setRotate(false), 800);
+    };
+
+    const handleScrollIntoView = (idx) => {
+        const element = document.getElementById(idx + 'index');
+        if (!element) return;
+        element.scrollIntoView({
+            behavior: 'smooth',
+            block: 'end',
+        });
     };
 
     return (
@@ -175,7 +264,7 @@ export default function ReadBlog() {
                         {blog.title.length && blog != null ? (
                             blog.content[0].blocks.map((block, i) => {
                                 return (
-                                    <div key={i} className="my-4 md:my-8">
+                                    <div key={i} className="my-4 md:my-8" id={i + 'index'}>
                                         <ContentItem type={block.type} block={block} />
                                     </div>
                                 );
@@ -266,9 +355,7 @@ export default function ReadBlog() {
                             >
                                 {suggest != null && suggest.length ? (
                                     <div className="max-w-[280px] md:max-w-[430px] mx-auto">
-                                        <h1 className="text-xl mt-32 mb-10 font-medium text-center">
-                                            Similar content
-                                        </h1>
+                                        <h1 className="text-xl mt-32 mb-10 font-medium text-center">Similar content</h1>
                                         <div className="mt-4">
                                             <Carousel className="max-w-fit h-fit pb-8" pauseOnHover>
                                                 {suggest.map((blog, i) => (
@@ -314,6 +401,36 @@ export default function ReadBlog() {
                 <Spinner className="block mx-auto mt-4" size="xl" />
             )}
             <BackToTopButton />
+            <button
+                onClick={handleShowOutline}
+                className={`fixed flex justify-center items-center bottom-2 right-2 md:bottom-12 md:right-12 text-2xl md:p-3 p-2 dark:bg-white bg-slate-200 rounded-full z-50 ${showOutline ? 'opacity-100' : 'opacity-30'}`}
+            >
+                <BsListNested fill="black" size={24} className={rotate ? 'rotate-icon' : 'rotate-icon-off'} />
+            </button>
+            {showOutline && (
+                <div className="bg-slate-200 dark:bg-white rounded-2xl md:max-w-[40%] fixed md:bottom-28 md:right-12 z-50 dark:border-white dark:text-black">
+                    <div className="mockup-window border border-base-300">
+                        <div className="p-2">
+                            {outline.map((item, idx) => (
+                                <div
+                                    key={idx}
+                                    className="group my-1"
+                                    onClick={() => {
+                                        handleScrollIntoView(item.index);
+                                    }}
+                                >
+                                    <div className="flex items-center gap-2 group-hover:cursor-pointer">
+                                        <i className="w-16 opacity-80 group-hover:opacity-100 scale-90 group-hover:scale-100">
+                                            {item.type == 'header' ? item.type + ' ' + item.level : item.type}
+                                        </i>
+                                        <p>{item.content}</p>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

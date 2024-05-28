@@ -75,7 +75,6 @@ export default function ContentItem({ type, block }) {
     if (type == 'image') {
         return (
             <>
-                {/* #cdd1e0 */}
                 <div className={block.data.withBackground ? 'w-full bg-[#cdd1e0]' : 'w-fit'}>
                     <img
                         src={block.data.file.url}

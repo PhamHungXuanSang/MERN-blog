@@ -118,6 +118,12 @@ export const updateUserRole = async (req, res, next) => {
         const isBlocked = role === 'blocked-user';
         const isAdmin = role === 'admin';
         const usersLength = parseInt(req.query.usersLength); // trả về làm sao để đảm bảo phân trang
+
+        const allAdmins = await User.find({ isAdmin: true }).select('_id').exec();
+        if (allAdmins.length === 1 && allAdmins[0]._id.toString() === req.user._id.toString() && !isAdmin) {
+            return next(errorHandler(400, 'Cannot change the last admin to user or blocked-user'));
+        }
+
         const updatedUser = await User.findByIdAndUpdate(
             userId,
             { $set: { isBlocked, isAdmin } },

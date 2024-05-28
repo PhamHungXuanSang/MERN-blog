@@ -88,3 +88,29 @@
 .dark .slick-next:before {
     color: white;
 }
+
+.rotate-icon {
+    animation: rotate 0.8s ease-in-out;
+}
+
+.rotate-icon-off {
+    animation: rotateOff 0.8s ease-in-out;
+}
+
+@keyframes rotate {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes rotateOff {
+    from {
+        transform: rotate(360deg);
+    }
+    to {
+        transform: rotate(0deg);
+    }
+}

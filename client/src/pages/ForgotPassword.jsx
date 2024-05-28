@@ -17,17 +17,35 @@ export default function ForgotPassword() {
     const [newPassword, setNewPassword] = useState('');
     const [confirmNewPassword, setConfirmNewPassword] = useState('');
     const currentUser = useSelector((state) => state.user.currentUser);
-
     const [showPasswordValidation, setShowPasswordValidation] = useState(false);
     const [arrValid, setArrValid] = useState([false, false, false, false, false]);
+    const [second, setSecond] = useState(300);
+    const [resend, setResend] = useState(false);
 
     const navigate = useNavigate();
     const dispatch = useDispatch();
+
     useEffect(() => {
+        let intervalId;
         if (currentUser && currentUser.emailVerified.method !== 'password') {
             return navigate('/');
         }
-    }, []);
+
+        if (step == 2) {
+            intervalId = setInterval(() => {
+                setSecond((prev) => {
+                    if (prev > 0) {
+                        return prev - 1;
+                    } else {
+                        setSecond(0);
+                        setResend(true);
+                        clearInterval(intervalId);
+                    }
+                });
+            }, 1000);
+        }
+        return () => clearInterval(intervalId);
+    }, [step, resend]);
 
     const handleSendCode = async () => {
         if (currentUser && email != currentUser.email) {
@@ -149,11 +167,35 @@ export default function ForgotPassword() {
         { regex: /[^A-Za-z0-9]/ },
     ];
 
+    const handleResendOTP = async () => {
+        try {
+            const res = await fetch(`/api/email/sendEmailOTP`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email }),
+            });
+            const data = await res.json();
+            if (res.status === 403) {
+                dispatch(signOutSuccess());
+                return navigate('/sign-in');
+            }
+            if (res.status === 200) {
+                toast.success('OTP resend to your email', { duration: 6000 });
+                setSecond(300);
+                setResend(false);
+            } else {
+                toast.error(data.message, { duration: 6000 });
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
     return (
         <div className="flex flex-col items-center gap-6 py-12 min-h-screen">
             <i className="text-xl font-bold my-4">Forgot Password</i>
             {step === 1 && (
-                <div className="shadow-md rounded mb-4 flex flex-col w-[70%] md:w-[30%]">
+                <div className="shadow-md rounded mb-4 flex flex-col w-[90%] md:w-[30%] p-2">
                     <div className="mb-4">
                         <Label value="Email address" />
                         <TextInput
@@ -171,7 +213,7 @@ export default function ForgotPassword() {
             )}
 
             {step === 2 && (
-                <div className="shadow-md rounded mb-4 flex flex-col w-[70%] md:w-[30%]">
+                <div className="shadow-md rounded mb-4 flex flex-col w-[90%] md:w-[30%] p-2">
                     <div className="mb-4 flex">
                         {OTP.map((otp, index) => {
                             return (
@@ -191,11 +233,26 @@ export default function ForgotPassword() {
                     <Button gradientDuoTone="greenToBlue" type="button" onClick={handleVerifyCode}>
                         Verify Code
                     </Button>
+                    <div className="text-center max-w-md mx-auto mt-4">
+                        <p className="text-gray-700 text-lg font-medium mb-4">
+                            OTP will expire in <span className="text-red-500 font-bold">{second}</span> seconds
+                        </p>
+                        {resend && (
+                            <Button
+                                outline
+                                gradientDuoTone={'greenToBlue'}
+                                onClick={handleResendOTP}
+                                className="transition duration-300 border mx-auto"
+                            >
+                                Resend OTP
+                            </Button>
+                        )}
+                    </div>
                 </div>
             )}
 
             {step === 3 && (
-                <div className="shadow-md rounded mb-4 flex flex-col w-[70%] md:w-[30%]">
+                <div className="shadow-md rounded mb-4 flex flex-col w-[90%] md:w-[30%] p-2">
                     <div className="mb-4 relative">
                         <Label value="New Password" />
                         <TextInput

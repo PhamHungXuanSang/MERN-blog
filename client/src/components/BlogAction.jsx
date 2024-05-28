@@ -23,6 +23,7 @@ export default function BlogAction() {
     const [folder, setFolder] = useState('');
     const [createFolder, setCreateFolder] = useState('');
     const [folders, setFolders] = useState([]);
+    const [rotate, setRotate] = useState(false);
 
     const handleRadioChange = (e) => {
         setFolder(e.target.value);
@@ -42,6 +43,8 @@ export default function BlogAction() {
         if (!currentUser) {
             return toast.error('Please sign in to like blog');
         }
+        setRotate(true);
+        setTimeout(() => setRotate(false), 1000);
         setLiked(!liked);
         try {
             const res = await fetch(`/api/blog/update-like-blog/${currentUser._id}`, {
@@ -143,7 +146,11 @@ export default function BlogAction() {
                             onClick={handleLikeBlog}
                             className="w-10 h-10 rounded-full flex items-center justify-center dark:bg-gray-700 bg-gray-300"
                         >
-                            {liked ? <FaHeart color="#ed1a1a" /> : <FaRegHeart />}
+                            {liked ? (
+                                <FaHeart color="#ed1a1a" className={rotate ? 'rotate-icon' : 'rotate-icon-off'} />
+                            ) : (
+                                <FaRegHeart className={rotate ? 'rotate-icon' : ''} />
+                            )}
                         </button>
                         <p className="text-xl">{blog.likeCount}</p>
                     </div>

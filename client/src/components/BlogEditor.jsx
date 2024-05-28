@@ -323,13 +323,13 @@ export default function BlogEditor() {
                         className="flex flex-col gap-4 overflow-y-auto overflow-x-hidden"
                         style={{ maxHeight: 'calc(80vh - 40px)' }}
                     >
-                        <div className="flex md:gap-4 gap-0 mt-4 w-full">
+                        <div className="flex md:gap-4 gap-[1px] justify-between mt-4 w-full">
                             <input
                                 type="text"
                                 value={value}
                                 placeholder="Describe your ideas"
                                 disabled={loading}
-                                className="flex-1 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                                className="max-sm:max-w-44 flex-1 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
                                 onChange={(e) => setValue(e.target.value)}
                                 onKeyDown={(e) => {
                                     if (e.key === 'Enter' && !loading) {
@@ -350,7 +350,7 @@ export default function BlogEditor() {
                                 ))}
                             {error && (
                                 <button
-                                    className="px-3 py-1 rounded-md shadow-sm bg-red-500 text-white hover:bg-red-600 focus:outline-none"
+                                    className="md:px-3 px-1 py-1 rounded-md shadow-sm bg-red-500 text-white hover:bg-red-600 focus:outline-none"
                                     onClick={() => {
                                         setValue('');
                                         setError('');
