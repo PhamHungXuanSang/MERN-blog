@@ -48,7 +48,7 @@ export default function UserProfile() {
             const data = await res.json();
             if (res.status === 403) {
                 dispatch(signOutSuccess());
-                navigate('/sign-in');
+                return navigate('/sign-in');
             }
             if (res.status == 200) {
                 setIsSubscribed(data);
@@ -100,7 +100,7 @@ export default function UserProfile() {
             const data = await res.json();
             if (res.status === 403) {
                 dispatch(signOutSuccess());
-                navigate('/sign-in');
+                return navigate('/sign-in');
             }
             if (res.status !== 200) {
                 console.log(data.message);

@@ -69,7 +69,7 @@ export default function Checkout() {
 
     return (
         <div className="py-8 px-4">
-            <div className="paypal rounded-lg border border-teal-500 md:max-w-[50%] mx-auto p-4">
+            <div className="paypal rounded-lg border border-teal-500 md:max-w-[50%] mx-auto md:p-4 p-1">
                 <div
                     className="flex items-center gap-1 cursor-pointer w-fit opacity-50 hover:opacity-100 mb-2"
                     onClick={() => {
@@ -83,7 +83,7 @@ export default function Checkout() {
                 {userTransactionInfo != null ? (
                     new Date(userTransactionInfo.expirationDate).getFullYear() < 2100 ? (
                         <>
-                            <div className="border border-gray-500 rounded-lg p-4">
+                            <div className="border border-gray-500 rounded-lg md:p-4 p-1">
                                 <div className="bg-slate-300 p-2 rounded-lg text-black flex flex-col gap-1">
                                     <p>
                                         <img
@@ -167,11 +167,11 @@ export default function Checkout() {
                                 </div>
                             </div>
                             <div className="flex flex-col md:flex-row justify-between items-center gap-6 md:gap-8 p-4 md:py-6">
-                                <div className="w-full md:max-w-xs lg:max-w-sm mx-auto">
+                                <div className="w-full md:max-w-xs lg:max-w-sm mx-auto rounded-2xl overflow-hidden h-12 hover:scale-110 duration-300">
                                     <PaypalCheckoutButton pack={selectedPackage} />
                                 </div>
                                 <button
-                                    className="w-full md:w-auto bg-gradient-to-r from-green-400 to-blue-500 hover:from-green-500 hover:to-blue-600 text-white font-semibold py-3 px-6 md:px-8 rounded-xl shadow transition-all duration-300 ease-in-out transform hover:scale-105"
+                                    className="flex-shrink lg:flex-shrink-0 w-full md:w-auto bg-gradient-to-r from-green-400 to-blue-500 hover:from-green-500 hover:to-blue-600 text-white font-semibold py-2 px-6 md:px-8 rounded-2xl shadow transition-all duration-300 ease-in-out transform hover:scale-105"
                                     onClick={handleBankTransferPayment}
                                 >
                                     <div className="flex items-center justify-center gap-2">

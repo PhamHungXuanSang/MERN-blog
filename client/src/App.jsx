@@ -45,6 +45,7 @@ export default function App() {
         'client-id': import.meta.env.VITE_REACT_APP_PAYPAL_CLIENT_ID,
         currency: 'USD',
         intent: 'capture',
+        'disable-funding': 'card',
     };
     const currentUser = useSelector((state) => state.user.currentUser);
     const [onlineUsers, setOnlineUsers] = useState([]);

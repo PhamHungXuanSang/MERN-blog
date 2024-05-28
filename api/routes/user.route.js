@@ -13,6 +13,7 @@ import {
     getUserSubscribeAuthors,
     getAllNotThisUser,
     getSubscribedStatus,
+    getSuggestedBlog,
 } from '../controllers/user.controller.js';
 import { authenToken } from '../utils/authenToken.js';
 
@@ -28,8 +29,9 @@ router.get(`/get-viewed-blogs-history/:userId`, authenToken, getViewedBlogsHisto
 router.get(`/toggle-subscribe/:authorId/:userId`, authenToken, toggleSubscribe);
 router.post('/get-top-authors', getTopAuthors);
 router.post('/get-all-user-profile', getAllUserProfile);
-router.post('/get-user-subscribe-authors', getUserSubscribeAuthors);
+router.post('/get-user-subscribe-authors', authenToken, getUserSubscribeAuthors);
 router.get('/get-all-not-this-user', authenToken, getAllNotThisUser);
 router.post('/get-subscribed-status', authenToken, getSubscribedStatus);
+router.post('/get-suggested-blog/:userId', authenToken, getSuggestedBlog);
 
 export default router;

@@ -432,3 +432,62 @@ export const getSubscribedStatus = async (req, res, next) => {
         next(error);
     }
 };
+
+export const getSuggestedBlog = async (req, res, next) => {
+    const userId = req.params.userId;
+    if (req.user._id != userId) {
+        return next(errorHandler(403, 'Unauthorized'));
+    }
+    try {
+        const userWithBlogs = await User.findById(userId)
+            .select('viewedBlogsHistory')
+            .populate('viewedBlogsHistory.blog')
+            .exec();
+        if (!userWithBlogs) return next(errorHandler(404, 'User not found'));
+
+        let filteredViewedBlogs = userWithBlogs.viewedBlogsHistory
+            .filter((bl) => bl.blog && bl.blog.isBlocked.status === false)
+            .sort((a, b) => b.viewedAt - a.viewedAt);
+
+        const viewedBlogIds = new Set(filteredViewedBlogs.map((blog) => blog.blog._id.toString()));
+        // console.log('Ids cacs baif vieets ddax xem: ' + Array.from(viewedBlogIds).length);
+
+        if (filteredViewedBlogs.length === 0) return res.status(200).json({ suggestedBlogs: [] });
+        filteredViewedBlogs = filteredViewedBlogs.slice(0, 5);
+
+        const tagsToSuggest = [];
+        filteredViewedBlogs.forEach((blog) => {
+            blog.blog.tags.forEach((tag) => {
+                if (!tagsToSuggest.includes(tag)) {
+                    tagsToSuggest.push(tag);
+                }
+            });
+        });
+
+        // Gợi ý những bài viết chưa từng đọc dựa trên danh sách tag gần đây
+        const suggestedTagBlogs = await Blog.find({
+            tags: { $in: tagsToSuggest },
+            _id: { $nin: Array.from(viewedBlogIds) },
+            'isBlocked.status': false,
+        })
+            .populate('authorId', 'username userAvatar')
+            .exec();
+        // console.log('Độ dài gợi ý theo thẻ tag: ' + suggestedTagBlogs.length);
+
+        const suggestedTagBlogsIds = new Set(suggestedTagBlogs.map((blog) => blog._id.toString()));
+
+        // Gợi ý những bài viết chưa từng đọc còn lại (ngoại trừ các bài viết đã gợi ý ở phần suggestedTagBlogs)
+        const suggestedUnreadBlogs = await Blog.find({
+            _id: { $nin: [...viewedBlogIds, ...suggestedTagBlogsIds] },
+            'isBlocked.status': false,
+        }).populate('authorId', 'username userAvatar');
+        // console.log('Độ dài gợi ý bài chưa đọc: ' + suggestedUnreadBlogs.length);
+
+        const suggestedBlogs = [...suggestedTagBlogs, ...suggestedUnreadBlogs];
+        // console.log('Độ dài gợi ý tổng: ' + suggestedBlogs.length);
+
+        return res.status(200).json({ suggestedBlogs: suggestedBlogs.slice(0, 10) });
+    } catch (error) {
+        next(error);
+    }
+};

@@ -29,7 +29,7 @@ export default function ReadBlog() {
     const [commentsWrapper, setCommentsWrapper] = useState(false);
     const [isSubscribed, setIsSubscribed] = useState(false);
     const [outline, setOutline] = useState([]);
-    const [showOutline, setShowOutLine] = useState(true); // đổi thành true cho dễ dev
+    const [showOutline, setShowOutLine] = useState(false);
     const [rotate, setRotate] = useState(false);
 
     const dispatch = useDispatch();
@@ -139,8 +139,6 @@ export default function ReadBlog() {
         }
     }, [blog]);
 
-    console.log(outline);
-
     const handleGetRatingOfXStar = (star) => {
         const totalRatingCount = blog.rating.length;
 
@@ -168,7 +166,7 @@ export default function ReadBlog() {
             const data = await res.json();
             if (res.status === 403) {
                 dispatch(signOutSuccess());
-                navigate('/sign-in');
+                return navigate('/sign-in');
             }
             if (res.status !== 200) {
                 console.log(data.message);
@@ -189,8 +187,9 @@ export default function ReadBlog() {
         if (!element) return;
         element.scrollIntoView({
             behavior: 'smooth',
-            block: 'end',
+            block: 'center',
         });
+        setShowOutLine(false);
     };
 
     return (
@@ -408,25 +407,29 @@ export default function ReadBlog() {
                 <BsListNested fill="black" size={24} className={rotate ? 'rotate-icon' : 'rotate-icon-off'} />
             </button>
             {showOutline && (
-                <div className="bg-slate-200 dark:bg-white rounded-2xl md:max-w-[40%] fixed md:bottom-28 md:right-12 z-50 dark:border-white dark:text-black">
+                <div className="bg-slate-200 dark:bg-white rounded-2xl md:max-w-[40%] max-w-full fixed md:bottom-28 md:right-12 bottom-14 right-0 z-50 dark:border-white dark:text-black">
                     <div className="mockup-window border border-base-300">
-                        <div className="p-2">
-                            {outline.map((item, idx) => (
-                                <div
-                                    key={idx}
-                                    className="group my-1"
-                                    onClick={() => {
-                                        handleScrollIntoView(item.index);
-                                    }}
-                                >
-                                    <div className="flex items-center gap-2 group-hover:cursor-pointer">
-                                        <i className="w-16 opacity-80 group-hover:opacity-100 scale-90 group-hover:scale-100">
-                                            {item.type == 'header' ? item.type + ' ' + item.level : item.type}
-                                        </i>
-                                        <p>{item.content}</p>
+                        <div className="p-2 md:max-h-[220px] max-h-[320px] overflow-y-scroll">
+                            {outline.length > 0 ? (
+                                outline.map((item, idx) => (
+                                    <div
+                                        key={idx}
+                                        className="group my-1"
+                                        onClick={() => {
+                                            handleScrollIntoView(item.index);
+                                        }}
+                                    >
+                                        <div className="flex items-start gap-2 group-hover:cursor-pointer">
+                                            <i className="w-16 flex-shrink-0 opacity-80 group-hover:opacity-100 scale-90 group-hover:scale-100">
+                                                {item.type == 'header' ? item.type + ' ' + item.level : item.type}
+                                            </i>
+                                            <p className="line-clamp-2">{item.content}</p>
+                                        </div>
                                     </div>
-                                </div>
-                            ))}
+                                ))
+                            ) : (
+                                <p className="text-center">No outline found</p>
+                            )}
                         </div>
                     </div>
                 </div>

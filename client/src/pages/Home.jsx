@@ -14,11 +14,14 @@ import { Link, useNavigate } from 'react-router-dom';
 import { SlNote } from 'react-icons/sl';
 import BackToTopButton from '../components/BackToTopButton';
 import FadeInWhenVisible from '../components/FadeInWhenVisible';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import Slider from 'react-slick';
 import dateToDateAndTime from '../utils/dateToDateAndTime';
+import { signOutSuccess } from '../redux/user/userSlice';
+import toast from 'react-hot-toast';
+import { extractTime } from '../utils/extractTime.js';
 
 export default function Home() {
     const [activeTab, setActiveTab] = useState('all category');
@@ -41,9 +44,11 @@ export default function Home() {
         slidesToShow: 3,
         speed: 500,
     });
+    const [suggestedBlogs, setSuggestedBlogs] = useState(null);
     const limit = 5;
 
     const navigate = useNavigate();
+    const dispatch = useDispatch();
 
     const handleGetLatestBlogs = async () => {
         try {
@@ -87,15 +92,23 @@ export default function Home() {
     };
 
     const handleGetUserSubscribeAuthor = async () => {
-        const res = await fetch('/api/user/get-user-subscribe-authors', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ userId: currentUser._id }),
-        });
-        const data = await res.json();
-        setAuthors(data.authors);
-        if (data.authors.length > 0) {
-            setActiveAuthor(data.authors[0].username);
+        try {
+            const res = await fetch('/api/user/get-user-subscribe-authors', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ userId: currentUser._id }),
+            });
+            const data = await res.json();
+            if (res.status == 403) {
+                dispatch(signOutSuccess());
+                return navigate('/sign-in');
+            }
+            setAuthors(data.authors);
+            if (data.authors.length > 0) {
+                setActiveAuthor(data.authors[0].username);
+            }
+        } catch (error) {
+            console.log(error);
         }
     };
 
@@ -128,11 +141,35 @@ export default function Home() {
         }
     }, [activeTab, currentPage]);
 
+    const handleGetSuggestedBlog = async () => {
+        try {
+            const res = await fetch(`/api/user/get-suggested-blog/${currentUser._id}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ userId: currentUser._id }),
+            });
+            const data = await res.json();
+            if (res.status == 403) {
+                dispatch(signOutSuccess());
+                return navigate('/sign-in');
+            }
+            if (res.status == 200) {
+                console.log(data.suggestedBlogs);
+                setSuggestedBlogs(data.suggestedBlogs);
+            } else {
+                toast.error(data.message);
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
     useEffect(() => {
         handleGetAllCategoryTrendingHightestRatedBlogs();
         handleGetTopAuthors();
         if (currentUser) {
             handleGetUserSubscribeAuthor();
+            handleGetSuggestedBlog();
         }
         window.addEventListener('resize', handleResize);
         handleResize();
@@ -446,7 +483,7 @@ export default function Home() {
                                                     alt="blogThumb"
                                                     className="w-full aspect-video object-cover mx-auto rounded-3xl"
                                                 />
-                                                <p className="my-2 text-xl font-semibold line-clamp-2 break-words duration-100 group-hover:scale-105 w-fit relative before:content-[''] before:absolute before:top-[6%] before:right-[-1px] before:w-0 before:h-[93%] before:rounded-sm before:bg-gradient-to-r before:from-indigo-500 before:from-10% before:via-sky-500 before:via-30% before:to-emerald-500 before:to-90% before:-z-10 before:transition-[0.5s] group-hover:before:left-[1px] group-hover:before:right-auto group-hover:before:w-full">
+                                                <p className="my-2 text-xl font-semibold line-clamp-2 break-words duration-100 group-hover:scale-105 w-fit relative before:content-[''] before:absolute before:top-[6%] before:right-[-1px] before:w-0 before:h-[93%] before:rounded-sm before:bg-gradient-to-r before:from-indigo-500 before:from-10% before:via-sky-500 before:via-30% before:to-emerald-500 before:to-90% before:-z-10 before:transition-[0.5s] group-hover:before:left-[1px] group-hover:before:right-auto group-hover:before:w-full before:opacity-60">
                                                     {blog.title}
                                                 </p>
                                                 <span className="my-2 block w-fit px-4 whitespace-nowrap rounded-full capitalize border border-teal-500 font-semibold">
@@ -470,6 +507,78 @@ export default function Home() {
                             ''
                         )}
                     </FadeInWhenVisible>
+                </>
+            )}
+
+            {/* suggestedBlogs */}
+            {currentUser && (
+                <>
+                    <hr className="mt-20 my-6 opacity-50" />
+                    <p className="font-semibold text-3xl mx-auto mb-8 text-center">Suggested Blogs</p>
+                    {suggestedBlogs != null ? (
+                        suggestedBlogs != null && suggestedBlogs.length > 0 ? (
+                            suggestedBlogs.map((blog, idx) => (
+                                <FadeInWhenVisible key={idx}>
+                                    <Link
+                                        to={`/blog/${blog.slug}`}
+                                        className="group flex flex-col md:flex-row shadow-lg rounded-lg overflow-hidden mb-6 p-2"
+                                    >
+                                        <img
+                                            src={blog.thumb}
+                                            alt="Blog Thumbnail"
+                                            className="w-full md:w-1/3 object-cover max-h-44 rounded-xl"
+                                        />
+                                        <div className="p-6 w-full md:w-2/3">
+                                            <h1 className="text-xl font-semibold line-clamp-2 break-words duration-100 group-hover:scale-105 w-fit relative before:content-[''] before:absolute before:top-[6%] before:right-[-1px] before:w-0 before:h-[93%] before:rounded-sm before:bg-gradient-to-r before:from-indigo-500 before:from-10% before:via-sky-500 before:via-30% before:to-emerald-500 before:to-90% before:-z-10 before:transition-[0.5s] group-hover:before:left-[1px] group-hover:before:right-auto group-hover:before:w-full before:opacity-60">
+                                                {blog.title}
+                                            </h1>
+                                            <p className="text-gray-700 mb-4">{blog.description}</p>
+                                            <div className="mb-4">
+                                                {blog.tags.map((tag, index) => (
+                                                    <span
+                                                        key={index}
+                                                        className="inline-block bg-blue-400 text-white text-xs px-3 py-1 rounded-full mr-2"
+                                                    >
+                                                        # {tag}
+                                                    </span>
+                                                ))}
+                                            </div>
+                                            <div className="flex flex-wrap text-gray-600 mb-4">
+                                                <span className="mr-4">👁️ {blog.viewed}</span>
+                                                <span className="mr-4">👍 {blog.likeCount}</span>
+                                                <span className="mr-4">💬 {blog.commentCount}</span>
+                                                <span className="mr-4">⭐️ {blog.averageRating}</span>
+                                            </div>
+                                            <div className="flex flex-wrap gap-2 text-gray-500 items-center">
+                                                <span className="mr-4 px-4 whitespace-nowrap rounded-full capitalize border border-teal-500 font-semibold dark:text-teal-100 text-teal-600">
+                                                    {blog.category}
+                                                </span>
+                                                <div className="mr-4 flex items-center gap-1">
+                                                    <div>
+                                                        <img
+                                                            src={blog.authorId.userAvatar}
+                                                            className="w-6 h-6 object-cover rounded-full"
+                                                        />
+                                                    </div>
+                                                    <p>@{blog.authorId.username}</p>
+                                                </div>
+                                                <span className="text-sm">
+                                                    Published on: {extractTime(blog.createdAt)}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </Link>
+                                </FadeInWhenVisible>
+                            ))
+                        ) : (
+                            <i className="block text-center opacity-70">
+                                There is no suggested or blogs you have not read. View more blogs to personalize
+                                recommendations for you
+                            </i>
+                        )
+                    ) : (
+                        <Spinner size="xl" className="mx-auto block" />
+                    )}
                 </>
             )}
             <hr className="mt-20 my-6 opacity-50" />
