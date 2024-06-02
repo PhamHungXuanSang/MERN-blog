@@ -9,6 +9,7 @@ import { useNavigate } from 'react-router-dom';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import dateToDateAndTime from '../utils/dateToDateAndTime.js';
+import { addDays } from 'date-fns';
 
 export default function PublishForm() {
     const currentUser = useSelector((state) => state.user.currentUser);
@@ -65,7 +66,6 @@ export default function PublishForm() {
         const cleanup = handleScrollToTop();
         return cleanup;
     }, []);
-
 
     const handleClosePreview = () => {
         setEditorState('editor');
@@ -456,8 +456,11 @@ export default function PublishForm() {
                             selected={postingTime}
                             onChange={(date) => handleChoosePostingTime(date)}
                             showTimeSelect
-                            dateFormat={'dd/MM/yyyy'}
+                            timeIntervals={5}
+                            timeCaption="Hours"
+                            dateFormat="dd/MM/yyyy HH:mm"
                             minDate={new Date()}
+                            maxDate={addDays(new Date(), 1)}
                         />
                         <div className="flex justify-center gap-4">
                             <Button gradientMonochrome="purple" onClick={handlePushToWaiting}>

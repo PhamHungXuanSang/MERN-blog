@@ -285,7 +285,7 @@ export default function BlogEditor() {
                 <hr className="w-full opacity-50 my-5 h-1" />
                 <div id="textEditor"></div>
 
-                <div className="flex justify-end gap-4 w-full md:max-w-[650px] mx-auto">
+                <div className="flex justify-end md:gap-4 gap-3 w-full md:max-w-[650px] mx-auto">
                     <Button outline gradientDuoTone="redToYellow" onClick={handleShowCreateText}>
                         Create text content with speech
                     </Button>

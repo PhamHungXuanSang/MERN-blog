@@ -22,7 +22,7 @@ export default function Blog({ content, author }) {
                         alt={'avatar'}
                         className="w-6 h-6 rounded-full duration-300 group-hover:scale-125"
                     />
-                    <p className="truncate">@{username}</p>
+                    <p className="truncate text-sm md:text-base">@{username}</p>
                     <p className="min-w-fit ml-4 hidden md:inline opacity-50 group-hover:opacity-100">
                         {dateToDateAndTime(createdAt)}
                     </p>
@@ -33,8 +33,8 @@ export default function Blog({ content, author }) {
                 <i className="my-2 text-md leading-7 max-sm:hidden md:max-[1100px]:hidden line-clamp-1">
                     {description}
                 </i>
-                <div className="flex flex-wrap md:gap-5 gap-4 mt-4">
-                    <span className="px-4 whitespace-nowrap rounded-full capitalize border border-teal-500 font-semibold dark:text-teal-100 text-teal-600">
+                <div className="flex flex-wrap md:gap-5 gap-3 text-sm md:text-base mt-4">
+                    <span className="md:px-4 px-2 whitespace-nowrap rounded-full capitalize border border-teal-500 font-semibold dark:text-teal-100 text-teal-600">
                         {category}
                     </span>
                     <div className="flex items-center gap-2">

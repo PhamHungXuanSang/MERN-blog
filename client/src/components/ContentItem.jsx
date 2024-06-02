@@ -85,11 +85,13 @@ export default function ContentItem({ type, block }) {
                         }
                     />
                 </div>
-                {block.data.caption.length && (
+                {block.data.caption.length ? (
                     <i
                         className={'text-' + block.tunes.textAlignment.alignment + ' mt-2 text-md block'}
                         dangerouslySetInnerHTML={{ __html: block.data.caption }}
                     ></i>
+                ) : (
+                    ''
                 )}
             </>
         );
@@ -102,11 +104,13 @@ export default function ContentItem({ type, block }) {
                     className={'text-' + block.data.alignment + ' text-xl leading-10 md:text-2xl'}
                     dangerouslySetInnerHTML={{ __html: `“${block.data.text}”` }}
                 ></blockquote>
-                {block.data.caption.length && (
+                {block.data.caption.length ? (
                     <i
                         className={'text-' + block.tunes.textAlignment.alignment + ' mt-2 text-md block'}
                         dangerouslySetInnerHTML={{ __html: block.data.caption }}
                     ></i>
+                ) : (
+                    ''
                 )}
             </>
         );
@@ -215,7 +219,11 @@ export default function ContentItem({ type, block }) {
                         style={{ maxWidth: '100%', maxHeight: '100%' }}
                     ></iframe>
                 </div>
-                <i className="mt-2 text-md block" dangerouslySetInnerHTML={{ __html: block.data.caption }}></i>
+                {block.data.caption.length ? (
+                    <i className="mt-2 text-md block" dangerouslySetInnerHTML={{ __html: block.data.caption }}></i>
+                ) : (
+                    ''
+                )}
             </div>
         );
     }
@@ -236,33 +244,31 @@ export default function ContentItem({ type, block }) {
             center: 'text-center',
             right: 'text-right',
         };
-        const alertType = alertTypes[block.data.type] || alertTypes.primary;
-        const alignment = alignClass[block.data.align] || alignClass.left;
+
+        const { type: alertType = 'primary', align: alignment = 'left', message } = block.data;
+        const alertClass = alertTypes[alertType] || alertTypes.primary;
+        const alignClassValue = alignClass[alignment] || alignClass.left;
 
         return (
             <div
-                className={`p-[10px] rounded-[5px] mb-[10px] border ${alertType} ${alignment}`}
-                dangerouslySetInnerHTML={{ __html: block.data.message }}
+                className={`p-[10px] rounded-[5px] mb-[10px] border ${alertClass} ${alignClassValue}`}
+                dangerouslySetInnerHTML={{ __html: message }}
             ></div>
         );
     }
 
-    if (type == 'checklist') {
-        let listItems = '';
-        block.data.items.forEach((item) => {
-            listItems += `
-                <li class='list-group-item'>
-                    <input
-                        class='form-check-input me-2'
-                        type='checkbox'
-                        ${item.checked && 'checked'}
-                    />
-                    <label class='form-check-label'>
-                        ${item.text}
-                    </label>
-                </li>
-            `;
-        });
-        return <ul className="list-group mb-3" dangerouslySetInnerHTML={{ __html: listItems }}></ul>;
+    if (type === 'checklist') {
+        return (
+            <ul className="list-group mb-3">
+                {block.data.items.map((item, index) => (
+                    <li key={index} className="list-group-item">
+                        <input className="form-check-input me-2" type="checkbox" defaultChecked={item.checked} />
+                        <label className="form-check-label">
+                            <span dangerouslySetInnerHTML={{ __html: item.text }}></span>
+                        </label>
+                    </li>
+                ))}
+            </ul>
+        );
     }
 }

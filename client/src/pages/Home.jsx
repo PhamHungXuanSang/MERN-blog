@@ -613,18 +613,20 @@ export default function Home() {
                                                 <img
                                                     alt="Avatar"
                                                     src={author.userAvatar}
-                                                    className="md:max-w-20 md:max-h-20 max-w-14 max-h-14 rounded-full shadow-2xl"
+                                                    className="md:max-w-20 md:max-h-20 max-w-[60px] max-h-[60px] rounded-full shadow-2xl"
                                                 />
                                             </div>
                                             <div className="flex flex-col gap-2">
                                                 <p className="font-semibold line-clamp-1 break-words">
                                                     @{author.username}
                                                 </p>
-                                                <p className="line-clamp-2 break-words">{author.userDesc}</p>
+                                                <p className="line-clamp-2 break-words text-sm md:text-base">
+                                                    {author.userDesc}
+                                                </p>
                                                 <p className="line-clamp-1 break-words flex items-center gap-1 opacity-50">
                                                     <SlNote /> {author.count} Published Blogs
                                                 </p>
-                                                <Link to={`/user/${author.username}`} className="text-teal-600">
+                                                <Link to={`/user/${author.username}`} className="text-teal-600 text-sm">
                                                     View profile
                                                 </Link>
                                             </div>
