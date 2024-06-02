@@ -348,7 +348,7 @@ export default function ReadBlog() {
                                     suggest.length &&
                                     similarAuthorBlogs != null &&
                                     similarAuthorBlogs.length
-                                        ? 'flex flex-col md:flex-row justify-between items-center'
+                                        ? 'flex flex-col lg:flex-row justify-between items-center'
                                         : ''
                                 }
                             >

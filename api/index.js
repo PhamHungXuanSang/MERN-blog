@@ -19,7 +19,7 @@ import scheduleBlogRoutes from './routes/scheduleBlog.route.js';
 import categoryRoutes from './routes/category.route.js';
 import messageRoutes from './routes/message.route.js';
 import cookieParser from 'cookie-parser';
-import { jobAtStartOfHour, jobAtHalfPastHour } from './services/nodeCron.js';
+import { jobEveryFiveMinutes } from './services/nodeCron.js';
 import path from 'path';
 
 dotenv.config();
@@ -120,8 +120,8 @@ app.use((err, req, res, next) => {
     });
 });
 
-jobAtStartOfHour.start();
-jobAtHalfPastHour.start();
+// jobAtStartOfHour.start();
+jobEveryFiveMinutes.start();
 
 httpServer.listen(3000, () => {
     //console.log('Server is running at port 3000');

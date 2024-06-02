@@ -154,7 +154,6 @@ export default function Home() {
                 return navigate('/sign-in');
             }
             if (res.status == 200) {
-                console.log(data.suggestedBlogs);
                 setSuggestedBlogs(data.suggestedBlogs);
             } else {
                 toast.error(data.message);

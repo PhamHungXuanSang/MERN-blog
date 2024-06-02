@@ -60,13 +60,11 @@ async function publishBlogs() {
     }
 }
 
-// Job 1: Chạy vào đầu mỗi giờ
-export const jobAtStartOfHour = cron.schedule('0 0 * * * *', publishBlogs);
+// // Job 1: Chạy vào đầu mỗi giờ
+// export const jobAtStartOfHour = cron.schedule('0 0 * * * *', publishBlogs);
 
-// Job 2: Chạy vào mỗi 30 phút của giờ
-export const jobAtHalfPastHour = cron.schedule('* 30 * * * *', publishBlogs, {
+// Job 2: Chạy cứ mỗi 5 phút một lần
+export const jobEveryFiveMinutes = cron.schedule('*/5 * * * *', publishBlogs, {
     scheduled: true,
     timezone: 'Asia/Ho_Chi_Minh',
 });
-
-// '*/5 * * * * *'
