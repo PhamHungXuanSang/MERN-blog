@@ -81,7 +81,9 @@ export default function Checkout() {
                     <p>Back</p>
                 </div>
                 {userTransactionInfo != null ? (
-                    new Date(userTransactionInfo.expirationDate).getFullYear() < 2100 ? (
+                    !userTransactionInfo.expirationDate ||
+                    (userTransactionInfo.expirationDate &&
+                        new Date(userTransactionInfo.expirationDate).getFullYear() < 2100) ? (
                         <>
                             <div className="border border-gray-500 rounded-lg md:p-4 p-1">
                                 <div className="bg-slate-300 p-2 rounded-lg text-black flex flex-col gap-1">
@@ -90,13 +92,25 @@ export default function Checkout() {
                                             src={currentUser.userAvatar}
                                             alt="avatar"
                                             className="w-10 h-10 rounded-full inline-block"
-                                        ></img>{' '}
-                                        {currentUser.username}
+                                        ></img>
+                                        <b>
+                                            {' @'}
+                                            {currentUser.username}
+                                        </b>
                                     </p>
-                                    <p className="line-clamp-3 break-words">Email: {currentUser.email}</p>
-                                    <p>
-                                        Package expiration date: {dateToDateAndTime(userTransactionInfo.expirationDate)}
+                                    <p className="line-clamp-3 break-words">
+                                        Email: <b>{currentUser.email}</b>
                                     </p>
+                                    {userTransactionInfo.expirationDate ? (
+                                        <p>
+                                            Package expiration date:{' '}
+                                            <b>{dateToDateAndTime(userTransactionInfo.expirationDate)}</b>
+                                        </p>
+                                    ) : (
+                                        <p>
+                                            Package expiration date: <b>Not available</b>
+                                        </p>
+                                    )}
                                 </div>
                                 <div className="mt-4">
                                     <span className="font-semibold text-xl">Billing Information</span>
@@ -104,62 +118,103 @@ export default function Checkout() {
                                         <div>
                                             <p>
                                                 <i>Package name: </i>
-                                                {selectedPackage.packageName}
+                                                <b>{selectedPackage.packageName}</b>
                                             </p>
                                             <p>
                                                 <i>Package duration:</i>{' '}
-                                                {selectedPackage.packageExpiry <= 365
-                                                    ? selectedPackage.packageExpiry + ' days'
-                                                    : 'Forever'}
+                                                <b>
+                                                    {selectedPackage.packageExpiry <= 365
+                                                        ? selectedPackage.packageExpiry + ' days'
+                                                        : 'Forever'}
+                                                </b>
                                             </p>
-                                            <p>
-                                                <i>Transaction type:</i>{' '}
-                                                {new Date(userTransactionInfo.expirationDate) > new Date()
-                                                    ? 'Extended'
-                                                    : 'Register'}
-                                            </p>
-                                            <p>
-                                                <i>Estimated</i>
-                                                {selectedPackage.packageExpiry <= 365
-                                                    ? userTransactionInfo.expirationDate < new Date()
-                                                        ? ': ' +
-                                                          formatDate(new Date()) +
-                                                          ' - ' +
-                                                          formatDate(
-                                                              new Date(
-                                                                  new Date().getTime() +
-                                                                      selectedPackage.packageExpiry *
-                                                                          24 *
-                                                                          60 *
-                                                                          60 *
-                                                                          1000,
-                                                              ),
-                                                          )
-                                                        : ': ' +
-                                                          formatDate(new Date(userTransactionInfo.expirationDate)) +
-                                                          ' - ' +
-                                                          formatDate(
-                                                              new Date(
+                                            {userTransactionInfo.expirationDate ? (
+                                                <p>
+                                                    <i>Transaction type:</i>{' '}
+                                                    <b>
+                                                        {new Date(userTransactionInfo.expirationDate) > new Date()
+                                                            ? 'Extended'
+                                                            : 'Register'}
+                                                    </b>
+                                                </p>
+                                            ) : (
+                                                <p>
+                                                    <i>Transaction type:</i> <b>Register</b>
+                                                </p>
+                                            )}
+                                            {userTransactionInfo.expirationDate ? (
+                                                <p>
+                                                    <i>Estimated</i>
+                                                    <b>
+                                                        {selectedPackage.packageExpiry <= 365
+                                                            ? userTransactionInfo.expirationDate < new Date()
+                                                                ? ': ' +
+                                                                  formatDate(new Date()) +
+                                                                  ' - ' +
+                                                                  formatDate(
+                                                                      new Date(
+                                                                          new Date().getTime() +
+                                                                              selectedPackage.packageExpiry *
+                                                                                  24 *
+                                                                                  60 *
+                                                                                  60 *
+                                                                                  1000,
+                                                                      ),
+                                                                  )
+                                                                : ': ' +
+                                                                  formatDate(
+                                                                      new Date(userTransactionInfo.expirationDate),
+                                                                  ) +
+                                                                  ' - ' +
+                                                                  formatDate(
+                                                                      new Date(
+                                                                          new Date(
+                                                                              userTransactionInfo.expirationDate,
+                                                                          ).getTime() +
+                                                                              selectedPackage.packageExpiry *
+                                                                                  24 *
+                                                                                  60 *
+                                                                                  60 *
+                                                                                  1000,
+                                                                      ),
+                                                                  )
+                                                            : ': Lifetime use'}
+                                                    </b>
+                                                </p>
+                                            ) : (
+                                                <p>
+                                                    <i>Estimated</i>
+                                                    <b>
+                                                        {selectedPackage.packageExpiry <= 365
+                                                            ? ': ' +
+                                                              formatDate(new Date()) +
+                                                              ' - ' +
+                                                              formatDate(
                                                                   new Date(
-                                                                      userTransactionInfo.expirationDate,
-                                                                  ).getTime() +
-                                                                      selectedPackage.packageExpiry *
-                                                                          24 *
-                                                                          60 *
-                                                                          60 *
-                                                                          1000,
-                                                              ),
-                                                          )
-                                                    : ': Lifetime use'}
-                                            </p>
+                                                                      new Date().getTime() +
+                                                                          selectedPackage.packageExpiry *
+                                                                              24 *
+                                                                              60 *
+                                                                              60 *
+                                                                              1000,
+                                                                  ),
+                                                              )
+                                                            : ': Lifetime use'}
+                                                    </b>
+                                                </p>
+                                            )}
                                         </div>
                                         <div className="text-right opacity-80 md:pl-4 md:border-l">
-                                            <i className="block">Package price: {selectedPackage.packagePrice}$</i>
-                                            <i className="block">Discount: 0%</i>
+                                            <i className="block">
+                                                Package price: <b>{selectedPackage.packagePrice}$</b>
+                                            </i>
+                                            <i className="block">
+                                                Discount: <b>0%</b>
+                                            </i>
                                             <i className="block">
                                                 Into money:{' '}
                                                 <p className="inline-block font-bold text-3xl text-red-600">
-                                                    {selectedPackage.packagePrice}$
+                                                    <b>{selectedPackage.packagePrice}$</b>
                                                 </p>
                                             </i>
                                         </div>

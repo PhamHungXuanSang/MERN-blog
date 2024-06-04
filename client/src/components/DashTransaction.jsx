@@ -107,6 +107,12 @@ export default function DashTransaction() {
 
     const options = {};
 
+    useEffect(() => {
+        if (userTransactions?.length >= totalTransactions) {
+            setShowMore(false);
+        }
+    }, [userTransactions]);
+
     return (
         <div className="py-8 px-4">
             <div className="flex items-center justify-between w-full h-fit border-b-2 border-neutral-300 mb-4">
