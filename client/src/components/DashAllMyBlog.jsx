@@ -88,8 +88,10 @@ export default function DashAllMyBlog() {
     }, [currentPage]);
 
     const onPageChange = (page) => {
-        setBlogs(null);
-        setCurrentPage(page);
+        if (currentPage != page) {
+            setBlogs(null);
+            setCurrentPage(page);
+        }
     };
 
     return (

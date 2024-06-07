@@ -86,8 +86,10 @@ export default function Search() {
     }, [query]);
 
     const onPageChange = (page) => {
-        setBlogs(null);
-        setCurrentPage(page);
+        if (currentPage != page) {
+            setBlogs(null);
+            setCurrentPage(page);
+        }
     };
 
     return (

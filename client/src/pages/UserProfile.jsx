@@ -68,8 +68,10 @@ export default function UserProfile() {
     }, [currentPage]);
 
     const onPageChange = (page) => {
-        setBlogs(null);
-        setCurrentPage(page);
+        if (currentPage != page) {
+            setBlogs(null);
+            setCurrentPage(page);
+        }
     };
 
     let totalLike = 0;

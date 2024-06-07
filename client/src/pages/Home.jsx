@@ -193,8 +193,10 @@ export default function Home() {
     };
 
     const onPageChange = (page) => {
-        setBlogs(null);
-        setCurrentPage(page);
+        if (currentPage != page) {
+            setBlogs(null);
+            setCurrentPage(page);
+        }
     };
 
     const handleFetchAuthorBlog = async (username) => {

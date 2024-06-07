@@ -84,8 +84,10 @@ export default function DashScheduleBlogs() {
     };
 
     const onPageChange = (page) => {
-        setScheduleBlogs(null);
-        setCurrentPage(page);
+        if (currentPage != page) {
+            setScheduleBlogs(null);
+            setCurrentPage(page);
+        }
     };
 
     return (

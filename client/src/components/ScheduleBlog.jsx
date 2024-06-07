@@ -46,12 +46,9 @@ export default function ScheduleBlog({ blog, setScheduleBlogs }) {
                 />
                 <div className="flex flex-col justify-between py-2 w-full min-w-[300px]">
                     <div>
-                        <Link
-                            to={`/blog/${blog.slug}`}
-                            className="mb-4 hover:underline text-xl font-semibold max-w-[90%] overflow-x-hidden block"
-                        >
+                        <div className="mb-4 hover:underline text-xl font-semibold max-w-[90%] overflow-x-hidden block">
                             {blog.title}
-                        </Link>
+                        </div>
                         <p className="line-clamp-1">Blog will be posted on {dateToDateAndTime(blog.postingTime)}</p>
                     </div>
                     <div className="flex gap-6 mt-3">
