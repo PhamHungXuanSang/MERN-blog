@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { Button, Pagination, Spinner } from 'flowbite-react';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import AboutUser from '../components/AboutUser';
 import NotFound from '../components/NotFound';
@@ -74,25 +74,52 @@ export default function UserProfile() {
         }
     };
 
-    let totalLike = 0;
-    dashProfile?.allBlogs?.forEach((blog) => {
-        totalLike += blog.likes.length;
-    });
+    let totalLike = useMemo(() => {
+        return dashProfile?.allBlogs?.reduce((totalLike, blog) => totalLike + blog.likes.length, 0);
+    }, [dashProfile]);
 
-    let allAverageRating = 0;
-    let numberBlogsReviewed = 0;
-    dashProfile?.allBlogs?.forEach((blog) => {
-        if (blog.averageRating > 0) {
-            numberBlogsReviewed++;
-            allAverageRating += blog.averageRating;
-        }
-    });
-    allAverageRating = allAverageRating / numberBlogsReviewed;
+    const allAverageRating = useMemo(() => {
+        if (!dashProfile?.allBlogs) return 0;
+        const { totalRating, reviewedBlogs } = dashProfile.allBlogs.reduce(
+            (acc, blog) => {
+                if (blog.averageRating > 0) {
+                    acc.reviewedBlogs++;
+                    acc.totalRating += blog.averageRating;
+                }
+                return acc;
+            },
+            { totalRating: 0, reviewedBlogs: 0 },
+        );
+
+        return reviewedBlogs > 0 ? totalRating / reviewedBlogs : 0;
+    }, [dashProfile?.allBlogs]);
 
     const handleToggleSubscribe = async () => {
-        isSubscribed
-            ? toast.success('Unsubscribed', { duration: 1000 })
-            : toast.success('Subscribed', { duration: 1000 });
+        if (isSubscribed) {
+            toast.success('Unsubscribed', { duration: 1000 });
+            setDashProfile((prev) => ({
+                ...prev,
+                user: {
+                    ...prev.user,
+                    subscribeUsers: {
+                        ...prev.user.subscribeUsers,
+                        length: prev.user.subscribeUsers.length - 1,
+                    },
+                },
+            }));
+        } else {
+            toast.success('Subscribed', { duration: 1000 });
+            setDashProfile((prev) => ({
+                ...prev,
+                user: {
+                    ...prev.user,
+                    subscribeUsers: {
+                        ...prev.user.subscribeUsers,
+                        length: prev.user.subscribeUsers.length + 1,
+                    },
+                },
+            }));
+        }
         setIsSubscribed((prev) => !prev);
         try {
             const res = await fetch(`/api/user/toggle-subscribe/${dashProfile?.user._id}/${currentUser._id}`, {

@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { useEffect } from 'react';
+import { memo, useEffect } from 'react';
 import { motion, useAnimation } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
 
@@ -29,4 +29,4 @@ function FadeInWhenVisible({ children }) {
     );
 }
 
-export default FadeInWhenVisible;
+export default memo(FadeInWhenVisible);

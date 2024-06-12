@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react';
+import { memo, useEffect, useState } from 'react';
 import { FaRegArrowAltCircleUp } from 'react-icons/fa';
 
-export default function BackToTopButton() {
+function BackToTopButton() {
     const [backToTop, setBackToTop] = useState(false);
 
     useEffect(() => {
@@ -34,3 +34,5 @@ export default function BackToTopButton() {
         </>
     );
 }
+
+export default memo(BackToTopButton);

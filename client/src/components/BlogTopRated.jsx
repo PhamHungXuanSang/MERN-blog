@@ -1,9 +1,10 @@
 /* eslint-disable no-unused-vars */
 import { Link } from 'react-router-dom';
 import { FaStarHalfAlt } from 'react-icons/fa';
+import { memo } from 'react';
 
 /* eslint-disable react/prop-types */
-export default function BlogTopRated({ index, content }) {
+function BlogTopRated({ index, content }) {
     const {
         title,
         averageRating,
@@ -36,3 +37,5 @@ export default function BlogTopRated({ index, content }) {
         </Link>
     );
 }
+
+export default memo(BlogTopRated);

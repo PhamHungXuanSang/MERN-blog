@@ -1,7 +1,8 @@
 /* eslint-disable react/prop-types */
 import { Link } from 'react-router-dom';
+import { memo } from 'react';
 
-export default function BlogMini({ content, author, index }) {
+function BlogMini({ content, author, index }) {
     const { title, slug } = content;
     const { userAvatar, username } = author;
 
@@ -21,3 +22,5 @@ export default function BlogMini({ content, author, index }) {
         </div>
     );
 }
+
+export default memo(BlogMini);
