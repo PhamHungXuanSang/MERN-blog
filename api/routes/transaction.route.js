@@ -8,6 +8,7 @@ import {
     createPaymentLink,
     getPaymentInfo,
     adminViewAllTransaction,
+    getCreateDate,
 } from '../controllers/transaction.controller.js';
 import { authenToken } from '../utils/authenToken.js';
 
@@ -21,5 +22,6 @@ router.get(`/get-transaction-history/:userId`, authenToken, getTransactionHistor
 router.post('/create-payment-link', createPaymentLink);
 router.post('/get-payment-info/:orderCode', getPaymentInfo);
 router.get('/admin-view-all-transaction', authenToken, adminViewAllTransaction);
+router.get('/getCreateDate/:userId', authenToken, getCreateDate)
 
 export default router;

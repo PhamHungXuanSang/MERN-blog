@@ -511,3 +511,20 @@ export const adminViewAllTransaction = async (req, res, next) => {
         next(error);
     }
 };
+
+export const getCreateDate = async (req, res, next) => {
+    const { userId } = req.params;
+    try {
+        if (req.user._id !== userId) {
+            return next(errorHandler(403, 'Unauthorized'));
+        }
+        const userExpirationDate = await Transaction.findOne({ userId }).select('expirationDate');
+        if (!userExpirationDate) {
+            return next(errorHandler(404, 'User not found'));
+        }
+        console.log(userExpirationDate);
+        return res.status(200).json({ userExpirationDate: userExpirationDate.expirationDate });
+    } catch (error) {
+        console.log(error);
+    }
+};

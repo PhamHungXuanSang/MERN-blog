@@ -9,13 +9,13 @@ import { useNavigate } from 'react-router-dom';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import dateToDateAndTime from '../utils/dateToDateAndTime.js';
-import { addDays } from 'date-fns';
 
 export default function PublishForm() {
     const currentUser = useSelector((state) => state.user.currentUser);
     const [loading, setLoading] = useState(false);
     const [showModal, setShowModal] = useState(false);
     const [allCate, setAllCate] = useState(null);
+    const [userDateCreate, setUserDateCreate] = useState(null);
 
     const navigate = useNavigate();
     const dispatch = useDispatch();
@@ -45,6 +45,28 @@ export default function PublishForm() {
             }
         };
 
+        const fetchUserDateCreate = async () => {
+            try {
+                const res = await fetch(`/api/transaction/getCreateDate/${currentUser._id}`, {
+                    method: 'GET',
+                    headers: { 'Content-Type': 'application/json' },
+                });
+                const data = await res.json();
+                if (res.status === 403) {
+                    dispatch(signOutSuccess());
+                    navigate('/sign-in');
+                    return;
+                }
+                if (res.status === 200) {
+                    setUserDateCreate(data.userExpirationDate);
+                } else {
+                    toast.error(data.message);
+                }
+            } catch (error) {
+                console.log(error);
+            }
+        };
+
         const handleScrollToTop = () => {
             const isSmoothScrollSupported = 'scrollBehavior' in document.documentElement.style;
             const scrollToTop = () => {
@@ -63,6 +85,7 @@ export default function PublishForm() {
             };
         };
         getAllCategory();
+        fetchUserDateCreate();
         const cleanup = handleScrollToTop();
         return cleanup;
     }, []);
@@ -293,12 +316,18 @@ export default function PublishForm() {
     };
 
     const handleChoosePostingTime = (date) => {
-        if (date >= new Date()) {
-            setPostingTime(date);
-            let pt = dateToDateAndTime(date);
-            return toast.success(`Posting time set to ${pt}`, { duration: 6000 });
+        if (userDateCreate) {
+            if (new Date(date) > new Date(userDateCreate)) {
+                return toast.error(`Your expiry date is: ${dateToDateAndTime(userDateCreate)}`);
+            } else if (date >= new Date()) {
+                setPostingTime(date);
+                let pt = dateToDateAndTime(date);
+                return toast.success(`Posting time set to ${pt}`, { duration: 6000 });
+            } else {
+                return toast.error('Please choose a posting time after the current time', { duration: 6000 });
+            }
         } else {
-            return toast.error('Please choose a posting time after the current time', { duration: 6000 });
+            return toast.error('No expiration date found for this account');
         }
     };
 
@@ -460,7 +489,7 @@ export default function PublishForm() {
                             timeCaption="Hours"
                             dateFormat="dd/MM/yyyy HH:mm"
                             minDate={new Date()}
-                            maxDate={addDays(new Date(), 1)}
+                            // maxDate={addDays(new Date(), 1)}
                         />
                         <div className="flex justify-center gap-4">
                             <Button gradientMonochrome="purple" onClick={handlePushToWaiting}>
