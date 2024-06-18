@@ -54,11 +54,9 @@ export default function SuccessfulTransaction() {
                                 return;
                             }
                         } else {
-                            console.log('3');
                             navigate('/order-status-cancel');
                         }
                     } else {
-                        console.log('2');
                         navigate('/order-status-cancel');
                     }
                 } catch (error) {

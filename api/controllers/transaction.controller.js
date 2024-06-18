@@ -522,7 +522,6 @@ export const getCreateDate = async (req, res, next) => {
         if (!userExpirationDate) {
             return next(errorHandler(404, 'User not found'));
         }
-        console.log(userExpirationDate);
         return res.status(200).json({ userExpirationDate: userExpirationDate.expirationDate });
     } catch (error) {
         console.log(error);

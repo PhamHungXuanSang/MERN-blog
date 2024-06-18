@@ -144,7 +144,9 @@ export default function DashSavedBlogs() {
                         <NotFound object={'Not found any folders'} />
                     )
                 ) : (
-                    <Spinner className="block mx-auto mt-4" size="xl" />
+                    <div className="w-full">
+                        <Spinner className="block mx-auto mt-4" size="xl" />
+                    </div>
                 )}
             </div>
             {folders != null && folders.length > 0 ? (

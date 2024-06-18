@@ -182,13 +182,22 @@ export default function ReadBlog() {
         setTimeout(() => setRotate(false), 800);
     };
 
+    let timeoutId;
+
     const handleScrollIntoView = (idx) => {
+        if (timeoutId) {
+            clearTimeout(timeoutId);
+        }
         const element = document.getElementById(idx + 'index');
         if (!element) return;
         element.scrollIntoView({
             behavior: 'smooth',
             block: 'center',
         });
+        element.classList.add('shake');
+        timeoutId = setTimeout(() => {
+            element.classList.remove('shake');
+        }, 1000);
         setShowOutLine(false);
     };
 

@@ -1,5 +1,5 @@
 import { Button, Modal, Select, Spinner, Textarea } from 'flowbite-react';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
 import { EditorContext } from '../pages/Editor';
 import Tag from './Tag';
@@ -16,6 +16,9 @@ export default function PublishForm() {
     const [showModal, setShowModal] = useState(false);
     const [allCate, setAllCate] = useState(null);
     const [userDateCreate, setUserDateCreate] = useState(null);
+    const [suggestTags, setSuggestTags] = useState(null);
+    const [loadingSuggest, setLoadingSuggest] = useState(false);
+    const inputRef = useRef();
 
     const navigate = useNavigate();
     const dispatch = useDispatch();
@@ -257,18 +260,62 @@ export default function PublishForm() {
             .toLowerCase();
     }
 
+    let timeoutId;
+
+    const handleSuggestTags = async (e) => {
+        if (timeoutId) {
+            clearTimeout(timeoutId);
+        }
+        const fetchTags = async () => {
+            let tag = removeVietnameseAccents(e.target.value.trim());
+            if (tag) {
+                setLoadingSuggest(true);
+                try {
+                    const res = await fetch(`/api/search/suggestTags/${tag}`);
+                    const data = await res.json();
+                    setSuggestTags(data);
+                    setLoadingSuggest(false);
+                } catch (error) {
+                    console.log(error);
+                }
+            }
+        };
+        if (e.target.value.trim() != null && e.target.value.trim().length > 0) {
+            timeoutId = setTimeout(fetchTags, 1300);
+        } else {
+            setSuggestTags(null);
+            setLoadingSuggest(false);
+        }
+    };
+
+    const handleChooseTag = (e) => {
+        let tag = e.target.value;
+        if (tags.length < 10) {
+            if (!tags.includes(tag)) {
+                setBlog({ ...blog, tags: [...tags, tag] });
+            }
+        } else {
+            return toast.error('Add maximum 10 tags', { duration: 3000 });
+        }
+        inputRef.current.value = '';
+        setSuggestTags(null);
+        setLoadingSuggest(false);
+    };
+
     const handleAddTag = (e) => {
         if (e.keyCode == 13 || e.keyCode == 188) {
             e.preventDefault();
+            let tag = e.target.value.trim();
             if (tags.length < 10) {
-                let tag = e.target.value;
-                if (tag.length > 0 && !tags.includes(tag)) {
+                if (tag.length > 0 && !/^[ ]+$/.test(tag) && !tags.includes(tag)) {
                     setBlog({ ...blog, tags: [...tags, removeVietnameseAccents(tag)] });
                 }
             } else {
-                toast.error('Add maximum 10 tags', { duration: 3000 });
+                return toast.error('Add maximum 10 tags', { duration: 3000 });
             }
             e.target.value = '';
+            setSuggestTags(null);
+            setLoadingSuggest(false);
         }
     };
 
@@ -436,18 +483,41 @@ export default function PublishForm() {
                             </option>
                         ))}
                     </Select>
-                    <p className="my-2">Tags - Usefull for searching your blog</p>
-                    <div className="relative w-[100%] rounded-md p-4 border border-gray-300 focus:bg-transparent pl-2 py-2 pb-4">
-                        <input
-                            onKeyDown={handleAddTag}
-                            type="text"
-                            placeholder="Name tag and press Enter"
-                            className="sticky w-[100%] rounded-md px-4 dark:bg-[#374151] dark:text-gray-400 border border-gray-300 focus:bg-transparent bg-white top-0 left-0 pl-4 mb-3 focus:bg-white"
-                        />
-                        {tags.map((tag, i) => {
-                            return <Tag tag={tag} key={i} />;
-                        })}
-                        <i className="block text-gray-500 text-sm text-right">{10 - tags.length} Tags left</i>
+                    <p className="my-2">Tags - Suggest Tags</p>
+                    <div className="relative flex md:flex-row-reverse flex-col gap-2 w-[100%] rounded-md p-4 border border-gray-300 focus:bg-transparent pl-2 py-2 pb-4">
+                        {loadingSuggest ? (
+                            <div className="md:w-32">
+                                <Spinner className="block mx-auto mt-4" size="sm" />
+                            </div>
+                        ) : suggestTags?.length > 0 ? (
+                            <Select
+                                onChange={handleChooseTag}
+                                className="md:w-32"
+                                size={suggestTags.length >= 5 ? '5' : '2'}
+                            >
+                                {suggestTags.map((tag, index) => (
+                                    <option key={index} value={tag}>
+                                        {tag}
+                                    </option>
+                                ))}
+                            </Select>
+                        ) : (
+                            ''
+                        )}
+                        <div className="flex-1">
+                            <input
+                                ref={inputRef}
+                                onChange={handleSuggestTags}
+                                onKeyDown={handleAddTag}
+                                type="text"
+                                placeholder="Name tag and press Enter"
+                                className="sticky w-[100%] rounded-md px-4 dark:bg-[#374151] dark:text-gray-400 border border-gray-300 focus:bg-transparent bg-white top-0 left-0 pl-4 mb-3 focus:bg-white"
+                            />
+                            {tags.map((tag, i) => {
+                                return <Tag tag={tag} key={i} />;
+                            })}
+                            <i className="block text-gray-500 text-sm text-right">{10 - tags.length} Tags left</i>
+                        </div>
                     </div>
                     <div className="flex gap-4 float-right my-4">
                         <Button outline gradientDuoTone="greenToBlue" onClick={handleClosePreview}>

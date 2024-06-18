@@ -34,8 +34,9 @@ export const allCategoryTrendingHightestRatedBlogs = async (req, res, next) => {
         const [trendingBlogs, topRatedBlogs, allCates] = await Promise.all([
             Blog.find({ 'isBlocked.status': false })
                 .populate('authorId', '_id username email userAvatar')
-                .sort({ viewed: -1, likeCount: -1 })
-                .limit(5),
+                // .sort({ viewed: -1, likeCount: -1 })
+                .sort({ updatedAt: -1 })
+                .limit(9),
             Blog.aggregate([
                 {
                     $match: { 'isBlocked.status': false },
@@ -469,9 +470,7 @@ export const adminBlogManagement = async (req, res, next) => {
             };
 
             if (search) {
-                searchConditions.$or = [
-                    { title: { $regex: search, $options: 'i' } },
-                ];
+                searchConditions.$or = [{ title: { $regex: search, $options: 'i' } }];
             }
 
             const [latestBlogs, totalBlogs] = await Promise.all([

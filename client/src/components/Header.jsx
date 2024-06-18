@@ -8,7 +8,7 @@ import { setCurrentUser, signOutSuccess } from '../redux/user/userSlice.js';
 import { darkModeToogle } from '../redux/theme/themeSlice.js';
 import { useDispatch, useSelector } from 'react-redux';
 import { socket } from '../App.jsx';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import BlogFastSearch from './BlogFastSearch.jsx';
 import UserFastSearch from './UserFastSearch.jsx';
 import toast from 'react-hot-toast';
@@ -26,9 +26,9 @@ export default function Header() {
     const dispatch = useDispatch();
 
     const location = useLocation();
-
-    // Kiểm tra xem đường dẫn hiện tại có phải '/dash-board' hay không
-    const isDashboard = location.pathname === '/dash-board';
+    const isDashboard = useMemo(() => {
+        return location.pathname === '/dash-board';
+    }, [location]);
 
     const checkNewNoti = async () => {
         try {
@@ -193,7 +193,12 @@ export default function Header() {
                     >
                         <FaRocketchat size={20} />
                     </Button>
-                    <Button className="w-[46px] h-10 inline" pill color="gray" onClick={() => dispatch(darkModeToogle())}>
+                    <Button
+                        className="w-[46px] h-10 inline"
+                        pill
+                        color="gray"
+                        onClick={() => dispatch(darkModeToogle())}
+                    >
                         {darkModeObj.darkMode === 'light' ? <FaMoon /> : <FaSun />}
                     </Button>
                     {currentUser ? (
@@ -257,7 +262,7 @@ export default function Header() {
                                 document.getElementById('side-bar')?.classList.toggle('hidden');
                             }}
                         >
-                            <BiSolidDashboard size={20}/>
+                            <BiSolidDashboard size={20} />
                         </button>
                     )}
                 </div>

@@ -63,3 +63,24 @@ export const searchUsers = async (req, res, next) => {
         next(error);
     }
 };
+
+export const suggestTags = async (req, res, next) => {
+    try {
+        const tag = req.params.tag;
+        let tags;
+        const result = await Blog.aggregate([
+            { $unwind: '$tags' },
+            { $group: { _id: null, allTags: { $addToSet: '$tags' } } },
+            { $project: { _id: 0, allTags: 1 } },
+        ]);
+
+        if (result.length > 0) {
+            tags = result[0].allTags;
+        }
+
+        const suggestTags = tags.filter((t) => t.includes(tag));
+        return res.status(200).json(suggestTags);
+    } catch (error) {
+        next(error);
+    }
+};
