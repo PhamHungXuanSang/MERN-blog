@@ -50,7 +50,7 @@ export default function Checkout() {
             const res = await fetch('/api/transaction/create-payment-link', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(selectedPackage),
+                body: JSON.stringify({ selectedPackage, currentUser }),
             });
             const data = await res.json();
             if (res.status === 403) {

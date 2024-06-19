@@ -194,10 +194,10 @@ export default function ReadBlog() {
             behavior: 'smooth',
             block: 'center',
         });
-        element.classList.add('shake');
+        element.classList.add('highlight');
         timeoutId = setTimeout(() => {
-            element.classList.remove('shake');
-        }, 1000);
+            element.classList.remove('highlight');
+        }, 900);
         setShowOutLine(false);
     };
 

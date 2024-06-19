@@ -412,8 +412,15 @@ export const getTransactionHistory = async (req, res, next) => {
     }
 };
 
+const getFutureTimestamp = (hours) => {
+    const now = Date.now();
+    const futureTimestamp = now + hours * 60 * 60 * 1000;
+    return Math.floor(futureTimestamp / 1000);
+};
+
 export const createPaymentLink = async (req, res, next) => {
-    const { packageName } = req.body;
+    const { packageName } = req.body.selectedPackage;
+    const { username, email } = req.body.currentUser;
     const order = {
         amount: 2000,
         description: `${packageName}`,
@@ -427,6 +434,9 @@ export const createPaymentLink = async (req, res, next) => {
         orderCode: Number(String(new Date().getTime()).slice(-6)),
         returnUrl: `https://mern-blog-csov.onrender.com/order-status-success`,
         cancelUrl: `https://mern-blog-csov.onrender.com/order-status-cancel`,
+        buyerName: username,
+        buyerEmail: email,
+        expiredAt: getFutureTimestamp(1),
     };
     const paymentLink = await payos.createPaymentLink(order);
     res.status(200).json({ checkoutUrl: paymentLink.checkoutUrl });
